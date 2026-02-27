@@ -529,6 +529,74 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .empty .empty-text{font-size:14px;color:var(--t3)}
 
 /* ═══════════════════════════════════════════════════════
+   REPAIR / ADDON ROWS
+   ═══════════════════════════════════════════════════════ */
+.ra-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;
+  background:var(--s1);border:1px solid var(--b1);
+  border-radius:var(--r-sm);margin-bottom:4px;
+  transition:all .15s;
+}
+.ra-row.on{background:var(--accent-glow2);border-color:rgba(245,158,11,.2)}
+.ra-toggle{flex-shrink:0}
+.ra-toggle input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+.ra-info{flex:1;min-width:0}
+.ra-name{font-weight:500;font-size:13px}
+.ra-sku{font-size:11px;color:var(--t4);font-family:'JetBrains Mono',monospace}
+.ra-fields{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.ra-fields input,.ra-fields select{
+  width:80px;padding:5px 8px;font-size:12px;
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:var(--r-sm);color:var(--t1);
+  font-family:'JetBrains Mono',monospace;
+  text-align:right;
+}
+.ra-fields input:focus,.ra-fields select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow)}
+.ra-cost{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3);min-width:70px;text-align:right;flex-shrink:0}
+.ra-unit{font-size:11px;color:var(--t4);white-space:nowrap}
+
+/* ═══════════════════════════════════════════════════════
+   PIPELINE SUMMARY
+   ═══════════════════════════════════════════════════════ */
+.pipeline-summary{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;
+  margin-bottom:28px;
+}
+.ps-card{
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:var(--r-md);padding:18px;
+  position:relative;overflow:hidden;
+}
+.ps-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  opacity:.6;
+}
+.ps-card.lead::before{background:var(--lead)}
+.ps-card.est::before{background:var(--est)}
+.ps-card.proj::before{background:var(--proj)}
+.ps-card.comp::before{background:var(--comp)}
+.ps-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.8px;color:var(--t4);margin-bottom:4px}
+.ps-value{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;letter-spacing:-.5px;color:var(--accent)}
+.ps-sub{font-size:11px;color:var(--t4);margin-top:2px}
+
+/* ═══════════════════════════════════════════════════════
+   INLINE EDIT
+   ═══════════════════════════════════════════════════════ */
+.inline-edit{
+  display:flex;align-items:center;gap:8px;margin-bottom:4px;
+}
+.inline-edit input{
+  background:transparent;border:none;border-bottom:1px dashed var(--b2);
+  color:var(--t1);font-size:22px;font-weight:700;letter-spacing:-.5px;
+  padding:2px 4px;font-family:'Inter',system-ui,sans-serif;
+  transition:border-color .15s;
+  width:100%;max-width:400px;
+}
+.inline-edit input:focus{outline:none;border-bottom-color:var(--accent)}
+.inline-edit input::placeholder{color:var(--t4)}
+
+/* ═══════════════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════════════ */
 @media(max-width:800px){
@@ -569,6 +637,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 <!-- HOME -->
 <div class="screen ac" id="scr-home">
   <div class="sh"><h2>Pipeline</h2><p>Your jobs at a glance. Click any folder to view records.</p></div>
+  <div class="pipeline-summary" id="pipelineSummary"></div>
   <div class="folder-grid" id="activeFolders"></div>
   <div class="inactive-label">Archived</div>
   <div class="folder-grid" id="inactiveFolders"></div>
@@ -632,7 +701,10 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 <!-- ESTIMATE -->
 <div class="screen" id="scr-estimate">
   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-    <div class="sh" style="margin-bottom:0;flex:1" id="estHeader"></div>
+    <div style="flex:1">
+      <div class="inline-edit"><input type="text" id="estNameInput" placeholder="Estimate name..." oninput="updateEstName()"></div>
+      <p style="font-size:13px;color:var(--t3)" id="estSubline"></p>
+    </div>
     <div class="btn-row">
       <button class="btn btn-success" onclick="saveEstimate()">Save</button>
       <button class="btn btn-danger" onclick="confirmDeleteEstimate()">Delete Estimate</button>
@@ -680,7 +752,15 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
     <div id="tcList"></div>
   </div>
   <div class="cd">
-    <div class="ct"><span class="ic ib">&#9998;</span> Notes</div>
+    <div class="ct"><span class="ic ir">&#9881;</span> Repairs</div>
+    <div id="repairList"></div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ib">&#9737;</span> Add-ons</div>
+    <div id="addonList"></div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ior">&#9998;</span> Notes</div>
     <div class="fg" style="margin-bottom:0"><textarea id="sysNotes" placeholder="Notes for this area..." oninput="calcSystem()"></textarea></div>
   </div>
 </div>
@@ -759,6 +839,22 @@ const TOPCOATS=[
   {id:'en6303',sku:'EN-6303',name:'Epoxy Neat Coat',cost:0.79,desc:'Smooth epoxy finish'},
   {id:'ut4515',sku:'UT-4515',name:'Perfect Poly 90',cost:0.65,desc:'Premium polyaspartic'},
 ];
+const REPAIRS=[
+  {id:'si1652',sku:'SI-1652',name:'Quick Patch',cost:0.32,unit:'sqft'},
+  {id:'em6018',sku:'EM-6018',name:'Protector-Flex Joint Fill',cost:1.06,unit:'lnft'},
+  {id:'mpp2001',sku:'MPP-2001',name:'MPP 80 Joint Fill',cost:2.00,unit:'lnft'},
+  {id:'mpp1019',sku:'MPP-1019',name:'Bulk: MPP 80 Joint Fill',cost:0.70,unit:'lnft'},
+  {id:'r701',sku:'R-701',name:'LRB/TAV Patch & Joint Fill',cost:1.76,unit:'lnft'},
+];
+const ADDONS=[
+  {id:'a601',sku:'A-601',name:'Surface Preparation / Removal',cost:0.25,low:1.00,mid:3.00,unit:'sqft'},
+  {id:'a602',sku:'A-602',name:'LRB Flood Coat',cost:2.34,low:1.50,mid:3.00,unit:'sqft'},
+  {id:'a603',sku:'A-603',name:'Penetrating Hydrophobic Sealer',cost:0.17,low:0.50,mid:1.00,unit:'sqft'},
+  {id:'a604',sku:'A-604',name:'Hydro-Polish',cost:0.04,low:0.15,mid:0.50,unit:'sqft'},
+  {id:'a605',sku:'A-605',name:'Easy Cove 4"',cost:6.41,low:13.00,mid:18.00,unit:'lnft'},
+  {id:'a606',sku:'A-606',name:'Easy Cove 6"',cost:8.61,low:14.00,mid:18.00,unit:'lnft'},
+  {id:'a607',sku:'A-607',name:'Flooring Logo',cost:17.00,low:40.00,mid:65.00,unit:'each'},
+];
 const STATUSES=[{id:'lead',label:'Lead',color:'lead'},{id:'estimate',label:'Estimate',color:'est'},{id:'project',label:'Project',color:'proj'},{id:'completed',label:'Completed',color:'comp'}];
 const FOLDER_ICONS={lead:'&#9993;',estimate:'&#9997;',project:'&#9874;',completed:'&#10003;'};
 
@@ -795,11 +891,43 @@ function renderBreadcrumb(){
 }
 
 // ═══════════════════════════════════════════════════════════
+// COST HELPERS
+// ═══════════════════════════════════════════════════════════
+function calcSysCosts(sys){
+  const sqft=sys.sqft||0;
+  const sr=sys.sellRate||0;
+  const prod=PRODUCTS.find(p=>p.id===sys.productId);
+  const tc=TOPCOATS.find(t=>t.id===sys.topcoatId);
+  let sellTotal=sqft*sr;
+  let costTotal=(prod?prod.cost*sqft:0)+(tc?tc.cost*sqft:0);
+  // Repairs
+  if(sys.repairs){Object.entries(sys.repairs).forEach(([id,r])=>{if(r.on){const def=REPAIRS.find(x=>x.id===id);if(def){const qty=r.qty||0;costTotal+=def.cost*qty;sellTotal+=((r.sell||0)*qty)}}})}
+  // Add-ons
+  if(sys.addons){Object.entries(sys.addons).forEach(([id,a])=>{if(a.on){const def=ADDONS.find(x=>x.id===id);if(def){const qty=a.qty||0;costTotal+=def.cost*qty;sellTotal+=((a.sell||0)*qty)}}})}
+  return{sell:sellTotal,cost:costTotal,profit:sellTotal-costTotal,margin:sellTotal>0?((sellTotal-costTotal)/sellTotal*100):0};
+}
+function calcEstCosts(est){
+  let sell=0,cost=0;
+  est.systems.forEach(sys=>{const c=calcSysCosts(sys);sell+=c.sell;cost+=c.cost});
+  return{sell,cost,profit:sell-cost,margin:sell>0?((sell-cost)/sell*100):0,sqft:est.systems.reduce((s,sys)=>s+(sys.sqft||0),0)};
+}
+function calcRecCosts(rec){
+  let sell=0,cost=0;
+  rec.estimates.forEach(est=>{const c=calcEstCosts(est);sell+=c.sell;cost+=c.cost});
+  return{sell,cost};
+}
+
+// ═══════════════════════════════════════════════════════════
 // HOME
 // ═══════════════════════════════════════════════════════════
 function renderHome(){
-  const c={};STATUSES.forEach(s=>{c[s.id]={active:0,inactive:0}});
-  db.records.forEach(r=>{if(c[r.status])c[r.status][r.active?'active':'inactive']++});
+  const c={};const vals={};STATUSES.forEach(s=>{c[s.id]={active:0,inactive:0};vals[s.id]=0});
+  db.records.forEach(r=>{if(c[r.status]){c[r.status][r.active?'active':'inactive']++;if(r.active)vals[r.status]+=calcRecCosts(r).sell}});
+  const totalPipeline=Object.values(vals).reduce((s,v)=>s+v,0);
+  const totalRecords=db.records.filter(r=>r.active).length;
+  document.getElementById('pipelineSummary').innerHTML=
+    '<div class="ps-card"><div class="ps-label">Total Pipeline</div><div class="ps-value">'+fmt(totalPipeline)+'</div><div class="ps-sub">'+totalRecords+' active record'+(totalRecords!==1?'s':'')+'</div></div>'+
+    STATUSES.filter(s=>vals[s.id]>0).map(s=>'<div class="ps-card '+s.color+'"><div class="ps-label">'+s.label+'s</div><div class="ps-value">'+fmt(vals[s.id])+'</div><div class="ps-sub">'+c[s.id].active+' record'+(c[s.id].active!==1?'s':'')+'</div></div>').join('');
   document.getElementById('activeFolders').innerHTML=STATUSES.map(s=>'<div class="folder '+s.color+'" onclick="goFolder(\''+s.id+'\',true)"><div class="f-glow"></div><div class="f-icon">'+FOLDER_ICONS[s.id]+'</div><div class="f-count">'+c[s.id].active+'</div><div class="f-label">'+s.label+'s</div><div class="f-sub">active records</div></div>').join('');
   document.getElementById('inactiveFolders').innerHTML=STATUSES.map(s=>'<div class="folder '+s.color+' inactive" onclick="goFolder(\''+s.id+'\',false)"><div class="f-icon">'+FOLDER_ICONS[s.id]+'</div><div class="f-count">'+c[s.id].inactive+'</div><div class="f-label">Inactive '+s.label+'s</div></div>').join('');
 }
@@ -824,7 +952,7 @@ function filterList(){
     const name=(r.firstName||'')+' '+(r.lastName||'');
     const ini=((r.firstName||'?')[0]+(r.lastName||'?')[0]).toUpperCase();
     const ec=r.estimates.length;
-    const tot=r.estimates.reduce((s,e)=>s+e.systems.reduce((s2,sys)=>s2+(sys.sqft*(sys.sellRate||0)),0),0);
+    const tot=calcRecCosts(r).sell;
     const meta=[r.company,r.city&&r.state?r.city+', '+r.state:r.city||r.state,ec?ec+' estimate'+(ec>1?'s':''):''].filter(Boolean).join(' \u00b7 ');
     return'<div class="list-item" onclick="goRecord(\''+r.id+'\')"><div class="li-left"><div class="li-avatar '+r.status+'">'+ini+'</div><div><div class="li-name">'+name.trim()+'</div><div class="li-meta">'+meta+'</div></div></div><div class="li-right">'+(tot>0?'<div class="li-amount">'+fmt(tot)+'</div>':'')+'<div class="li-badge '+r.status+'">'+r.status+'</div></div></div>'
   }).join('');
@@ -857,11 +985,9 @@ function renderRecord(){
 function renderEstimatesList(rec){
   if(!rec.estimates.length){document.getElementById('estimatesList').innerHTML='<div class="empty"><div class="empty-icon">&#9997;</div><div class="empty-text">No estimates yet. Create one to start quoting.</div></div>';return}
   document.getElementById('estimatesList').innerHTML=rec.estimates.map(est=>{
-    const tot=est.systems.reduce((s,sys)=>s+(sys.sqft*(sys.sellRate||0)),0);
-    const cost=est.systems.reduce((s,sys)=>{const p=PRODUCTS.find(p=>p.id===sys.productId);const t=TOPCOATS.find(t=>t.id===sys.topcoatId);return s+(p?p.cost*sys.sqft:0)+(t?t.cost*sys.sqft:0)},0);
-    const sqft=est.systems.reduce((s,sys)=>s+sys.sqft,0);
+    const ec=calcEstCosts(est);
     const areas=est.systems.map(s=>s.areaName||'Unnamed').join(', ');
-    return'<div class="sys-card'+(tot>0?' has-product':'')+'" onclick="goEstimate(\''+est.id+'\')"><div><div class="sys-area">'+(est.name||'Estimate')+'</div><div class="sys-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' \u00b7 '+sqft.toLocaleString()+' sqft'+(areas?' \u00b7 '+areas:'')+'</div></div><div class="sys-right"><div class="sys-price">'+fmt(tot)+'</div>'+(cost>0?'<div class="sys-cost">Cost '+fmt(cost)+'</div>':'')+'</div></div>'
+    return'<div class="sys-card'+(ec.sell>0?' has-product':'')+'" onclick="goEstimate(\''+est.id+'\')"><div><div class="sys-area">'+(est.name||'Estimate')+'</div><div class="sys-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' \u00b7 '+ec.sqft.toLocaleString()+' sqft'+(areas?' \u00b7 '+areas:'')+'</div></div><div class="sys-right"><div class="sys-price">'+fmt(ec.sell)+'</div>'+(ec.cost>0?'<div class="sys-cost">Cost '+fmt(ec.cost)+'</div>':'')+'</div></div>'
   }).join('');
 }
 function saveRecord(){
@@ -893,20 +1019,19 @@ function getEstimate(){const rec=getRecord();return rec?rec.estimates.find(e=>e.
 function renderEstimate(){
   const est=getEstimate();const rec=getRecord();if(!est||!rec){goRecord(nav.recordId);return}
   const rn=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'Client';
-  document.getElementById('estHeader').innerHTML='<h2>'+(est.name||'Estimate')+'</h2><p>'+rn+'</p>';
-  const tp=est.systems.reduce((s,sys)=>s+(sys.sqft*(sys.sellRate||0)),0);
-  const tc=est.systems.reduce((s,sys)=>{const p=PRODUCTS.find(p=>p.id===sys.productId);const t=TOPCOATS.find(t=>t.id===sys.topcoatId);return s+(p?p.cost*sys.sqft:0)+(t?t.cost*sys.sqft:0)},0);
-  const sqft=est.systems.reduce((s,sys)=>s+sys.sqft,0);
-  const mg=tp>0?((tp-tc)/tp*100):0;
-  document.getElementById('estTotalBar').innerHTML='<div><div class="est-total-left">Estimate Total</div><div class="est-total-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' \u00b7 '+sqft.toLocaleString()+' sqft</div></div><div style="text-align:right"><div class="est-total-amount">'+fmt(tp)+'</div><div class="est-total-detail">Cost '+fmt(tc)+' \u00b7 Margin '+mg.toFixed(1)+'%</div></div>';
+  document.getElementById('estNameInput').value=est.name||'';
+  document.getElementById('estSubline').textContent=rn;
+  const ec=calcEstCosts(est);
+  document.getElementById('estTotalBar').innerHTML='<div><div class="est-total-left">Estimate Total</div><div class="est-total-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' \u00b7 '+ec.sqft.toLocaleString()+' sqft</div></div><div style="text-align:right"><div class="est-total-amount">'+fmt(ec.sell)+'</div><div class="est-total-detail">Cost '+fmt(ec.cost)+' \u00b7 Margin '+ec.margin.toFixed(1)+'%</div></div>';
   if(!est.systems.length){document.getElementById('systemsList').innerHTML='<div class="empty"><div class="empty-icon">&#9874;</div><div class="empty-text">Add an area to start building this estimate.</div></div>';return}
   document.getElementById('systemsList').innerHTML=est.systems.map((sys,i)=>{
-    const prod=PRODUCTS.find(p=>p.id===sys.productId);const tc=TOPCOATS.find(t=>t.id===sys.topcoatId);
-    const pr=sys.sqft*(sys.sellRate||0);const co=(prod?prod.cost*sys.sqft:0)+(tc?tc.cost*sys.sqft:0);
+    const sc=calcSysCosts(sys);
+    const prod=PRODUCTS.find(p=>p.id===sys.productId);
     const d=[sys.sqft?sys.sqft.toLocaleString()+' sqft':'',prod?prod.name:'No system',sys.sellRate?'$'+sys.sellRate.toFixed(2)+'/sqft':''].filter(Boolean).join(' \u00b7 ');
-    return'<div class="sys-card'+(prod?' has-product':'')+'" onclick="goSystem(\''+sys.id+'\')"><div><div class="sys-area">'+(sys.areaName||'Area '+(i+1))+'</div><div class="sys-detail">'+d+'</div></div><div class="sys-right"><div class="sys-price">'+fmt(pr)+'</div>'+(co>0?'<div class="sys-cost">Cost '+fmt(co)+'</div>':'')+'</div></div>'
+    return'<div class="sys-card'+(prod?' has-product':'')+'" onclick="goSystem(\''+sys.id+'\')"><div><div class="sys-area">'+(sys.areaName||'Area '+(i+1))+'</div><div class="sys-detail">'+d+'</div></div><div class="sys-right"><div class="sys-price">'+fmt(sc.sell)+'</div>'+(sc.cost>0?'<div class="sys-cost">Cost '+fmt(sc.cost)+'</div>':'')+'</div></div>'
   }).join('');
 }
+function updateEstName(){const est=getEstimate();if(est)est.name=document.getElementById('estNameInput').value.trim()}
 function newEstimate(){const rec=getRecord();if(!rec)return;saveRecord();const c=rec.estimates.length+1;const est={id:uid(),name:'Estimate #'+c,createdAt:new Date().toISOString(),systems:[]};rec.estimates.push(est);rec.updatedAt=new Date().toISOString();if(rec.status==='lead'){rec.status='estimate';nav.folderStatus='estimate'}saveDB(db);goEstimate(est.id);toast('Created','Add areas to start quoting.')}
 function saveEstimate(){saveDB(db);toast('Saved','Estimate saved.')}
 function confirmDeleteEstimate(){const rec=getRecord();if(!rec)return;openConfirm('Delete Estimate','Delete this estimate and all areas?',()=>{rec.estimates=rec.estimates.filter(e=>e.id!==nav.estimateId);rec.updatedAt=new Date().toISOString();saveDB(db);goRecord(nav.recordId);toast('Deleted','Estimate removed.')})}
@@ -917,6 +1042,9 @@ function confirmDeleteEstimate(){const rec=getRecord();if(!rec)return;openConfir
 function getSystem(){const est=getEstimate();return est?est.systems.find(s=>s.id===nav.systemId):null}
 function renderSystem(){
   const sys=getSystem();if(!sys){goEstimate(nav.estimateId);return}
+  // Initialize repairs/addons if missing
+  if(!sys.repairs){sys.repairs={}}
+  if(!sys.addons){sys.addons={}}
   document.getElementById('sysHeader').innerHTML='<h2>'+(sys.areaName||'New Area')+'</h2><p>Select a product system and set your sell rate.</p>';
   document.getElementById('sysArea').value=sys.areaName||'';
   document.getElementById('sysLength').value=sys.length||0;
@@ -924,7 +1052,7 @@ function renderSystem(){
   document.getElementById('sysSqft').value=sys.sqft||0;
   document.getElementById('sysSellRate').value=sys.sellRate||0;
   document.getElementById('sysNotes').value=sys.notes||'';
-  seriesFilter='All';renderSeriesFilter();renderProductList(sys);renderTopcoatList(sys);calcSystem();
+  seriesFilter='All';renderSeriesFilter();renderProductList(sys);renderTopcoatList(sys);renderRepairList(sys);renderAddonList(sys);calcSystem();
 }
 function renderSeriesFilter(){const s=['All','C-Series','M-Series','G-Series','E-Series','I-Series'];document.getElementById('seriesFilter').innerHTML=s.map(x=>'<button class="sf-btn'+(x===seriesFilter?' ac':'')+'" onclick="setSeriesFilter(\''+x+'\')">'+x+'</button>').join('')}
 function setSeriesFilter(s){seriesFilter=s;renderSeriesFilter();const sys=getSystem();if(sys)renderProductList(sys)}
@@ -944,14 +1072,73 @@ function calcSystem(sqm){
   let sq=sqm?(parseFloat(document.getElementById('sysSqft').value)||0):(l*w);
   if(!sqm)document.getElementById('sysSqft').value=sq;
   const sr=parseFloat(document.getElementById('sysSellRate').value)||0;
-  const pr=sq*sr;document.getElementById('sysPrice').textContent=fmt(pr);
   sys.areaName=document.getElementById('sysArea').value.trim();sys.length=l;sys.width=w;sys.sqft=sq;sys.sellRate=sr;sys.notes=document.getElementById('sysNotes').value.trim();
-  const prod=PRODUCTS.find(p=>p.id===sys.productId);const tc=TOPCOATS.find(t=>t.id===sys.topcoatId);
-  const mc=(prod?prod.cost*sq:0)+(tc?tc.cost*sq:0);const mg=pr>0?((pr-mc)/pr*100):0;const pf=pr-mc;
-  document.getElementById('sysStats').innerHTML='<div class="sx hl"><div class="sl">System Price</div><div class="sv">'+fmt(pr)+'</div></div><div class="sx"><div class="sl">Material Cost</div><div class="sv" style="color:var(--comp)">'+fmt(mc)+'</div></div><div class="sx"><div class="sl">Gross Profit</div><div class="sv" style="color:var(--success)">'+fmt(pf)+'</div></div><div class="sx"><div class="sl">Margin</div><div class="sv" style="color:'+(mg>=50?'var(--success)':mg>=30?'var(--accent)':'var(--comp)')+'">'+mg.toFixed(1)+'%</div></div>';
+  const sc=calcSysCosts(sys);
+  document.getElementById('sysPrice').textContent=fmt(sc.sell);
+  document.getElementById('sysStats').innerHTML='<div class="sx hl"><div class="sl">Total Price</div><div class="sv">'+fmt(sc.sell)+'</div></div><div class="sx"><div class="sl">Material Cost</div><div class="sv" style="color:var(--comp)">'+fmt(sc.cost)+'</div></div><div class="sx"><div class="sl">Gross Profit</div><div class="sv" style="color:var(--success)">'+fmt(sc.profit)+'</div></div><div class="sx"><div class="sl">Margin</div><div class="sv" style="color:'+(sc.margin>=50?'var(--success)':sc.margin>=30?'var(--accent)':'var(--comp)')+'">'+sc.margin.toFixed(1)+'%</div></div>';
+}
+function renderRepairList(sys){
+  document.getElementById('repairList').innerHTML=REPAIRS.map(r=>{
+    const d=sys.repairs[r.id]||{on:false,qty:0,sell:0};
+    return'<div class="ra-row'+(d.on?' on':'')+'">'+
+      '<div class="ra-toggle"><input type="checkbox"'+(d.on?' checked':'')+' onchange="toggleRepair(\''+r.id+'\',this.checked)"></div>'+
+      '<div class="ra-info"><div class="ra-name">'+r.name+'</div><div class="ra-sku">'+r.sku+' \u00b7 Cost '+fmt(r.cost)+'/'+r.unit+'</div></div>'+
+      '<div class="ra-fields"'+(d.on?'':' style="opacity:.3;pointer-events:none"')+'>'+
+        '<input type="number" value="'+(d.qty||0)+'" min="0" step="1" placeholder="Qty" onchange="updateRepair(\''+r.id+'\',\'qty\',this.value)">'+
+        '<div class="ra-unit">'+r.unit+'</div>'+
+        '<input type="number" value="'+(d.sell||0)+'" min="0" step="0.01" placeholder="Sell" onchange="updateRepair(\''+r.id+'\',\'sell\',this.value)">'+
+        '<div class="ra-unit">$/'+r.unit+'</div>'+
+      '</div>'+
+      '<div class="ra-cost">'+fmt((d.sell||0)*(d.qty||0))+'</div>'+
+    '</div>'
+  }).join('');
+}
+function toggleRepair(id,on){
+  const sys=getSystem();if(!sys)return;
+  if(!sys.repairs[id])sys.repairs[id]={on:false,qty:0,sell:0};
+  sys.repairs[id].on=on;
+  renderRepairList(sys);calcSystem();
+}
+function updateRepair(id,field,val){
+  const sys=getSystem();if(!sys)return;
+  if(!sys.repairs[id])sys.repairs[id]={on:true,qty:0,sell:0};
+  sys.repairs[id][field]=parseFloat(val)||0;
+  renderRepairList(sys);calcSystem();
+}
+function renderAddonList(sys){
+  document.getElementById('addonList').innerHTML=ADDONS.map(a=>{
+    const d=sys.addons[a.id]||{on:false,qty:0,sell:a.low};
+    return'<div class="ra-row'+(d.on?' on':'')+'">'+
+      '<div class="ra-toggle"><input type="checkbox"'+(d.on?' checked':'')+' onchange="toggleAddon(\''+a.id+'\',this.checked)"></div>'+
+      '<div class="ra-info"><div class="ra-name">'+a.name+'</div><div class="ra-sku">'+a.sku+' \u00b7 Cost '+fmt(a.cost)+'/'+a.unit+' \u00b7 Sell '+fmt(a.low)+'\u2013'+fmt(a.mid)+'</div></div>'+
+      '<div class="ra-fields"'+(d.on?'':' style="opacity:.3;pointer-events:none"')+'>'+
+        '<input type="number" value="'+(d.qty||0)+'" min="0" step="1" placeholder="Qty" onchange="updateAddon(\''+a.id+'\',\'qty\',this.value)">'+
+        '<div class="ra-unit">'+a.unit+'</div>'+
+        '<input type="number" value="'+(d.sell||a.low)+'" min="0" step="0.01" placeholder="Sell" onchange="updateAddon(\''+a.id+'\',\'sell\',this.value)">'+
+        '<div class="ra-unit">$/'+a.unit+'</div>'+
+      '</div>'+
+      '<div class="ra-cost">'+fmt((d.sell||0)*(d.qty||0))+'</div>'+
+    '</div>'
+  }).join('');
+}
+function toggleAddon(id,on){
+  const sys=getSystem();if(!sys)return;
+  const def=ADDONS.find(a=>a.id===id);
+  if(!sys.addons[id])sys.addons[id]={on:false,qty:0,sell:def?def.low:0};
+  sys.addons[id].on=on;
+  // Auto-fill qty with sqft for sqft-based add-ons
+  if(on&&def&&def.unit==='sqft'&&!sys.addons[id].qty)sys.addons[id].qty=sys.sqft||0;
+  renderAddonList(sys);calcSystem();
+}
+function updateAddon(id,field,val){
+  const sys=getSystem();if(!sys)return;
+  const def=ADDONS.find(a=>a.id===id);
+  if(!sys.addons[id])sys.addons[id]={on:true,qty:0,sell:def?def.low:0};
+  sys.addons[id][field]=parseFloat(val)||0;
+  renderAddonList(sys);calcSystem();
 }
 function saveSystem(){calcSystem();saveDB(db);renderBreadcrumb();toast('Saved','Area saved.')}
-function newSystem(){const est=getEstimate();if(!est)return;const sys={id:uid(),areaName:'',length:0,width:1,sqft:0,productId:null,sellRate:0,topcoatId:null,notes:''};est.systems.push(sys);saveDB(db);goSystem(sys.id)}
+function newSystem(){const est=getEstimate();if(!est)return;const sys={id:uid(),areaName:'',length:0,width:1,sqft:0,productId:null,sellRate:0,topcoatId:null,notes:'',repairs:{},addons:{}};est.systems.push(sys);saveDB(db);goSystem(sys.id)}
 function confirmDeleteSystem(){const est=getEstimate();if(!est)return;openConfirm('Remove Area','Remove this area from the estimate?',()=>{est.systems=est.systems.filter(s=>s.id!==nav.systemId);saveDB(db);goEstimate(nav.estimateId);toast('Removed','Area removed.')})}
 
 // ═══════════════════════════════════════════════════════════

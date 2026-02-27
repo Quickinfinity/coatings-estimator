@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Coatings Estimator — The Concrete Protector</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Coatings%20Estimator%22%2C%22short_name%22%3A%22CE%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2309090b%22%2C%22theme_color%22%3A%22%23f59e0b%22%7D">
+<meta name="theme-color" content="#f59e0b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 /* ═══════════════════════════════════════════════════════
    DESIGN SYSTEM
@@ -597,6 +602,78 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .inline-edit input::placeholder{color:var(--t4)}
 
 /* ═══════════════════════════════════════════════════════
+   ORDER LIST TABLE
+   ═══════════════════════════════════════════════════════ */
+.ol-table{width:100%;border-collapse:collapse;font-size:13px}
+.ol-table th{text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--t4);padding:8px 12px;border-bottom:1px solid var(--b2)}
+.ol-table td{padding:10px 12px;border-bottom:1px solid var(--b1);color:var(--t2)}
+.ol-table tr:hover td{background:var(--glass2)}
+.ol-table .mono{font-family:'JetBrains Mono',monospace;font-weight:600}
+.ol-table .accent{color:var(--accent)}
+.ol-table .right{text-align:right}
+.ol-table .group-hdr td{background:var(--s3);color:var(--t1);font-weight:600;font-size:12px;border-bottom:1px solid var(--b2)}
+.ol-total td{font-weight:700;color:var(--t1);border-top:2px solid var(--accent);border-bottom:none}
+
+/* ═══════════════════════════════════════════════════════
+   TAB BAR (estimate sub-tabs)
+   ═══════════════════════════════════════════════════════ */
+.tab-bar{display:flex;gap:2px;margin-bottom:18px;border-bottom:1px solid var(--b1);padding-bottom:0}
+.tab-btn{
+  padding:8px 18px;font-size:12px;font-weight:500;
+  border:none;background:transparent;color:var(--t3);
+  cursor:pointer;font-family:inherit;
+  border-bottom:2px solid transparent;
+  transition:all .15s;margin-bottom:-1px;
+}
+.tab-btn:hover{color:var(--t2)}
+.tab-btn.ac{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+/* ═══════════════════════════════════════════════════════
+   SIGNATURE PAD
+   ═══════════════════════════════════════════════════════ */
+.sig-wrap{
+  background:var(--s1);border:1px solid var(--b2);border-radius:var(--r-md);
+  padding:4px;margin-bottom:12px;
+}
+.sig-wrap canvas{width:100%;border-radius:var(--r-sm);cursor:crosshair;touch-action:none}
+.sig-label{font-size:11px;color:var(--t4);text-align:center;padding:4px;letter-spacing:.5px}
+
+/* ═══════════════════════════════════════════════════════
+   REPORTING
+   ═══════════════════════════════════════════════════════ */
+.rpt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.rpt-card{
+  background:var(--s2);border:1px solid var(--b1);border-radius:var(--r-lg);
+  padding:22px;position:relative;overflow:hidden;
+}
+.rpt-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);opacity:.5}
+.rpt-card .rl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.8px;color:var(--t4);margin-bottom:8px}
+.rpt-card .rv{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--accent);letter-spacing:-1px}
+.rpt-card .rs{font-size:12px;color:var(--t3);margin-top:4px}
+.bar-chart{margin-top:12px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-label{font-size:12px;color:var(--t2);width:140px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:22px;background:var(--s1);border-radius:4px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),#d97706);transition:width .5s ease;min-width:2px}
+.bar-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t3);width:50px;text-align:right;flex-shrink:0}
+
+/* ═══════════════════════════════════════════════════════
+   WIDE MODAL
+   ═══════════════════════════════════════════════════════ */
+.modal.wide{max-width:700px}
+.modal.xwide{max-width:900px;max-height:85vh;overflow-y:auto}
+
+/* ═══════════════════════════════════════════════════════
+   PRINT
+   ═══════════════════════════════════════════════════════ */
+@media print{
+  .hdr,.breadcrumb,.btn-row,.hdr-right,.tab-bar,.search-bar,#newLeadBtn{display:none!important}
+  body{background:#fff;color:#000}
+  .mc{padding:0}
+  .cd{border-color:#ddd;page-break-inside:avoid}
+}
+
+/* ═══════════════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════════════ */
 @media(max-width:800px){
@@ -625,6 +702,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
     </div>
   </div>
   <div class="hdr-right">
+    <button class="hdr-btn" onclick="goReporting()">Reports</button>
     <button class="hdr-btn" onclick="openExport()">Export</button>
     <button class="hdr-btn" onclick="openImport()">Import</button>
   </div>
@@ -706,14 +784,44 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
       <p style="font-size:13px;color:var(--t3)" id="estSubline"></p>
     </div>
     <div class="btn-row">
+      <button class="btn btn-primary" onclick="generateProposal()">PDF Proposal</button>
       <button class="btn btn-success" onclick="saveEstimate()">Save</button>
       <button class="btn btn-danger" onclick="confirmDeleteEstimate()">Delete Estimate</button>
     </div>
   </div>
   <div class="est-total" id="estTotalBar"></div>
-  <div class="cd">
-    <div class="ct" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span class="ic ig">&#9874;</span> Areas</div><button class="btn btn-primary" onclick="newSystem()">+ Add Area</button></div>
-    <div id="systemsList"></div>
+  <div class="tab-bar" id="estTabs">
+    <button class="tab-btn ac" onclick="switchEstTab('areas')">Areas</button>
+    <button class="tab-btn" onclick="switchEstTab('orderlist')">Order List</button>
+    <button class="tab-btn" onclick="switchEstTab('contract')">Contract</button>
+  </div>
+  <div id="estTabAreas">
+    <div class="cd">
+      <div class="ct" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span class="ic ig">&#9874;</span> Areas</div><button class="btn btn-primary" onclick="newSystem()">+ Add Area</button></div>
+      <div id="systemsList"></div>
+    </div>
+  </div>
+  <div id="estTabOrderlist" style="display:none">
+    <div class="cd"><div class="ct"><span class="ic io">&#9776;</span> Materials Order List</div><div id="orderListContent"></div></div>
+  </div>
+  <div id="estTabContract" style="display:none">
+    <div class="cd">
+      <div class="ct"><span class="ic ib">&#9998;</span> Contract</div>
+      <div class="fg"><label>Terms & Conditions</label><textarea id="contractTerms" rows="6" placeholder="Enter contract terms...">This proposal is valid for 30 days from the date shown. A 50% deposit is required to schedule the project. Balance due upon completion. All work carries a manufacturer warranty on materials used. The Concrete Protector guarantees workmanship for a period of one (1) year from date of installation. Customer is responsible for proper maintenance as outlined in care instructions provided at completion.</textarea></div>
+      <div class="g2">
+        <div>
+          <div class="fg"><label>Contractor Signature</label></div>
+          <div class="sig-wrap"><canvas id="sigContractor" width="400" height="150"></canvas><div class="sig-label">Sign above</div></div>
+          <button class="btn btn-ghost" onclick="clearSig('sigContractor')" style="margin-bottom:12px">Clear</button>
+        </div>
+        <div>
+          <div class="fg"><label>Customer Signature</label></div>
+          <div class="sig-wrap"><canvas id="sigCustomer" width="400" height="150"></canvas><div class="sig-label">Sign above</div></div>
+          <button class="btn btn-ghost" onclick="clearSig('sigCustomer')" style="margin-bottom:12px">Clear</button>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="generateContract()">Download Contract PDF</button></div>
+    </div>
   </div>
 </div>
 
@@ -763,6 +871,15 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
     <div class="ct"><span class="ic ior">&#9998;</span> Notes</div>
     <div class="fg" style="margin-bottom:0"><textarea id="sysNotes" placeholder="Notes for this area..." oninput="calcSystem()"></textarea></div>
   </div>
+</div>
+
+<!-- REPORTING -->
+<div class="screen" id="scr-reporting">
+  <div class="sh"><h2>Reports & Analytics</h2><p>Business performance at a glance.</p></div>
+  <div class="rpt-grid" id="rptCards"></div>
+  <div class="cd"><div class="ct"><span class="ic io">&#9733;</span> Top Systems</div><div id="rptTopSystems"></div></div>
+  <div class="cd"><div class="ct"><span class="ic ig">&#9650;</span> Pipeline Breakdown</div><div id="rptPipelineBreakdown"></div></div>
+  <div class="cd"><div class="ct"><span class="ic ib">&#9673;</span> Recent Activity</div><div id="rptRecent"></div></div>
 </div>
 
 </div>
@@ -855,6 +972,39 @@ const ADDONS=[
   {id:'a606',sku:'A-606',name:'Easy Cove 6"',cost:8.61,low:14.00,mid:18.00,unit:'lnft'},
   {id:'a607',sku:'A-607',name:'Flooring Logo',cost:17.00,low:40.00,mid:65.00,unit:'each'},
 ];
+// Ingredient breakdowns per system (coverage = sqft per unit)
+const INGREDIENTS={
+  'c101':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Wood Grain Tool Kit',sku:'TK-WG',coverage:500,unit:'kit',costPer:85},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Exterior Acrylic Sealer',sku:'SL-200',coverage:250,unit:'gal',costPer:68}],
+  'c102':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Wood Grain Tool Kit',sku:'TK-WG',coverage:500,unit:'kit',costPer:85},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Interior Acrylic Sealer',sku:'SL-201',coverage:200,unit:'gal',costPer:78}],
+  'c103':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Flagstone Pattern Tool',sku:'TK-FS',coverage:500,unit:'kit',costPer:95},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Exterior Acrylic Sealer',sku:'SL-200',coverage:250,unit:'gal',costPer:68}],
+  'c104':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Flagstone Pattern Tool',sku:'TK-FS',coverage:500,unit:'kit',costPer:95},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Interior Acrylic Sealer',sku:'SL-201',coverage:200,unit:'gal',costPer:78}],
+  'c105':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Slate Stamp Set',sku:'TK-SS',coverage:500,unit:'kit',costPer:90},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Exterior Acrylic Sealer',sku:'SL-200',coverage:250,unit:'gal',costPer:68}],
+  'c106':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Slate Stamp Set',sku:'TK-SS',coverage:500,unit:'kit',costPer:90},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Interior Acrylic Sealer',sku:'SL-201',coverage:200,unit:'gal',costPer:78}],
+  'm201':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Metallic Marble Stain',sku:'MM-201',coverage:160,unit:'gal',costPer:135},{name:'High-Gloss Urethane',sku:'UT-4501',coverage:350,unit:'gal',costPer:148}],
+  'm202':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Metallic Marble Stain',sku:'MM-201',coverage:160,unit:'gal',costPer:135},{name:'Satin Urethane',sku:'UT-4499',coverage:350,unit:'gal',costPer:155}],
+  'm203':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Metallic Marble Stain',sku:'MM-201',coverage:160,unit:'gal',costPer:135},{name:'Acrylic Finish',sku:'TJ-3113',coverage:400,unit:'gal',costPer:42}],
+  'm204':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Italian Marble Epoxy',sku:'IM-204',coverage:100,unit:'gal',costPer:165},{name:'Acrylic Finish',sku:'TJ-3113',coverage:400,unit:'gal',costPer:42}],
+  'm205':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Italian Marble Epoxy',sku:'IM-204',coverage:100,unit:'gal',costPer:165},{name:'High-Gloss Urethane',sku:'UT-4501',coverage:350,unit:'gal',costPer:148}],
+  'm206':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Italian Marble Epoxy',sku:'IM-204',coverage:100,unit:'gal',costPer:165},{name:'Satin Urethane',sku:'UT-4499',coverage:350,unit:'gal',costPer:155}],
+  'g301':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Vinyl Flake (Broadcast)',sku:'FK-100',coverage:40,unit:'bucket',costPer:55},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
+  'g302':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Vinyl Flake (Broadcast)',sku:'FK-100',coverage:40,unit:'bucket',costPer:55},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
+  'g303':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Vinyl Flake (Neat Coat)',sku:'FK-101',coverage:80,unit:'bucket',costPer:55},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
+  'g304':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Vinyl Flake (Broadcast)',sku:'FK-100',coverage:40,unit:'bucket',costPer:55},{name:'Protectorthane',sku:'UT-4451',coverage:350,unit:'gal',costPer:130}],
+  'g305':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (#1)',sku:'QZ-100',coverage:25,unit:'bag',costPer:28},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
+  'g306':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (#1)',sku:'QZ-100',coverage:25,unit:'bag',costPer:28},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
+  'g307':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (Neat)',sku:'QZ-101',coverage:50,unit:'bag',costPer:28},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
+  'g308':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (#1)',sku:'QZ-100',coverage:25,unit:'bag',costPer:28},{name:'Protectorthane',sku:'UT-4451',coverage:350,unit:'gal',costPer:130}],
+  'g309':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (#2)',sku:'QZ-200',coverage:20,unit:'bag',costPer:32},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
+  'g310':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (#2)',sku:'QZ-200',coverage:20,unit:'bag',costPer:32},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
+  'g311':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Marble-Flex Flake',sku:'FK-300',coverage:40,unit:'bucket',costPer:65},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
+  'e401':[{name:'Protector Epoxy',sku:'PE-100',coverage:160,unit:'gal',costPer:125},{name:'Vinyl Flake (Broadcast)',sku:'FK-100',coverage:40,unit:'bucket',costPer:55},{name:'Protectorthane',sku:'UT-4451',coverage:350,unit:'gal',costPer:130}],
+  'e402':[{name:'Protector Epoxy',sku:'PE-100',coverage:160,unit:'gal',costPer:125},{name:'Vinyl Flake (Broadcast)',sku:'FK-100',coverage:40,unit:'bucket',costPer:55},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
+  'e403':[{name:'Protector Epoxy',sku:'PE-100',coverage:160,unit:'gal',costPer:125},{name:'Vinyl Flake (Neat Coat)',sku:'FK-101',coverage:80,unit:'bucket',costPer:55},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
+  'e404':[{name:'Resinous 123 Epoxy',sku:'R123',coverage:200,unit:'gal',costPer:110},{name:'Acrylic Floor Finish',sku:'TJ-3113',coverage:400,unit:'gal',costPer:42}],
+  'i501':[{name:'SCP Densifier',sku:'SCP-D',coverage:200,unit:'gal',costPer:32},{name:'SCP Guard',sku:'SCP-G',coverage:400,unit:'gal',costPer:28}],
+  'i502':[{name:'Poly-Hard Base',sku:'PH-100',coverage:100,unit:'gal',costPer:165},{name:'Super-Nova Metallic',sku:'SN-100',coverage:150,unit:'gal',costPer:120},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
+  'i503':[{name:'Poly-Hard Base',sku:'PH-100',coverage:100,unit:'gal',costPer:165},{name:'Quartz Aggregate (#1)',sku:'QZ-100',coverage:25,unit:'bag',costPer:28},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
+};
 const STATUSES=[{id:'lead',label:'Lead',color:'lead'},{id:'estimate',label:'Estimate',color:'est'},{id:'project',label:'Project',color:'proj'},{id:'completed',label:'Completed',color:'comp'}];
 const FOLDER_ICONS={lead:'&#9993;',estimate:'&#9997;',project:'&#9874;',completed:'&#10003;'};
 
@@ -879,6 +1029,18 @@ function goFolder(s,a){nav.screen='list';nav.folderStatus=s;nav.folderActive=a;n
 function goRecord(id){nav.screen='record';nav.recordId=id;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderRecord();showScreen('record')}
 function goEstimate(id){nav.screen='estimate';nav.estimateId=id;nav.systemId=null;renderBreadcrumb();renderEstimate();showScreen('estimate')}
 function goSystem(id){nav.screen='system';nav.systemId=id;renderBreadcrumb();renderSystem();showScreen('system')}
+function goReporting(){nav={screen:'reporting',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null};renderBreadcrumb();renderReporting();showScreen('reporting')}
+let estTab='areas';
+function switchEstTab(tab){
+  estTab=tab;
+  document.querySelectorAll('#estTabs .tab-btn').forEach(b=>b.classList.remove('ac'));
+  document.querySelector('#estTabs .tab-btn[onclick*="'+tab+'"]').classList.add('ac');
+  document.getElementById('estTabAreas').style.display=tab==='areas'?'':'none';
+  document.getElementById('estTabOrderlist').style.display=tab==='orderlist'?'':'none';
+  document.getElementById('estTabContract').style.display=tab==='contract'?'':'none';
+  if(tab==='orderlist')renderOrderList();
+  if(tab==='contract')initSignaturePads();
+}
 
 function renderBreadcrumb(){
   const el=document.getElementById('breadcrumb');
@@ -887,6 +1049,7 @@ function renderBreadcrumb(){
   if(nav.recordId){const r=db.records.find(r=>r.id===nav.recordId);if(r){p.push('<span class="sep">&#8250;</span>','<span onclick="goRecord(\''+r.id+'\')">'+(r.firstName||r.lastName?r.firstName+' '+r.lastName:'Unnamed').trim()+'</span>')}}
   if(nav.estimateId){const r=db.records.find(r=>r.id===nav.recordId);const e=r?r.estimates.find(e=>e.id===nav.estimateId):null;if(e){p.push('<span class="sep">&#8250;</span>','<span onclick="goEstimate(\''+e.id+'\')">'+(e.name||'Estimate')+'</span>')}}
   if(nav.systemId){const r=db.records.find(r=>r.id===nav.recordId);const e=r?r.estimates.find(e=>e.id===nav.estimateId):null;const s=e?e.systems.find(s=>s.id===nav.systemId):null;if(s)p.push('<span class="sep">&#8250;</span>','<span class="current">'+(s.areaName||'New Area')+'</span>')}
+  if(nav.screen==='reporting')p.push('<span class="sep">&#8250;</span>','<span class="current">Reports</span>');
   el.innerHTML=p.join('');
 }
 
@@ -1021,6 +1184,7 @@ function renderEstimate(){
   const rn=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'Client';
   document.getElementById('estNameInput').value=est.name||'';
   document.getElementById('estSubline').textContent=rn;
+  estTab='areas';switchEstTab('areas');
   const ec=calcEstCosts(est);
   document.getElementById('estTotalBar').innerHTML='<div><div class="est-total-left">Estimate Total</div><div class="est-total-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' \u00b7 '+ec.sqft.toLocaleString()+' sqft</div></div><div style="text-align:right"><div class="est-total-amount">'+fmt(ec.sell)+'</div><div class="est-total-detail">Cost '+fmt(ec.cost)+' \u00b7 Margin '+ec.margin.toFixed(1)+'%</div></div>';
   if(!est.systems.length){document.getElementById('systemsList').innerHTML='<div class="empty"><div class="empty-icon">&#9874;</div><div class="empty-text">Add an area to start building this estimate.</div></div>';return}
@@ -1153,6 +1317,265 @@ function closeImport(){document.getElementById('importModal').classList.remove('
 function toast(t,m){const el=document.getElementById('toast');document.getElementById('toastT').textContent=t;document.getElementById('toastM').textContent=m;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000)}
 function doExport(){const b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='coatings-estimator-'+new Date().toISOString().slice(0,10)+'.json';a.click();closeExport();toast('Exported','Download started.')}
 function doImport(){const f=document.getElementById('importFile').files[0];if(!f){toast('Error','Select a file.');return}const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d.records&&Array.isArray(d.records)){db=d;saveDB(db);closeImport();goHome();toast('Imported',db.records.length+' records loaded.')}else{toast('Error','Invalid format.')}}catch{toast('Error','Could not parse file.')}};r.readAsText(f)}
+
+// ═══════════════════════════════════════════════════════════
+// ORDER LIST (Phase 2 — Ingredient Intelligence)
+// ═══════════════════════════════════════════════════════════
+function getSystemIngredients(sys){
+  const items=[];
+  const sqft=sys.sqft||0;
+  if(!sqft)return items;
+  // Product system ingredients
+  const ings=INGREDIENTS[sys.productId];
+  if(ings){ings.forEach(ing=>{
+    const unitsNeeded=Math.ceil(sqft/ing.coverage);
+    items.push({name:ing.name,sku:ing.sku,qty:unitsNeeded,unit:ing.unit,costPer:ing.costPer,totalCost:unitsNeeded*ing.costPer,source:'system',area:sys.areaName||'Unnamed'});
+  })}
+  // Top coat
+  const tc=TOPCOATS.find(t=>t.id===sys.topcoatId);
+  if(tc&&tc.cost>0){items.push({name:tc.name,sku:tc.sku||'',qty:Math.ceil(sqft/350),unit:'gal',costPer:tc.cost*350,totalCost:tc.cost*sqft,source:'topcoat',area:sys.areaName||'Unnamed'})}
+  // Repairs
+  if(sys.repairs){Object.entries(sys.repairs).forEach(([id,r])=>{if(r.on&&r.qty>0){const def=REPAIRS.find(x=>x.id===id);if(def)items.push({name:def.name,sku:def.sku,qty:r.qty,unit:def.unit,costPer:def.cost,totalCost:def.cost*r.qty,source:'repair',area:sys.areaName||'Unnamed'})}})}
+  // Add-ons
+  if(sys.addons){Object.entries(sys.addons).forEach(([id,a])=>{if(a.on&&a.qty>0){const def=ADDONS.find(x=>x.id===id);if(def)items.push({name:def.name,sku:def.sku,qty:a.qty,unit:def.unit,costPer:def.cost,totalCost:def.cost*a.qty,source:'addon',area:sys.areaName||'Unnamed'})}})}
+  return items;
+}
+function renderOrderList(){
+  const est=getEstimate();if(!est){return}
+  if(!est.systems.length){document.getElementById('orderListContent').innerHTML='<div class="empty"><div class="empty-icon">&#9776;</div><div class="empty-text">Add areas with products to see the order list.</div></div>';return}
+  // Collect all ingredients grouped by area
+  let allItems=[];let totalCost=0;
+  est.systems.forEach(sys=>{const items=getSystemIngredients(sys);allItems.push({area:sys.areaName||'Unnamed',sqft:sys.sqft,items});items.forEach(i=>totalCost+=i.totalCost)});
+  // Aggregate duplicate items
+  const agg={};allItems.forEach(g=>g.items.forEach(i=>{const k=i.sku||i.name;if(!agg[k])agg[k]={...i,qty:0,totalCost:0};agg[k].qty+=i.qty;agg[k].totalCost+=i.totalCost}));
+  let html='<div style="margin-bottom:16px"><strong style="font-size:14px">By Area</strong></div><table class="ol-table">';
+  html+='<tr><th>Item</th><th>SKU</th><th class="right">Qty</th><th>Unit</th><th class="right">Unit Cost</th><th class="right">Total</th></tr>';
+  allItems.forEach(g=>{
+    html+='<tr class="group-hdr"><td colspan="6">'+g.area+' \u2014 '+g.sqft.toLocaleString()+' sqft</td></tr>';
+    g.items.forEach(i=>{html+='<tr><td>'+i.name+'</td><td class="mono">'+i.sku+'</td><td class="right mono">'+i.qty+'</td><td>'+i.unit+'</td><td class="right mono">'+fmt(i.costPer)+'</td><td class="right mono accent">'+fmt(i.totalCost)+'</td></tr>'});
+  });
+  html+='<tr class="ol-total"><td colspan="5">Total Material Cost</td><td class="right mono accent">'+fmt(totalCost)+'</td></tr></table>';
+  // Aggregated purchase list
+  html+='<div style="margin:24px 0 16px"><strong style="font-size:14px">Consolidated Purchase List</strong></div><table class="ol-table">';
+  html+='<tr><th>Item</th><th>SKU</th><th class="right">Total Qty</th><th>Unit</th><th class="right">Est. Cost</th></tr>';
+  Object.values(agg).sort((a,b)=>a.name.localeCompare(b.name)).forEach(i=>{html+='<tr><td>'+i.name+'</td><td class="mono">'+i.sku+'</td><td class="right mono">'+i.qty+'</td><td>'+i.unit+'</td><td class="right mono accent">'+fmt(i.totalCost)+'</td></tr>'});
+  html+='<tr class="ol-total"><td colspan="4">Total</td><td class="right mono accent">'+fmt(totalCost)+'</td></tr></table>';
+  document.getElementById('orderListContent').innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════════════
+// PDF PROPOSAL (Phase 3)
+// ═══════════════════════════════════════════════════════════
+function generateProposal(){
+  const rec=getRecord();const est=getEstimate();
+  if(!rec||!est){toast('Error','No estimate to generate.');return}
+  if(typeof window.jspdf==='undefined'){toast('Error','PDF library not loaded. Check internet connection.');return}
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  const pw=doc.internal.pageSize.getWidth();
+  const rn=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'Client';
+  const ec=calcEstCosts(est);
+  const today=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  // Header bar
+  doc.setFillColor(245,158,11);doc.rect(0,0,pw,32,'F');
+  doc.setTextColor(0);doc.setFontSize(20);doc.setFont('helvetica','bold');
+  doc.text('The Concrete Protector',14,16);
+  doc.setFontSize(10);doc.setFont('helvetica','normal');
+  doc.text('Decorative Concrete Coatings Proposal',14,24);
+  doc.setFontSize(9);doc.text(today,pw-14,16,{align:'right'});
+  doc.text((est.name||'Estimate'),pw-14,24,{align:'right'});
+  // Client info
+  let y=44;doc.setTextColor(60);doc.setFontSize(12);doc.setFont('helvetica','bold');doc.text('Prepared For:',14,y);
+  y+=7;doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(30);
+  doc.text(rn,14,y);y+=6;
+  if(rec.company){doc.text(rec.company,14,y);y+=6}
+  if(rec.address){doc.text(rec.address,14,y);y+=6}
+  const loc=[rec.city,rec.state,rec.zip].filter(Boolean).join(', ');
+  if(loc){doc.text(loc,14,y);y+=6}
+  if(rec.phone){doc.text(rec.phone,14,y);y+=6}
+  if(rec.email){doc.text(rec.email,14,y);y+=6}
+  // Area table
+  y+=8;doc.setFillColor(240,240,240);doc.rect(14,y,pw-28,8,'F');
+  doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(80);
+  doc.text('Area',16,y+6);doc.text('System',70,y+6);doc.text('Sqft',120,y+6,{align:'right'});
+  doc.text('$/Sqft',145,y+6,{align:'right'});doc.text('Price',pw-16,y+6,{align:'right'});
+  y+=12;doc.setFont('helvetica','normal');doc.setTextColor(30);
+  est.systems.forEach((sys,i)=>{
+    if(y>260){doc.addPage();y=20}
+    const prod=PRODUCTS.find(p=>p.id===sys.productId);
+    const sc=calcSysCosts(sys);
+    doc.setFontSize(10);
+    doc.text(sys.areaName||'Area '+(i+1),16,y);
+    doc.text(prod?prod.name:'—',70,y);
+    doc.text((sys.sqft||0).toLocaleString(),120,y,{align:'right'});
+    doc.text('$'+(sys.sellRate||0).toFixed(2),145,y,{align:'right'});
+    doc.setFont('helvetica','bold');doc.text(fmt(sc.sell),pw-16,y,{align:'right'});doc.setFont('helvetica','normal');
+    y+=7;
+    // Line items for repairs/addons
+    const extras=[];
+    if(sys.repairs){Object.entries(sys.repairs).forEach(([id,r])=>{if(r.on&&r.qty>0){const def=REPAIRS.find(x=>x.id===id);if(def)extras.push('  '+def.name+': '+r.qty+' '+def.unit+' @ $'+(r.sell||0).toFixed(2))}})}
+    if(sys.addons){Object.entries(sys.addons).forEach(([id,a])=>{if(a.on&&a.qty>0){const def=ADDONS.find(x=>x.id===id);if(def)extras.push('  '+def.name+': '+a.qty+' '+def.unit+' @ $'+(a.sell||0).toFixed(2))}})}
+    if(extras.length){doc.setFontSize(8);doc.setTextColor(120);extras.forEach(ex=>{doc.text(ex,18,y);y+=5});doc.setTextColor(30)}
+    doc.setDrawColor(230);doc.line(14,y-2,pw-14,y-2);y+=3;
+  });
+  // Total
+  y+=4;doc.setFillColor(245,158,11);doc.rect(100,y-5,pw-114,10,'F');
+  doc.setFontSize(12);doc.setFont('helvetica','bold');doc.setTextColor(0);
+  doc.text('TOTAL:',102,y+2);doc.text(fmt(ec.sell),pw-16,y+2,{align:'right'});
+  // Terms
+  y+=20;doc.setTextColor(80);doc.setFontSize(9);doc.setFont('helvetica','bold');
+  doc.text('Terms & Conditions',14,y);y+=6;doc.setFont('helvetica','normal');doc.setFontSize(8);
+  const terms=document.getElementById('contractTerms')?document.getElementById('contractTerms').value:'Proposal valid for 30 days. 50% deposit required to schedule.';
+  const tlines=doc.splitTextToSize(terms,pw-28);
+  tlines.forEach(l=>{if(y>280){doc.addPage();y=20}doc.text(l,14,y);y+=4});
+  // Signature lines
+  y+=12;if(y>250){doc.addPage();y=20}
+  doc.setDrawColor(180);doc.setLineWidth(0.5);
+  doc.line(14,y,90,y);doc.line(110,y,pw-14,y);
+  y+=5;doc.setFontSize(8);doc.text('Contractor Signature / Date',14,y);doc.text('Customer Signature / Date',110,y);
+  // Footer
+  y+=12;doc.setFontSize(7);doc.setTextColor(160);
+  doc.text('Generated by Coatings Estimator \u2014 The Concrete Protector \u2014 theconcreteprotector.com',pw/2,y,{align:'center'});
+  const fn='TCP-Proposal-'+rn.replace(/\s+/g,'-')+'-'+new Date().toISOString().slice(0,10)+'.pdf';
+  doc.save(fn);toast('Proposal Saved',fn);
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTRACT / SIGNATURE (Phase 3)
+// ═══════════════════════════════════════════════════════════
+const sigPads={};
+function initSignaturePads(){
+  ['sigContractor','sigCustomer'].forEach(id=>{
+    if(sigPads[id])return;
+    const canvas=document.getElementById(id);if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    canvas.width=canvas.offsetWidth*2;canvas.height=canvas.offsetHeight*2;
+    ctx.scale(2,2);ctx.strokeStyle='#fafafa';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';
+    let drawing=false;let lx=0,ly=0;
+    function getPos(e){const r=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
+    canvas.addEventListener('mousedown',e=>{drawing=true;const p=getPos(e);lx=p.x;ly=p.y});
+    canvas.addEventListener('mousemove',e=>{if(!drawing)return;const p=getPos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.stroke();lx=p.x;ly=p.y});
+    canvas.addEventListener('mouseup',()=>drawing=false);
+    canvas.addEventListener('mouseleave',()=>drawing=false);
+    canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=getPos(e);lx=p.x;ly=p.y},{passive:false});
+    canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const p=getPos(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.stroke();lx=p.x;ly=p.y},{passive:false});
+    canvas.addEventListener('touchend',()=>drawing=false);
+    sigPads[id]={canvas,ctx};
+  });
+}
+function clearSig(id){
+  const pad=sigPads[id];
+  if(pad){pad.ctx.clearRect(0,0,pad.canvas.width/2,pad.canvas.height/2)}
+  else{const c=document.getElementById(id);if(c){const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height)}}
+}
+function generateContract(){
+  const rec=getRecord();const est=getEstimate();
+  if(!rec||!est){toast('Error','No estimate selected.');return}
+  if(typeof window.jspdf==='undefined'){toast('Error','PDF library not loaded.');return}
+  const{jsPDF}=window.jspdf;const doc=new jsPDF();
+  const pw=doc.internal.pageSize.getWidth();
+  const rn=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'Client';
+  const ec=calcEstCosts(est);
+  const today=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  // Header
+  doc.setFillColor(30,30,30);doc.rect(0,0,pw,28,'F');
+  doc.setTextColor(245,158,11);doc.setFontSize(18);doc.setFont('helvetica','bold');
+  doc.text('SERVICE CONTRACT',14,14);
+  doc.setFontSize(10);doc.setTextColor(200,200,200);doc.setFont('helvetica','normal');
+  doc.text('The Concrete Protector',14,22);doc.text(today,pw-14,14,{align:'right'});
+  // Parties
+  let y=40;doc.setTextColor(30);doc.setFontSize(11);doc.setFont('helvetica','bold');
+  doc.text('Client:',14,y);doc.setFont('helvetica','normal');doc.text(rn+(rec.company?' \u2014 '+rec.company:''),50,y);
+  y+=7;const addr=[rec.address,[rec.city,rec.state,rec.zip].filter(Boolean).join(', ')].filter(Boolean).join(', ');
+  if(addr){doc.setFontSize(10);doc.text(addr,50,y);y+=7}
+  // Scope table
+  y+=6;doc.setFontSize(11);doc.setFont('helvetica','bold');doc.text('Scope of Work',14,y);y+=8;
+  doc.setFillColor(245,245,245);doc.rect(14,y-4,pw-28,8,'F');
+  doc.setFontSize(9);doc.setTextColor(80);doc.text('Area',16,y+2);doc.text('System',70,y+2);
+  doc.text('Sqft',130,y+2,{align:'right'});doc.text('Price',pw-16,y+2,{align:'right'});y+=10;
+  doc.setFont('helvetica','normal');doc.setTextColor(30);
+  est.systems.forEach((sys,i)=>{
+    const prod=PRODUCTS.find(p=>p.id===sys.productId);const sc=calcSysCosts(sys);
+    doc.text(sys.areaName||'Area '+(i+1),16,y);doc.text(prod?prod.name:'\u2014',70,y);
+    doc.text((sys.sqft||0).toLocaleString(),130,y,{align:'right'});
+    doc.setFont('helvetica','bold');doc.text(fmt(sc.sell),pw-16,y,{align:'right'});doc.setFont('helvetica','normal');y+=7
+  });
+  y+=2;doc.setDrawColor(245,158,11);doc.setLineWidth(1);doc.line(100,y,pw-14,y);y+=6;
+  doc.setFontSize(13);doc.setFont('helvetica','bold');doc.text('Contract Total: '+fmt(ec.sell),pw-16,y,{align:'right'});
+  // Terms
+  y+=14;doc.setFontSize(10);doc.text('Terms & Conditions',14,y);y+=7;
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(60);
+  const terms=document.getElementById('contractTerms').value;
+  doc.splitTextToSize(terms,pw-28).forEach(l=>{if(y>265){doc.addPage();y=20}doc.text(l,14,y);y+=4});
+  // Signatures
+  y+=10;if(y>230){doc.addPage();y=20}
+  doc.setTextColor(30);doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text('Signatures',14,y);y+=10;
+  // Add signature images if drawn
+  ['sigContractor','sigCustomer'].forEach((id,i)=>{
+    const c=document.getElementById(id);
+    if(c){try{const img=c.toDataURL('image/png');doc.addImage(img,i===0?14:110,y,75,28)}catch(e){}}
+  });
+  y+=32;doc.setDrawColor(180);doc.setLineWidth(0.5);
+  doc.line(14,y,90,y);doc.line(110,y,pw-14,y);y+=5;
+  doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100);
+  doc.text('Contractor Signature / Date',14,y);doc.text('Customer Signature / Date',110,y);
+  y+=10;doc.setFontSize(7);doc.setTextColor(160);
+  doc.text('Generated by Coatings Estimator \u2014 The Concrete Protector',pw/2,y,{align:'center'});
+  const fn='TCP-Contract-'+rn.replace(/\s+/g,'-')+'-'+new Date().toISOString().slice(0,10)+'.pdf';
+  doc.save(fn);toast('Contract Saved',fn);
+}
+
+// ═══════════════════════════════════════════════════════════
+// REPORTING (Phase 5)
+// ═══════════════════════════════════════════════════════════
+function renderReporting(){
+  const active=db.records.filter(r=>r.active);
+  const completed=active.filter(r=>r.status==='completed');
+  const projects=active.filter(r=>r.status==='project');
+  const estimates=active.filter(r=>r.status==='estimate');
+  const leads=active.filter(r=>r.status==='lead');
+  let totalRevenue=0,totalPipeline=0,totalSqft=0,jobCount=completed.length;
+  completed.forEach(r=>{const c=calcRecCosts(r);totalRevenue+=c.sell});
+  active.forEach(r=>{const c=calcRecCosts(r);totalPipeline+=c.sell;r.estimates.forEach(e=>e.systems.forEach(s=>totalSqft+=s.sqft||0))});
+  const avgJob=jobCount>0?totalRevenue/jobCount:0;
+  document.getElementById('rptCards').innerHTML=
+    '<div class="rpt-card"><div class="rl">Completed Revenue</div><div class="rv">'+fmt(totalRevenue)+'</div><div class="rs">'+jobCount+' completed job'+(jobCount!==1?'s':'')+'</div></div>'+
+    '<div class="rpt-card"><div class="rl">Active Pipeline</div><div class="rv">'+fmt(totalPipeline)+'</div><div class="rs">'+active.length+' active record'+(active.length!==1?'s':'')+'</div></div>'+
+    '<div class="rpt-card"><div class="rl">Avg Job Size</div><div class="rv">'+fmt(avgJob)+'</div><div class="rs">based on completed</div></div>'+
+    '<div class="rpt-card"><div class="rl">Total Sqft Quoted</div><div class="rv">'+totalSqft.toLocaleString()+'</div><div class="rs">across all estimates</div></div>';
+  // Top systems
+  const sysCounts={};
+  db.records.forEach(r=>r.estimates.forEach(e=>e.systems.forEach(s=>{if(s.productId){const p=PRODUCTS.find(p=>p.id===s.productId);if(p){if(!sysCounts[p.name])sysCounts[p.name]={count:0,sqft:0,revenue:0};sysCounts[p.name].count++;sysCounts[p.name].sqft+=s.sqft||0;sysCounts[p.name].revenue+=(s.sqft||0)*(s.sellRate||0)}}})));
+  const topSys=Object.entries(sysCounts).sort((a,b)=>b[1].count-a[1].count).slice(0,8);
+  const maxCount=topSys.length?topSys[0][1].count:1;
+  if(topSys.length){
+    document.getElementById('rptTopSystems').innerHTML='<div class="bar-chart">'+topSys.map(([name,d])=>
+      '<div class="bar-row"><div class="bar-label">'+name+'</div><div class="bar-track"><div class="bar-fill" style="width:'+((d.count/maxCount)*100)+'%"></div></div><div class="bar-val">'+d.count+'x</div></div>'
+    ).join('')+'</div>';
+  }else{document.getElementById('rptTopSystems').innerHTML='<div class="empty"><div class="empty-text">No systems used yet.</div></div>'}
+  // Pipeline breakdown
+  const stages=[{label:'Leads',items:leads,color:'var(--lead)'},{label:'Estimates',items:estimates,color:'var(--est)'},{label:'Projects',items:projects,color:'var(--proj)'},{label:'Completed',items:completed,color:'var(--comp)'}];
+  const maxStage=Math.max(...stages.map(s=>s.items.length),1);
+  document.getElementById('rptPipelineBreakdown').innerHTML='<div class="bar-chart">'+stages.map(s=>{
+    const val=s.items.reduce((sum,r)=>sum+calcRecCosts(r).sell,0);
+    return'<div class="bar-row"><div class="bar-label">'+s.label+' ('+s.items.length+')</div><div class="bar-track"><div class="bar-fill" style="width:'+((s.items.length/maxStage)*100)+'%;background:'+s.color+'"></div></div><div class="bar-val">'+fmt(val)+'</div></div>'
+  }).join('')+'</div>';
+  // Recent activity
+  const recent=db.records.slice().sort((a,b)=>new Date(b.updatedAt)-new Date(a.updatedAt)).slice(0,6);
+  if(recent.length){
+    document.getElementById('rptRecent').innerHTML=recent.map(r=>{
+      const name=((r.firstName||'')+' '+(r.lastName||'')).trim()||'Unnamed';
+      const ago=timeAgo(new Date(r.updatedAt));
+      return'<div class="list-item" onclick="goFolder(\''+r.status+'\','+r.active+');setTimeout(()=>goRecord(\''+r.id+'\'),50)" style="margin-bottom:4px"><div class="li-left"><div class="li-avatar '+r.status+'">'+((r.firstName||'?')[0]+(r.lastName||'?')[0]).toUpperCase()+'</div><div><div class="li-name">'+name+'</div><div class="li-meta">'+ago+'</div></div></div><div class="li-right"><div class="li-badge '+r.status+'">'+r.status+'</div></div></div>'
+    }).join('');
+  }else{document.getElementById('rptRecent').innerHTML='<div class="empty"><div class="empty-text">No activity yet.</div></div>'}
+}
+function timeAgo(d){
+  const s=Math.floor((Date.now()-d)/1e3);
+  if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';
+  if(s<86400)return Math.floor(s/3600)+'h ago';if(s<604800)return Math.floor(s/86400)+'d ago';
+  return d.toLocaleDateString();
+}
 
 // ═══════════════════════════════════════════════════════════
 // INIT

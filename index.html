@@ -4,241 +4,529 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Coatings Estimator — The Concrete Protector</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════
-   RESET & VARIABLES
+   DESIGN SYSTEM
    ═══════════════════════════════════════════════════════ */
 :root {
-  --bg:#0f1117;--c1:#181b24;--c2:#1e222e;--c3:#252a38;
-  --inp:#252a38;--bd:#2a2f3e;--bd2:#3d4458;
-  --o:#f5c518;--od:#c49e0f;--og:rgba(245,197,24,.15);
-  --g:#34d399;--r:#f87171;--y:#f0c040;--b:#60a5fa;--or:#fb923c;--p:#a78bfa;--t:#2dd4bf;
-  --t1:#e8eaf0;--t2:#8b92a5;--t3:#5a6178;--tl:#9ca3b8;
-  /* Folder colors */
-  --lead:#60a5fa;--lead-bg:rgba(96,165,250,.1);--lead-bd:rgba(96,165,250,.3);
-  --est:#fb923c;--est-bg:rgba(251,146,60,.1);--est-bd:rgba(251,146,60,.3);
-  --proj:#34d399;--proj-bg:rgba(52,211,153,.1);--proj-bd:rgba(52,211,153,.3);
-  --comp:#f87171;--comp-bg:rgba(248,113,113,.1);--comp-bd:rgba(248,113,113,.3);
+  /* Surface layers */
+  --bg: #09090b;
+  --s1: #111113;
+  --s2: #18181b;
+  --s3: #1f1f23;
+  --s4: #27272a;
+  /* Borders */
+  --b1: rgba(255,255,255,.06);
+  --b2: rgba(255,255,255,.1);
+  --b3: rgba(255,255,255,.15);
+  /* Text */
+  --t1: #fafafa;
+  --t2: #a1a1aa;
+  --t3: #71717a;
+  --t4: #52525b;
+  /* Accent */
+  --accent: #f59e0b;
+  --accent2: #fbbf24;
+  --accent-glow: rgba(245,158,11,.15);
+  --accent-glow2: rgba(245,158,11,.08);
+  /* Pipeline */
+  --lead: #3b82f6;
+  --lead-soft: rgba(59,130,246,.12);
+  --est: #f97316;
+  --est-soft: rgba(249,115,22,.12);
+  --proj: #10b981;
+  --proj-soft: rgba(16,185,129,.12);
+  --comp: #ef4444;
+  --comp-soft: rgba(239,68,68,.12);
+  /* Semantic */
+  --success: #10b981;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  /* Glass */
+  --glass: rgba(255,255,255,.03);
+  --glass2: rgba(255,255,255,.05);
+  /* Radius */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  /* Shadow */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.5);
+  --shadow-glow: 0 0 40px rgba(245,158,11,.06);
 }
+
+/* ═══════════════════════════════════════════════════════
+   RESET
+   ═══════════════════════════════════════════════════════ */
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-height:1.5;min-height:100vh}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--s4);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--t4)}
+::selection{background:rgba(245,158,11,.25);color:var(--t1)}
 
 /* ═══════════════════════════════════════════════════════
    HEADER
    ═══════════════════════════════════════════════════════ */
-.hdr{background:linear-gradient(135deg,#0f1117,#1a1d2b,#0f1117);border-bottom:2px solid var(--o);padding:16px 24px;position:sticky;top:0;z-index:100;box-shadow:0 4px 30px rgba(0,0,0,.5)}
-.hi{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.hdr-left{display:flex;align-items:center;gap:14px;cursor:pointer}
-.hdr h1{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;color:var(--o);line-height:1}
-.hdr .sub{font-size:.75rem;color:var(--t2);letter-spacing:1px;font-weight:300}
-.hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.hdr-btn{padding:6px 14px;background:var(--og);border:1.5px solid var(--o);border-radius:6px;color:var(--o);font-family:'Bebas Neue',sans-serif;font-weight:500;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:.2s}
-.hdr-btn:hover{background:rgba(245,197,24,.3)}
-.hdr-btn.sec{background:rgba(255,255,255,.04);border-color:var(--bd2);color:var(--t2)}
-.hdr-btn.sec:hover{background:rgba(255,255,255,.08);color:var(--t1)}
+.hdr{
+  position:sticky;top:0;z-index:100;
+  background:rgba(9,9,11,.82);
+  backdrop-filter:blur(20px) saturate(1.4);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);
+  border-bottom:1px solid var(--b1);
+  padding:0 32px;
+}
+.hi{
+  max-width:1280px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;gap:16px;
+}
+.hdr-left{display:flex;align-items:center;gap:12px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.hdr-logo{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,var(--accent),#d97706);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;color:#000;
+  box-shadow:0 0 20px rgba(245,158,11,.2);
+  flex-shrink:0;
+}
+.hdr h1{font-size:15px;font-weight:700;letter-spacing:-.3px;color:var(--t1)}
+.hdr .sub{font-size:11px;color:var(--t3);font-weight:400;letter-spacing:.2px}
+.hdr-right{display:flex;align-items:center;gap:6px}
+.hdr-btn{
+  padding:6px 14px;border-radius:var(--r-sm);
+  font-size:12px;font-weight:500;cursor:pointer;
+  transition:all .15s ease;border:1px solid var(--b2);
+  background:var(--glass2);color:var(--t2);
+  font-family:inherit;
+}
+.hdr-btn:hover{background:var(--b2);color:var(--t1);border-color:var(--b3)}
+.hdr-btn.primary{
+  background:linear-gradient(135deg,var(--accent),#d97706);
+  border-color:transparent;color:#000;font-weight:600;
+}
+.hdr-btn.primary:hover{filter:brightness(1.1);box-shadow:0 0 20px rgba(245,158,11,.25)}
 
 /* ═══════════════════════════════════════════════════════
    BREADCRUMB
    ═══════════════════════════════════════════════════════ */
-.breadcrumb{max-width:1200px;margin:0 auto;padding:10px 24px;font-size:.75rem;color:var(--t3);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.breadcrumb span{cursor:pointer;transition:.15s}
-.breadcrumb span:hover{color:var(--o)}
-.breadcrumb .sep{color:var(--bd2);cursor:default}
-.breadcrumb .sep:hover{color:var(--bd2)}
-.breadcrumb .current{color:var(--t2);cursor:default}
+.breadcrumb{
+  max-width:1280px;margin:0 auto;padding:12px 32px 0;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  font-size:12px;color:var(--t4);
+}
+.breadcrumb span{cursor:pointer;transition:color .15s;padding:2px 0}
+.breadcrumb span:hover{color:var(--accent)}
+.breadcrumb .sep{opacity:.3;cursor:default;font-size:10px}
+.breadcrumb .sep:hover{color:var(--t4)}
+.breadcrumb .current{color:var(--t2);cursor:default;font-weight:500}
 .breadcrumb .current:hover{color:var(--t2)}
 
 /* ═══════════════════════════════════════════════════════
-   MAIN CONTAINER
+   LAYOUT
    ═══════════════════════════════════════════════════════ */
-.mc{max-width:1200px;margin:0 auto;padding:0 24px 80px}
-.screen{display:none}.screen.ac{display:block;animation:fi .25s ease}
-@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.mc{max-width:1280px;margin:0 auto;padding:24px 32px 100px}
+.screen{display:none;animation:screenIn .3s ease}
+.screen.ac{display:block}
+@keyframes screenIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 /* ═══════════════════════════════════════════════════════
    SECTION HEADERS
    ═══════════════════════════════════════════════════════ */
-.sh{margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--bd)}
-.sh h2{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;margin-bottom:2px}
-.sh p{font-size:.82rem;color:var(--t2);max-width:600px}
+.sh{margin-bottom:24px}
+.sh h2{font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.sh p{font-size:13px;color:var(--t3);max-width:600px;font-weight:400}
 
 /* ═══════════════════════════════════════════════════════
-   HOME FOLDER CARDS
+   HOME — FOLDER CARDS
    ═══════════════════════════════════════════════════════ */
-.folder-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
-.folder{background:var(--c1);border:2px solid var(--bd);border-radius:12px;padding:22px 20px;cursor:pointer;transition:.2s;position:relative;overflow:hidden}
-.folder::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px}
-.folder:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
-.folder .f-icon{font-size:28px;margin-bottom:10px}
-.folder .f-label{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
-.folder .f-count{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700}
-.folder .f-sub{font-size:.7rem;color:var(--t3);margin-top:2px}
-/* Lead */
-.folder.lead{border-color:var(--lead-bd);background:var(--lead-bg)}.folder.lead::before{background:var(--lead)}
-.folder.lead .f-label{color:var(--lead)}.folder.lead .f-count{color:var(--lead)}
-/* Estimate */
-.folder.est{border-color:var(--est-bd);background:var(--est-bg)}.folder.est::before{background:var(--est)}
-.folder.est .f-label{color:var(--est)}.folder.est .f-count{color:var(--est)}
-/* Project */
-.folder.proj{border-color:var(--proj-bd);background:var(--proj-bg)}.folder.proj::before{background:var(--proj)}
-.folder.proj .f-label{color:var(--proj)}.folder.proj .f-count{color:var(--proj)}
-/* Completed */
-.folder.comp{border-color:var(--comp-bd);background:var(--comp-bg)}.folder.comp::before{background:var(--comp)}
-.folder.comp .f-label{color:var(--comp)}.folder.comp .f-count{color:var(--comp)}
-/* Inactive */
-.folder.inactive{opacity:.45;border-style:dashed}.folder.inactive:hover{opacity:.7}
+.folder-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
+.folder{
+  position:relative;overflow:hidden;
+  background:var(--s2);
+  border:1px solid var(--b1);
+  border-radius:var(--r-lg);
+  padding:24px 22px;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.folder:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-lg);
+  border-color:var(--b2);
+}
+.folder::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  opacity:.8;transition:opacity .2s;
+}
+.folder:hover::before{opacity:1}
+.folder .f-glow{
+  position:absolute;top:-40px;right:-40px;width:120px;height:120px;
+  border-radius:50%;filter:blur(50px);opacity:.15;pointer-events:none;
+  transition:opacity .3s;
+}
+.folder:hover .f-glow{opacity:.25}
+.folder .f-icon{
+  width:40px;height:40px;border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;margin-bottom:14px;
+  backdrop-filter:blur(8px);
+}
+.folder .f-count{
+  font-family:'JetBrains Mono',monospace;
+  font-size:28px;font-weight:700;letter-spacing:-1px;
+  margin-bottom:2px;
+}
+.folder .f-label{font-size:13px;font-weight:600;margin-bottom:2px}
+.folder .f-sub{font-size:11px;color:var(--t4);font-weight:400}
+
+.folder.lead::before{background:linear-gradient(90deg,var(--lead),transparent)}
+.folder.lead .f-glow{background:var(--lead)}
+.folder.lead .f-icon{background:var(--lead-soft);color:var(--lead)}
+.folder.lead .f-count{color:var(--lead)}
+.folder.lead .f-label{color:var(--lead)}
+.folder.lead:hover{border-color:rgba(59,130,246,.25)}
+
+.folder.est::before{background:linear-gradient(90deg,var(--est),transparent)}
+.folder.est .f-glow{background:var(--est)}
+.folder.est .f-icon{background:var(--est-soft);color:var(--est)}
+.folder.est .f-count{color:var(--est)}
+.folder.est .f-label{color:var(--est)}
+.folder.est:hover{border-color:rgba(249,115,22,.25)}
+
+.folder.proj::before{background:linear-gradient(90deg,var(--proj),transparent)}
+.folder.proj .f-glow{background:var(--proj)}
+.folder.proj .f-icon{background:var(--proj-soft);color:var(--proj)}
+.folder.proj .f-count{color:var(--proj)}
+.folder.proj .f-label{color:var(--proj)}
+.folder.proj:hover{border-color:rgba(16,185,129,.25)}
+
+.folder.comp::before{background:linear-gradient(90deg,var(--comp),transparent)}
+.folder.comp .f-glow{background:var(--comp)}
+.folder.comp .f-icon{background:var(--comp-soft);color:var(--comp)}
+.folder.comp .f-count{color:var(--comp)}
+.folder.comp .f-label{color:var(--comp)}
+.folder.comp:hover{border-color:rgba(239,68,68,.25)}
+
+.folder.inactive{opacity:.35;border-style:dashed}
+.folder.inactive:hover{opacity:.6}
+.inactive-label{
+  font-size:11px;font-weight:500;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--t4);margin-bottom:8px;padding-left:2px;
+}
 
 /* ═══════════════════════════════════════════════════════
    CARDS
    ═══════════════════════════════════════════════════════ */
-.cd{background:var(--c1);border:1px solid var(--bd);border-radius:10px;padding:20px;margin-bottom:14px}
-.ct{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1.5px;color:var(--o);margin-bottom:12px;display:flex;align-items:center;gap:8px;text-transform:uppercase}
-.ct .ic{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.io{background:rgba(245,197,24,.15);color:var(--o)}
-.ig{background:rgba(52,211,153,.15);color:var(--g)}
-.ib{background:rgba(96,165,250,.15);color:var(--b)}
-.ir{background:rgba(248,113,113,.15);color:var(--r)}
-.ior{background:rgba(251,146,60,.15);color:var(--or)}
+.cd{
+  background:var(--s2);
+  border:1px solid var(--b1);
+  border-radius:var(--r-lg);
+  padding:22px;margin-bottom:14px;
+  transition:border-color .15s;
+}
+.cd:hover{border-color:var(--b2)}
+.ct{
+  font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--t3);margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+.ct .ic{
+  width:28px;height:28px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.io{background:var(--accent-glow);color:var(--accent)}
+.ig{background:var(--proj-soft);color:var(--proj)}
+.ib{background:var(--lead-soft);color:var(--lead)}
+.ir{background:var(--comp-soft);color:var(--comp)}
+.ior{background:var(--est-soft);color:var(--est)}
 
 /* ═══════════════════════════════════════════════════════
    FORM INPUTS
    ═══════════════════════════════════════════════════════ */
-.fg{margin-bottom:12px}
-.fg label{display:block;font-family:'Bebas Neue',sans-serif;font-size:.68rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--tl);margin-bottom:4px}
-.fg input,.fg select,.fg textarea{width:100%;background:var(--inp);border:1px solid var(--bd);border-radius:6px;color:var(--t1);font-family:'Outfit',sans-serif;font-size:.9rem;padding:9px 12px;transition:.2s;resize:vertical}
-.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--o);box-shadow:0 0 0 3px var(--og)}
-.fg select{cursor:pointer;font-size:.85rem}
-.fg textarea{min-height:60px;font-size:.85rem}
+.fg{margin-bottom:14px}
+.fg label{
+  display:block;font-size:11px;font-weight:500;
+  text-transform:uppercase;letter-spacing:.8px;
+  color:var(--t3);margin-bottom:6px;
+}
+.fg input,.fg select,.fg textarea{
+  width:100%;
+  background:var(--s1);
+  border:1px solid var(--b1);
+  border-radius:var(--r-sm);
+  color:var(--t1);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:14px;font-weight:400;
+  padding:10px 14px;
+  transition:all .15s ease;
+  resize:vertical;
+}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--t4)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-glow),var(--shadow-sm);
+  background:var(--s2);
+}
+.fg select{cursor:pointer}
+.fg textarea{min-height:72px;line-height:1.5}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 
 /* ═══════════════════════════════════════════════════════
+   SEARCH
+   ═══════════════════════════════════════════════════════ */
+.search-bar{margin-bottom:0}
+.search-bar input{
+  width:100%;
+  background:var(--s2);
+  border:1px solid var(--b1);
+  border-radius:var(--r-md);
+  padding:11px 14px 11px 40px;
+  color:var(--t1);font-size:14px;
+  font-family:'Inter',system-ui,sans-serif;
+  transition:all .15s;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2352525b' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:14px center;
+}
+.search-bar input:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-glow);background-color:var(--s3);
+}
+
+/* ═══════════════════════════════════════════════════════
    LIST ITEMS
    ═══════════════════════════════════════════════════════ */
-.search-bar{margin-bottom:16px}
-.search-bar input{width:100%;background:var(--c2);border:1px solid var(--bd);border-radius:8px;padding:10px 14px 10px 36px;color:var(--t1);font-size:.9rem;font-family:'Outfit',sans-serif;transition:.2s;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%235a6178' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center}
-.search-bar input:focus{outline:none;border-color:var(--o);box-shadow:0 0 0 3px var(--og)}
-.list-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--c1);border:1px solid var(--bd);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:.15s}
-.list-item:hover{border-color:var(--o);background:rgba(245,197,24,.04)}
-.li-left{display:flex;align-items:center;gap:12px;min-width:0}
-.li-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.85rem;font-weight:700;flex-shrink:0}
-.li-avatar.lead{background:var(--lead-bg);color:var(--lead);border:1px solid var(--lead-bd)}
-.li-avatar.est{background:var(--est-bg);color:var(--est);border:1px solid var(--est-bd)}
-.li-avatar.proj{background:var(--proj-bg);color:var(--proj);border:1px solid var(--proj-bd)}
-.li-avatar.comp{background:var(--comp-bg);color:var(--comp);border:1px solid var(--comp-bd)}
-.li-name{font-weight:600;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.li-meta{font-size:.72rem;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.li-right{text-align:right;flex-shrink:0;margin-left:12px}
-.li-amount{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.9rem}
-.li-badge{display:inline-block;font-family:'Bebas Neue',sans-serif;font-size:.6rem;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-top:2px}
-.li-badge.lead{background:var(--lead-bg);color:var(--lead);border:1px solid var(--lead-bd)}
-.li-badge.est{background:var(--est-bg);color:var(--est);border:1px solid var(--est-bd)}
-.li-badge.proj{background:var(--proj-bg);color:var(--proj);border:1px solid var(--proj-bd)}
-.li-badge.comp{background:var(--comp-bg);color:var(--comp);border:1px solid var(--comp-bd)}
+.list-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:var(--r-md);margin-bottom:6px;
+  cursor:pointer;transition:all .15s ease;
+}
+.list-item:hover{
+  background:var(--s3);border-color:var(--b2);
+  transform:translateX(2px);
+}
+.li-left{display:flex;align-items:center;gap:14px;min-width:0}
+.li-avatar{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;flex-shrink:0;letter-spacing:-.5px;
+}
+.li-avatar.lead{background:var(--lead-soft);color:var(--lead)}
+.li-avatar.est{background:var(--est-soft);color:var(--est)}
+.li-avatar.proj{background:var(--proj-soft);color:var(--proj)}
+.li-avatar.comp{background:var(--comp-soft);color:var(--comp)}
+.li-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li-meta{font-size:12px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.li-right{text-align:right;flex-shrink:0;margin-left:16px}
+.li-amount{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;color:var(--accent)}
+.li-badge{
+  display:inline-block;font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.5px;
+  padding:2px 8px;border-radius:6px;margin-top:4px;
+}
+.li-badge.lead{background:var(--lead-soft);color:var(--lead)}
+.li-badge.est{background:var(--est-soft);color:var(--est)}
+.li-badge.proj{background:var(--proj-soft);color:var(--proj)}
+.li-badge.comp{background:var(--comp-soft);color:var(--comp)}
 
 /* ═══════════════════════════════════════════════════════
-   STATUS BADGE & SELECTOR
+   STATUS PILLS
    ═══════════════════════════════════════════════════════ */
-.status-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
-.status-pill{font-family:'Bebas Neue',sans-serif;font-size:.72rem;letter-spacing:1px;padding:5px 14px;border-radius:20px;cursor:pointer;transition:.2s;text-transform:uppercase;border:1.5px solid}
-.status-pill.lead{color:var(--lead);border-color:var(--lead-bd);background:var(--lead-bg)}
-.status-pill.est{color:var(--est);border-color:var(--est-bd);background:var(--est-bg)}
-.status-pill.proj{color:var(--proj);border-color:var(--proj-bd);background:var(--proj-bg)}
-.status-pill.comp{color:var(--comp);border-color:var(--comp-bd);background:var(--comp-bg)}
-.status-pill:hover{filter:brightness(1.3)}
-.status-pill.active{box-shadow:0 0 0 2px rgba(255,255,255,.2)}
-.active-toggle{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--t3)}
-.toggle{position:relative;width:38px;height:20px;flex-shrink:0}
+.status-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.status-pill{
+  font-size:12px;font-weight:500;
+  padding:6px 16px;border-radius:100px;
+  cursor:pointer;transition:all .15s;
+  border:1px solid var(--b2);
+  background:transparent;color:var(--t3);
+  font-family:inherit;
+}
+.status-pill:hover{background:var(--glass2);color:var(--t2)}
+.status-pill.active{font-weight:600}
+.status-pill.active.lead{background:var(--lead-soft);color:var(--lead);border-color:rgba(59,130,246,.3)}
+.status-pill.active.est{background:var(--est-soft);color:var(--est);border-color:rgba(249,115,22,.3)}
+.status-pill.active.proj{background:var(--proj-soft);color:var(--proj);border-color:rgba(16,185,129,.3)}
+.status-pill.active.comp{background:var(--comp-soft);color:var(--comp);border-color:rgba(239,68,68,.3)}
+
+.active-toggle{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t3);font-weight:500}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0}
 .toggle input{opacity:0;width:0;height:0}
-.toggle .slider{position:absolute;inset:0;background:var(--bg);border:1px solid var(--bd2);border-radius:20px;cursor:pointer;transition:.25s}
-.toggle .slider::before{content:'';position:absolute;width:14px;height:14px;left:2px;top:2px;background:var(--t3);border-radius:50%;transition:.25s}
-.toggle input:checked+.slider{background:var(--o);border-color:var(--o)}
-.toggle input:checked+.slider::before{transform:translateX(18px);background:#fff}
+.toggle .slider{
+  position:absolute;inset:0;
+  background:var(--s4);
+  border-radius:20px;cursor:pointer;
+  transition:all .2s ease;
+}
+.toggle .slider::before{
+  content:'';position:absolute;
+  width:16px;height:16px;left:2px;top:2px;
+  background:var(--t3);border-radius:50%;
+  transition:all .2s ease;
+}
+.toggle input:checked+.slider{background:var(--accent)}
+.toggle input:checked+.slider::before{transform:translateX(16px);background:#fff}
 
 /* ═══════════════════════════════════════════════════════
-   SYSTEM CARDS (in estimate view)
+   SYSTEM CARDS
    ═══════════════════════════════════════════════════════ */
-.sys-card{background:var(--c2);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:10px;cursor:pointer;transition:.15s;display:flex;justify-content:space-between;align-items:center}
-.sys-card:hover{border-color:var(--o);background:rgba(245,197,24,.04)}
-.sys-left{min-width:0}
-.sys-area{font-family:'Bebas Neue',sans-serif;font-size:.88rem;letter-spacing:1px;text-transform:uppercase;color:var(--t1)}
-.sys-detail{font-size:.75rem;color:var(--t3);margin-top:2px}
-.sys-right{text-align:right;flex-shrink:0;margin-left:16px}
-.sys-price{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--o)}
-.sys-cost{font-size:.72rem;color:var(--t3);margin-top:2px}
+.sys-card{
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:var(--r-md);padding:16px 20px;
+  margin-bottom:8px;cursor:pointer;transition:all .15s;
+  display:flex;justify-content:space-between;align-items:center;
+  border-left:3px solid var(--b1);
+}
+.sys-card:hover{background:var(--s3);border-color:var(--b2);transform:translateX(2px)}
+.sys-card.has-product{border-left-color:var(--accent)}
+.sys-area{font-size:14px;font-weight:600}
+.sys-detail{font-size:12px;color:var(--t3);margin-top:2px}
+.sys-right{text-align:right;flex-shrink:0;margin-left:20px}
+.sys-price{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--accent)}
+.sys-cost{font-size:11px;color:var(--t4);margin-top:2px}
+
+/* ═══════════════════════════════════════════════════════
+   ESTIMATE TOTAL BAR
+   ═══════════════════════════════════════════════════════ */
+.est-total{
+  background:linear-gradient(135deg,var(--s2),var(--s3));
+  border:1px solid var(--b2);
+  border-radius:var(--r-lg);
+  padding:22px 26px;margin-bottom:18px;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:16px;
+  position:relative;overflow:hidden;
+}
+.est-total::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent);
+}
+.est-total-left{font-size:12px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:.8px}
+.est-total-amount{
+  font-family:'JetBrains Mono',monospace;
+  font-size:28px;font-weight:700;color:var(--accent);
+  letter-spacing:-1px;
+  text-shadow:0 0 40px rgba(245,158,11,.15);
+}
+.est-total-detail{font-size:12px;color:var(--t4);margin-top:4px}
 
 /* ═══════════════════════════════════════════════════════
    PRODUCT SELECTOR
    ═══════════════════════════════════════════════════════ */
-.prod-option{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--c2);border:1px solid var(--bd);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:.15s}
-.prod-option:hover{border-color:var(--o);background:rgba(245,197,24,.04)}
-.prod-option.sel{border-color:var(--o);background:rgba(245,197,24,.08)}
-.prod-name{font-weight:600;font-size:.85rem}
-.prod-sku{font-size:.68rem;color:var(--t3);font-family:'JetBrains Mono',monospace}
-.prod-prices{text-align:right;font-size:.75rem}
-.prod-prices .cost{color:var(--r);font-family:'JetBrains Mono',monospace;font-weight:600}
-.prod-prices .sell{color:var(--g);font-family:'JetBrains Mono',monospace}
-.series-filter{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
-.sf-btn{font-family:'Bebas Neue',sans-serif;font-size:.68rem;letter-spacing:1px;padding:5px 12px;border:1.5px solid var(--bd2);border-radius:6px;background:var(--c2);color:var(--t3);cursor:pointer;transition:.2s;text-transform:uppercase}
-.sf-btn:hover{border-color:var(--o);color:var(--t1)}
-.sf-btn.ac{border-color:var(--o);background:var(--og);color:var(--o)}
+.prod-option{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 16px;
+  background:var(--s1);border:1px solid var(--b1);
+  border-radius:var(--r-sm);margin-bottom:4px;
+  cursor:pointer;transition:all .15s;
+}
+.prod-option:hover{background:var(--s3);border-color:var(--b2)}
+.prod-option.sel{
+  background:var(--accent-glow2);
+  border-color:rgba(245,158,11,.25);
+  box-shadow:0 0 0 1px rgba(245,158,11,.1);
+}
+.prod-name{font-weight:500;font-size:13px}
+.prod-sku{font-size:11px;color:var(--t4);font-family:'JetBrains Mono',monospace;margin-top:1px}
+.prod-prices{text-align:right;font-size:12px}
+.prod-prices .cost{color:var(--comp);font-family:'JetBrains Mono',monospace;font-weight:600}
+.prod-prices .sell{color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:11px;margin-top:1px}
+.series-filter{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.sf-btn{
+  font-size:11px;font-weight:500;letter-spacing:.3px;
+  padding:5px 12px;border:1px solid var(--b1);
+  border-radius:100px;background:transparent;color:var(--t3);
+  cursor:pointer;transition:all .15s;font-family:inherit;
+}
+.sf-btn:hover{background:var(--glass2);color:var(--t2);border-color:var(--b2)}
+.sf-btn.ac{background:var(--accent-glow);color:var(--accent);border-color:rgba(245,158,11,.3)}
 
 /* ═══════════════════════════════════════════════════════
    STAT CARDS
    ═══════════════════════════════════════════════════════ */
 .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
-.sx{background:var(--c2);border:1px solid var(--bd);border-radius:8px;padding:14px;text-align:center}
-.sx.hl{border-color:var(--o);background:rgba(245,197,24,.06)}
-.sx .sl{font-family:'Bebas Neue',sans-serif;font-size:.62rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
-.sx .sv{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700}
+.sx{
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:var(--r-md);padding:16px;text-align:center;
+  transition:border-color .15s;
+}
+.sx:hover{border-color:var(--b2)}
+.sx.hl{border-color:rgba(245,158,11,.2);background:var(--accent-glow2)}
+.sx .sl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.8px;color:var(--t4);margin-bottom:6px}
+.sx .sv{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;letter-spacing:-.5px}
+.sx.hl .sv{color:var(--accent)}
 
 /* ═══════════════════════════════════════════════════════
-   ESTIMATE TOTAL BAR
+   BUTTONS
    ═══════════════════════════════════════════════════════ */
-.est-total{background:var(--c1);border:2px solid var(--o);border-radius:10px;padding:18px 22px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.est-total-left{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--t2)}
-.est-total-amount{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--o)}
-.est-total-detail{font-size:.75rem;color:var(--t3);margin-top:2px}
-
-/* ═══════════════════════════════════════════════════════
-   ACTION BUTTONS
-   ═══════════════════════════════════════════════════════ */
-.btn{padding:8px 18px;border-radius:6px;font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:.2s;border:1.5px solid;white-space:nowrap}
-.btn-primary{background:var(--og);border-color:var(--o);color:var(--o)}
-.btn-primary:hover{background:rgba(245,197,24,.3)}
-.btn-success{background:rgba(52,211,153,.15);border-color:var(--g);color:var(--g)}
-.btn-success:hover{background:rgba(52,211,153,.25)}
-.btn-danger{background:rgba(248,113,113,.1);border-color:var(--r);color:var(--r)}
-.btn-danger:hover{background:rgba(248,113,113,.2)}
-.btn-ghost{background:transparent;border-color:var(--bd2);color:var(--t3)}
-.btn-ghost:hover{border-color:var(--t2);color:var(--t1)}
+.btn{
+  padding:8px 18px;border-radius:var(--r-sm);
+  font-size:12px;font-weight:500;cursor:pointer;
+  transition:all .15s ease;border:1px solid;
+  font-family:inherit;white-space:nowrap;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent),#d97706);
+  border-color:transparent;color:#000;font-weight:600;
+}
+.btn-primary:hover{filter:brightness(1.1);box-shadow:0 0 20px rgba(245,158,11,.2)}
+.btn-success{background:var(--proj-soft);border-color:rgba(16,185,129,.25);color:var(--proj)}
+.btn-success:hover{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.4)}
+.btn-danger{background:var(--comp-soft);border-color:rgba(239,68,68,.2);color:var(--comp)}
+.btn-danger:hover{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3)}
+.btn-ghost{background:transparent;border-color:var(--b2);color:var(--t3)}
+.btn-ghost:hover{background:var(--glass2);color:var(--t2);border-color:var(--b3)}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
 
 /* ═══════════════════════════════════════════════════════
-   MODAL
+   MODALS
    ═══════════════════════════════════════════════════════ */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center}
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  z-index:200;align-items:center;justify-content:center;
+}
 .modal-overlay.active{display:flex}
-.modal{background:var(--c1);border:1px solid var(--bd);border-radius:12px;padding:24px;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.modal h3{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;text-transform:uppercase;color:var(--o);margin-bottom:16px}
+.modal{
+  background:var(--s2);border:1px solid var(--b2);
+  border-radius:var(--r-xl);padding:28px;
+  max-width:440px;width:90%;
+  box-shadow:var(--shadow-lg);
+}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:14px}
 
 /* ═══════════════════════════════════════════════════════
    TOAST
    ═══════════════════════════════════════════════════════ */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--c1);border:1px solid var(--o);border-radius:10px;padding:12px 18px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:1000;transform:translateY(120%);opacity:0;transition:.3s ease}
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--s3);border:1px solid var(--b2);
+  border-radius:var(--r-md);padding:12px 18px;
+  box-shadow:var(--shadow-lg);z-index:1000;
+  transform:translateY(120%);opacity:0;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  max-width:320px;
+}
 .toast.show{transform:translateY(0);opacity:1}
-.toast .tt{font-family:'Bebas Neue',sans-serif;font-size:.72rem;color:var(--o);letter-spacing:1px;text-transform:uppercase}
-.toast .tm{font-size:.75rem;color:var(--t2);margin-top:2px}
+.toast .tt{font-size:12px;font-weight:600;color:var(--accent)}
+.toast .tm{font-size:12px;color:var(--t3);margin-top:2px}
 
 /* ═══════════════════════════════════════════════════════
    EMPTY STATE
    ═══════════════════════════════════════════════════════ */
-.empty{text-align:center;padding:40px 20px;color:var(--t3)}
-.empty .empty-icon{font-size:48px;margin-bottom:12px;opacity:.4}
-.empty .empty-text{font-size:.9rem;margin-bottom:16px}
+.empty{text-align:center;padding:48px 24px;color:var(--t4)}
+.empty .empty-icon{font-size:40px;margin-bottom:12px;opacity:.3}
+.empty .empty-text{font-size:14px;color:var(--t3)}
 
 /* ═══════════════════════════════════════════════════════
    RESPONSIVE
@@ -246,84 +534,74 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-h
 @media(max-width:800px){
   .folder-grid{grid-template-columns:1fr 1fr}
   .g2,.g3,.g4{grid-template-columns:1fr}
-  .hdr h1{font-size:1.4rem}
-  .mc{padding:0 12px 60px}
+  .mc{padding:20px 16px 80px}
+  .hdr{padding:0 16px}
+  .breadcrumb{padding:10px 16px 0}
 }
 @media(max-width:500px){
   .folder-grid{grid-template-columns:1fr}
   .est-total{flex-direction:column;text-align:center}
+  .hi{height:auto;padding:12px 0}
 }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════
-     HEADER
-     ═══════════════════════════════════════════════════════ -->
+<!-- HEADER -->
 <div class="hdr"><div class="hi">
   <div class="hdr-left" onclick="goHome()">
+    <div class="hdr-logo">CE</div>
     <div>
       <h1>Coatings Estimator</h1>
-      <div class="sub">The Concrete Protector &mdash; Lead &bull; Estimate &bull; Project &bull; Complete</div>
+      <div class="sub">The Concrete Protector</div>
     </div>
   </div>
   <div class="hdr-right">
     <button class="hdr-btn" onclick="openExport()">Export</button>
-    <button class="hdr-btn sec" onclick="openImport()">Import</button>
+    <button class="hdr-btn" onclick="openImport()">Import</button>
   </div>
 </div></div>
 
-<!-- BREADCRUMB -->
 <div class="breadcrumb" id="breadcrumb"></div>
 
-<!-- ═══════════════════════════════════════════════════════
-     MAIN CONTENT
-     ═══════════════════════════════════════════════════════ -->
 <div class="mc">
 
-<!-- ═══ SCREEN: HOME ═══ -->
+<!-- HOME -->
 <div class="screen ac" id="scr-home">
-  <div class="sh"><h2>Dashboard</h2><p>Your jobs pipeline at a glance. Click a folder to view records.</p></div>
+  <div class="sh"><h2>Pipeline</h2><p>Your jobs at a glance. Click any folder to view records.</p></div>
   <div class="folder-grid" id="activeFolders"></div>
-  <div style="font-family:'Bebas Neue',sans-serif;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:10px;padding-left:4px">Inactive</div>
+  <div class="inactive-label">Archived</div>
   <div class="folder-grid" id="inactiveFolders"></div>
 </div>
 
-<!-- ═══ SCREEN: FOLDER LIST ═══ -->
+<!-- LIST -->
 <div class="screen" id="scr-list">
   <div class="sh" id="listHeader"></div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
-    <div class="search-bar" style="flex:1;min-width:200px;margin-bottom:0"><input type="text" id="searchInput" placeholder="Search by name, company, or address..." oninput="filterList()"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div class="search-bar" style="flex:1;min-width:220px"><input type="text" id="searchInput" placeholder="Search by name, company, or address..." oninput="filterList()"></div>
     <button class="btn btn-primary" id="newLeadBtn" onclick="newRecord()">+ New Lead</button>
   </div>
   <div id="listItems"></div>
 </div>
 
-<!-- ═══ SCREEN: RECORD DETAIL ═══ -->
+<!-- RECORD -->
 <div class="screen" id="scr-record">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
     <div class="sh" style="margin-bottom:0;flex:1" id="recordHeader"></div>
     <div class="btn-row">
       <button class="btn btn-success" onclick="saveRecord()">Save</button>
       <button class="btn btn-danger" onclick="confirmDeleteRecord()">Delete</button>
     </div>
   </div>
-
-  <!-- Status & Active -->
   <div class="cd">
     <div class="ct"><span class="ic io">&#9881;</span> Status</div>
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-      <div class="status-bar" style="margin-bottom:0" id="statusPills"></div>
-      <div class="active-toggle">
-        <span>Active</span>
-        <label class="toggle"><input type="checkbox" id="recActive" onchange="toggleActive()"><span class="slider"></span></label>
-      </div>
+      <div class="status-bar" id="statusPills"></div>
+      <div class="active-toggle"><span>Active</span><label class="toggle"><input type="checkbox" id="recActive" onchange="toggleActive()"><span class="slider"></span></label></div>
     </div>
   </div>
-
-  <!-- Contact Info -->
   <div class="cd">
-    <div class="ct"><span class="ic ib">&#9786;</span> Contact Information</div>
+    <div class="ct"><span class="ic ib">&#9786;</span> Contact</div>
     <div class="g2">
       <div class="fg"><label>First Name</label><input type="text" id="recFirst" placeholder="First name"></div>
       <div class="fg"><label>Last Name</label><input type="text" id="recLast" placeholder="Last name"></div>
@@ -334,9 +612,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-h
     </div>
     <div class="g3">
       <div class="fg"><label>Phone</label><input type="tel" id="recPhone" placeholder="(555) 123-4567"></div>
-      <div class="fg"><label>Phone Type</label>
-        <select id="recPhoneType"><option value="cell">Cell</option><option value="home">Home</option><option value="office">Office</option></select>
-      </div>
+      <div class="fg"><label>Type</label><select id="recPhoneType"><option value="cell">Cell</option><option value="home">Home</option><option value="office">Office</option></select></div>
       <div class="fg"><label>Best Time to Call</label><input type="text" id="recBestTime" placeholder="e.g. After 5pm"></div>
     </div>
     <div class="fg"><label>Address</label><input type="text" id="recAddress" placeholder="Street address"></div>
@@ -347,17 +623,15 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-h
     </div>
     <div class="fg"><label>Notes</label><textarea id="recNotes" placeholder="Additional notes..."></textarea></div>
   </div>
-
-  <!-- Estimates -->
   <div class="cd">
     <div class="ct" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span class="ic ior">&#9998;</span> Estimates</div><button class="btn btn-primary" onclick="newEstimate()">+ New Estimate</button></div>
     <div id="estimatesList"></div>
   </div>
 </div>
 
-<!-- ═══ SCREEN: ESTIMATE DETAIL ═══ -->
+<!-- ESTIMATE -->
 <div class="screen" id="scr-estimate">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
     <div class="sh" style="margin-bottom:0;flex:1" id="estHeader"></div>
     <div class="btn-row">
       <button class="btn btn-success" onclick="saveEstimate()">Save</button>
@@ -366,24 +640,22 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-h
   </div>
   <div class="est-total" id="estTotalBar"></div>
   <div class="cd">
-    <div class="ct" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span class="ic ig">&#9874;</span> Systems (Areas)</div><button class="btn btn-primary" onclick="newSystem()">+ New System</button></div>
+    <div class="ct" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span class="ic ig">&#9874;</span> Areas</div><button class="btn btn-primary" onclick="newSystem()">+ Add Area</button></div>
     <div id="systemsList"></div>
   </div>
 </div>
 
-<!-- ═══ SCREEN: SYSTEM EDITOR ═══ -->
+<!-- SYSTEM EDITOR -->
 <div class="screen" id="scr-system">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
     <div class="sh" style="margin-bottom:0;flex:1" id="sysHeader"></div>
     <div class="btn-row">
-      <button class="btn btn-success" onclick="saveSystem()">Save System</button>
-      <button class="btn btn-danger" onclick="confirmDeleteSystem()">Delete System</button>
+      <button class="btn btn-success" onclick="saveSystem()">Save</button>
+      <button class="btn btn-danger" onclick="confirmDeleteSystem()">Remove</button>
     </div>
   </div>
-
-  <!-- Area & Dimensions -->
   <div class="cd">
-    <div class="ct"><span class="ic io">&#9634;</span> Area &amp; Dimensions</div>
+    <div class="ct"><span class="ic io">&#9634;</span> Dimensions</div>
     <div class="g3">
       <div class="fg"><label>Area Name</label><input type="text" id="sysArea" placeholder="e.g. Driveway, Patio, Garage" oninput="calcSystem()"></div>
       <div class="fg"><label>Length (ft)</label><input type="number" id="sysLength" value="0" min="0" step="1" oninput="calcSystem()"></div>
@@ -393,79 +665,59 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);line-h
       <div class="fg"><label>Square Feet</label><input type="number" id="sysSqft" value="0" min="0" step="1" oninput="calcSystem(true)"></div>
       <div class="fg"><label>Sell Rate ($/sqft)</label><input type="number" id="sysSellRate" value="0" min="0" step="0.01" oninput="calcSystem()"></div>
       <div class="fg"><label>System Price</label>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--o);padding:8px 0" id="sysPrice">$0.00</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--accent);padding:6px 0;letter-spacing:-1px" id="sysPrice">$0.00</div>
       </div>
     </div>
   </div>
-
-  <!-- Quick Stats -->
   <div class="sg" id="sysStats"></div>
-
-  <!-- Product System -->
   <div class="cd">
     <div class="ct"><span class="ic ior">&#9733;</span> Product System</div>
     <div class="series-filter" id="seriesFilter"></div>
     <div style="max-height:400px;overflow-y:auto;padding-right:4px" id="prodList"></div>
   </div>
-
-  <!-- Top Coat -->
   <div class="cd">
-    <div class="ct"><span class="ic ig">&#9708;</span> Top Coat (Optional)</div>
+    <div class="ct"><span class="ic ig">&#9708;</span> Top Coat</div>
     <div id="tcList"></div>
   </div>
-
-  <!-- Notes -->
   <div class="cd">
-    <div class="ct"><span class="ic ib">&#9998;</span> System Notes</div>
+    <div class="ct"><span class="ic ib">&#9998;</span> Notes</div>
     <div class="fg" style="margin-bottom:0"><textarea id="sysNotes" placeholder="Notes for this area..." oninput="calcSystem()"></textarea></div>
   </div>
 </div>
 
-</div><!-- /mc -->
+</div>
 
-<!-- ═══ MODALS ═══ -->
+<!-- MODALS -->
 <div class="modal-overlay" id="confirmModal" onclick="if(event.target===this)closeConfirm()">
   <div class="modal">
     <h3 id="confirmTitle">Confirm</h3>
-    <p style="font-size:.88rem;color:var(--t2);margin-bottom:18px" id="confirmMsg"></p>
-    <div class="btn-row">
-      <button class="btn btn-danger" id="confirmYes">Delete</button>
-      <button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button>
-    </div>
+    <p style="font-size:13px;color:var(--t3);margin-bottom:20px;line-height:1.5" id="confirmMsg"></p>
+    <div class="btn-row"><button class="btn btn-danger" id="confirmYes">Delete</button><button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button></div>
   </div>
 </div>
 <div class="modal-overlay" id="exportModal" onclick="if(event.target===this)closeExport()">
   <div class="modal">
     <h3>Export Data</h3>
-    <p style="font-size:.85rem;color:var(--t2);margin-bottom:16px">Download all your data as a JSON file. You can import it later or on another device.</p>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="doExport()">Download JSON</button>
-      <button class="btn btn-ghost" onclick="closeExport()">Cancel</button>
-    </div>
+    <p style="font-size:13px;color:var(--t3);margin-bottom:20px;line-height:1.5">Download all records as a JSON file for backup or transfer.</p>
+    <div class="btn-row"><button class="btn btn-primary" onclick="doExport()">Download</button><button class="btn btn-ghost" onclick="closeExport()">Cancel</button></div>
   </div>
 </div>
 <div class="modal-overlay" id="importModal" onclick="if(event.target===this)closeImport()">
   <div class="modal">
     <h3>Import Data</h3>
-    <p style="font-size:.85rem;color:var(--t2);margin-bottom:16px">Load a previously exported JSON file. This will <strong style="color:var(--r)">replace</strong> all current data.</p>
-    <div class="fg"><input type="file" id="importFile" accept=".json" style="font-size:.85rem"></div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="doImport()">Import</button>
-      <button class="btn btn-ghost" onclick="closeImport()">Cancel</button>
-    </div>
+    <p style="font-size:13px;color:var(--t3);margin-bottom:16px;line-height:1.5">Load a previously exported JSON file. This will <strong style="color:var(--comp)">replace</strong> all current data.</p>
+    <div class="fg"><input type="file" id="importFile" accept=".json" style="font-size:13px"></div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="doImport()">Import</button><button class="btn btn-ghost" onclick="closeImport()">Cancel</button></div>
   </div>
 </div>
-
-<!-- TOAST -->
 <div class="toast" id="toast"><div class="tt" id="toastT"></div><div class="tm" id="toastM"></div></div>
 
 <script>
 'use strict';
 
 // ═══════════════════════════════════════════════════════════
-// SECTION 1: TCP PRODUCT DATA
+// PRODUCT DATA
 // ═══════════════════════════════════════════════════════════
-
 const PRODUCTS=[
   {id:'c101',sku:'C-101',name:'Rustic Concrete Wood (Exterior)',series:'C-Series',cat:'Rustic & Stone',cost:1.15,low:8.00,mid:14.00},
   {id:'c102',sku:'C-102',name:'Rustic Concrete Wood (Interior)',series:'C-Series',cat:'Rustic & Stone',cost:1.43,low:8.00,mid:14.00},
@@ -498,632 +750,227 @@ const PRODUCTS=[
   {id:'i502',sku:'I-502',name:'Poly-Hard Super-Nova',series:'I-Series',cat:'Specialty',cost:2.85,low:8.00,mid:16.00},
   {id:'i503',sku:'I-503',name:'Poly-Hard Quartz PP-90',series:'I-Series',cat:'Specialty',cost:3.06,low:8.50,mid:16.00},
 ];
-
 const TOPCOATS=[
-  {id:'tc-none',name:'No Top Coat',cost:0,desc:'No additional top coat'},
+  {id:'tc-none',name:'None',cost:0,desc:'No additional top coat'},
   {id:'ut4451',sku:'UT-4451',name:'Protectorthane (Interior)',cost:0.37,desc:'Interior polyurethane'},
-  {id:'tj3113',sku:'TJ-3113',name:'Acrylic Floor Finish',cost:0.02,desc:'Economical acrylic finish'},
+  {id:'tj3113',sku:'TJ-3113',name:'Acrylic Floor Finish',cost:0.02,desc:'Economical acrylic'},
   {id:'ut4501',sku:'UT-4501',name:'WB 421 Gloss Urethane',cost:0.42,desc:'Water-based high-gloss'},
   {id:'ut4499',sku:'UT-4499',name:'WB 221 Satin Urethane',cost:0.50,desc:'Water-based satin'},
   {id:'en6303',sku:'EN-6303',name:'Epoxy Neat Coat',cost:0.79,desc:'Smooth epoxy finish'},
   {id:'ut4515',sku:'UT-4515',name:'Perfect Poly 90',cost:0.65,desc:'Premium polyaspartic'},
 ];
-
-const STATUSES = [
-  {id:'lead',label:'Lead',color:'lead'},
-  {id:'estimate',label:'Estimate',color:'est'},
-  {id:'project',label:'Project',color:'proj'},
-  {id:'completed',label:'Completed',color:'comp'},
-];
-
-const FOLDER_ICONS = {lead:'&#128221;',estimate:'&#128203;',project:'&#9874;',completed:'&#10004;'};
+const STATUSES=[{id:'lead',label:'Lead',color:'lead'},{id:'estimate',label:'Estimate',color:'est'},{id:'project',label:'Project',color:'proj'},{id:'completed',label:'Completed',color:'comp'}];
+const FOLDER_ICONS={lead:'&#9993;',estimate:'&#9997;',project:'&#9874;',completed:'&#10003;'};
 
 // ═══════════════════════════════════════════════════════════
-// SECTION 2: STATE & DATABASE
+// STATE
 // ═══════════════════════════════════════════════════════════
-
-const DB_KEY = 'ce_database';
-
-function loadDB() {
-  try { return JSON.parse(localStorage.getItem(DB_KEY)) || {records:[]}; }
-  catch { return {records:[]}; }
-}
-function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
-const fmt = v => '$' + v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-
-let db = loadDB();
-let nav = {screen:'home', folderStatus:null, folderActive:true, recordId:null, estimateId:null, systemId:null};
-let seriesFilter = 'All';
+const DB_KEY='ce_database';
+function loadDB(){try{return JSON.parse(localStorage.getItem(DB_KEY))||{records:[]}}catch{return{records:[]}}}
+function saveDB(d){localStorage.setItem(DB_KEY,JSON.stringify(d))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+const fmt=v=>'$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+let db=loadDB();
+let nav={screen:'home',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null};
+let seriesFilter='All';
 
 // ═══════════════════════════════════════════════════════════
-// SECTION 3: NAVIGATION
+// NAVIGATION
 // ═══════════════════════════════════════════════════════════
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('ac'));document.getElementById('scr-'+id).classList.add('ac');window.scrollTo({top:0,behavior:'smooth'})}
+function goHome(){nav={screen:'home',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null};renderBreadcrumb();renderHome();showScreen('home')}
+function goFolder(s,a){nav.screen='list';nav.folderStatus=s;nav.folderActive=a;nav.recordId=null;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderList();showScreen('list')}
+function goRecord(id){nav.screen='record';nav.recordId=id;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderRecord();showScreen('record')}
+function goEstimate(id){nav.screen='estimate';nav.estimateId=id;nav.systemId=null;renderBreadcrumb();renderEstimate();showScreen('estimate')}
+function goSystem(id){nav.screen='system';nav.systemId=id;renderBreadcrumb();renderSystem();showScreen('system')}
 
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('ac'));
-  document.getElementById('scr-'+id).classList.add('ac');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function goHome() {
-  nav = {screen:'home',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null};
-  renderBreadcrumb();
-  renderHome();
-  showScreen('home');
-}
-
-function goFolder(status, active) {
-  nav.screen='list'; nav.folderStatus=status; nav.folderActive=active;
-  nav.recordId=null; nav.estimateId=null; nav.systemId=null;
-  renderBreadcrumb();
-  renderList();
-  showScreen('list');
-}
-
-function goRecord(id) {
-  nav.screen='record'; nav.recordId=id; nav.estimateId=null; nav.systemId=null;
-  renderBreadcrumb();
-  renderRecord();
-  showScreen('record');
-}
-
-function goEstimate(estId) {
-  nav.screen='estimate'; nav.estimateId=estId; nav.systemId=null;
-  renderBreadcrumb();
-  renderEstimate();
-  showScreen('estimate');
-}
-
-function goSystem(sysId) {
-  nav.screen='system'; nav.systemId=sysId;
-  renderBreadcrumb();
-  renderSystem();
-  showScreen('system');
-}
-
-function renderBreadcrumb() {
-  const el = document.getElementById('breadcrumb');
-  let parts = ['<span onclick="goHome()">&#127968; Home</span>'];
-  if (nav.folderStatus) {
-    const st = STATUSES.find(s=>s.id===nav.folderStatus);
-    const label = (nav.folderActive?'':'Inactive ') + st.label + 's';
-    parts.push('<span class="sep">&#9656;</span>');
-    parts.push('<span onclick="goFolder(\''+nav.folderStatus+'\','+nav.folderActive+')">'+label+'</span>');
-  }
-  if (nav.recordId) {
-    const rec = db.records.find(r=>r.id===nav.recordId);
-    if (rec) {
-      parts.push('<span class="sep">&#9656;</span>');
-      parts.push('<span onclick="goRecord(\''+rec.id+'\')">'+(rec.firstName||rec.lastName?rec.firstName+' '+rec.lastName:'Unnamed')+'</span>');
-    }
-  }
-  if (nav.estimateId) {
-    const rec = db.records.find(r=>r.id===nav.recordId);
-    const est = rec?rec.estimates.find(e=>e.id===nav.estimateId):null;
-    if (est) {
-      parts.push('<span class="sep">&#9656;</span>');
-      parts.push('<span onclick="goEstimate(\''+est.id+'\')">'+(est.name||'Estimate')+'</span>');
-    }
-  }
-  if (nav.systemId) {
-    const rec = db.records.find(r=>r.id===nav.recordId);
-    const est = rec?rec.estimates.find(e=>e.id===nav.estimateId):null;
-    const sys = est?est.systems.find(s=>s.id===nav.systemId):null;
-    if (sys) {
-      parts.push('<span class="sep">&#9656;</span>');
-      parts.push('<span class="current">'+(sys.areaName||'New System')+'</span>');
-    }
-  }
-  el.innerHTML = parts.join('');
+function renderBreadcrumb(){
+  const el=document.getElementById('breadcrumb');
+  let p=['<span onclick="goHome()">Home</span>'];
+  if(nav.folderStatus){const st=STATUSES.find(s=>s.id===nav.folderStatus);p.push('<span class="sep">&#8250;</span>','<span onclick="goFolder(\''+nav.folderStatus+'\','+nav.folderActive+')">'+(nav.folderActive?'':'Inactive ')+st.label+'s</span>')}
+  if(nav.recordId){const r=db.records.find(r=>r.id===nav.recordId);if(r){p.push('<span class="sep">&#8250;</span>','<span onclick="goRecord(\''+r.id+'\')">'+(r.firstName||r.lastName?r.firstName+' '+r.lastName:'Unnamed').trim()+'</span>')}}
+  if(nav.estimateId){const r=db.records.find(r=>r.id===nav.recordId);const e=r?r.estimates.find(e=>e.id===nav.estimateId):null;if(e){p.push('<span class="sep">&#8250;</span>','<span onclick="goEstimate(\''+e.id+'\')">'+(e.name||'Estimate')+'</span>')}}
+  if(nav.systemId){const r=db.records.find(r=>r.id===nav.recordId);const e=r?r.estimates.find(e=>e.id===nav.estimateId):null;const s=e?e.systems.find(s=>s.id===nav.systemId):null;if(s)p.push('<span class="sep">&#8250;</span>','<span class="current">'+(s.areaName||'New Area')+'</span>')}
+  el.innerHTML=p.join('');
 }
 
 // ═══════════════════════════════════════════════════════════
-// SECTION 4: HOME SCREEN
+// HOME
 // ═══════════════════════════════════════════════════════════
-
-function renderHome() {
-  const counts = {};
-  STATUSES.forEach(s => { counts[s.id] = {active:0,inactive:0}; });
-  db.records.forEach(r => {
-    if (counts[r.status]) counts[r.status][r.active?'active':'inactive']++;
-  });
-
-  document.getElementById('activeFolders').innerHTML = STATUSES.map(s =>
-    '<div class="folder '+s.color+'" onclick="goFolder(\''+s.id+'\',true)">'+
-      '<div class="f-icon">'+FOLDER_ICONS[s.id]+'</div>'+
-      '<div class="f-label">'+s.label+'s</div>'+
-      '<div class="f-count">'+counts[s.id].active+'</div>'+
-      '<div class="f-sub">active records</div>'+
-    '</div>'
-  ).join('');
-
-  document.getElementById('inactiveFolders').innerHTML = STATUSES.map(s =>
-    '<div class="folder '+s.color+' inactive" onclick="goFolder(\''+s.id+'\',false)">'+
-      '<div class="f-icon">'+FOLDER_ICONS[s.id]+'</div>'+
-      '<div class="f-label">Inactive '+s.label+'s</div>'+
-      '<div class="f-count">'+counts[s.id].inactive+'</div>'+
-    '</div>'
-  ).join('');
+function renderHome(){
+  const c={};STATUSES.forEach(s=>{c[s.id]={active:0,inactive:0}});
+  db.records.forEach(r=>{if(c[r.status])c[r.status][r.active?'active':'inactive']++});
+  document.getElementById('activeFolders').innerHTML=STATUSES.map(s=>'<div class="folder '+s.color+'" onclick="goFolder(\''+s.id+'\',true)"><div class="f-glow"></div><div class="f-icon">'+FOLDER_ICONS[s.id]+'</div><div class="f-count">'+c[s.id].active+'</div><div class="f-label">'+s.label+'s</div><div class="f-sub">active records</div></div>').join('');
+  document.getElementById('inactiveFolders').innerHTML=STATUSES.map(s=>'<div class="folder '+s.color+' inactive" onclick="goFolder(\''+s.id+'\',false)"><div class="f-icon">'+FOLDER_ICONS[s.id]+'</div><div class="f-count">'+c[s.id].inactive+'</div><div class="f-label">Inactive '+s.label+'s</div></div>').join('');
 }
 
 // ═══════════════════════════════════════════════════════════
-// SECTION 5: FOLDER LIST
+// LIST
 // ═══════════════════════════════════════════════════════════
-
-function renderList() {
-  const st = STATUSES.find(s=>s.id===nav.folderStatus);
-  const prefix = nav.folderActive ? '' : 'Inactive ';
-  document.getElementById('listHeader').innerHTML = '<h2>'+prefix+st.label+'s</h2><p>'+getListDescription(st.id,nav.folderActive)+'</p>';
-  document.getElementById('newLeadBtn').style.display = (nav.folderStatus==='lead' && nav.folderActive)?'':'none';
-  document.getElementById('searchInput').value = '';
-  filterList();
+function renderList(){
+  const st=STATUSES.find(s=>s.id===nav.folderStatus);
+  const prefix=nav.folderActive?'':'Inactive ';
+  document.getElementById('listHeader').innerHTML='<h2>'+prefix+st.label+'s</h2><p>'+getListDesc(st.id,nav.folderActive)+'</p>';
+  document.getElementById('newLeadBtn').style.display=(nav.folderStatus==='lead'&&nav.folderActive)?'':'none';
+  document.getElementById('searchInput').value='';filterList();
 }
-
-function getListDescription(status,active) {
-  if (!active) return 'Archived records. Move back to active by toggling the Active switch on any record.';
-  const d = {lead:'New contacts and inquiries.',estimate:'Leads with estimates ready for review.',project:'Jobs with deposits — on your calendar.',completed:'Finished jobs. Your track record.'};
-  return d[status]||'';
-}
-
-function filterList() {
-  const q = (document.getElementById('searchInput').value||'').toLowerCase();
-  const items = db.records.filter(r => r.status===nav.folderStatus && r.active===nav.folderActive);
-  const filtered = q ? items.filter(r => {
-    const hay = [r.firstName,r.lastName,r.company,r.address,r.city,r.email].join(' ').toLowerCase();
-    return hay.includes(q);
-  }) : items;
-
-  if (!filtered.length) {
-    document.getElementById('listItems').innerHTML = '<div class="empty"><div class="empty-icon">&#128194;</div><div class="empty-text">No records here yet.</div></div>';
-    return;
-  }
-
-  document.getElementById('listItems').innerHTML = filtered.map(r => {
-    const name = (r.firstName||'')+' '+(r.lastName||'');
-    const initials = ((r.firstName||'?')[0]+(r.lastName||'?')[0]).toUpperCase();
-    const estCount = r.estimates.length;
-    const total = r.estimates.reduce((sum,e) => sum + e.systems.reduce((s2,sys) => s2 + (sys.sqft*(sys.sellRate||0)),0),0);
-    const meta = [r.company, r.city&&r.state?r.city+', '+r.state:r.city||r.state, estCount?estCount+' estimate'+(estCount>1?'s':''):''].filter(Boolean).join(' &bull; ');
-    return '<div class="list-item" onclick="goRecord(\''+r.id+'\')">'+
-      '<div class="li-left"><div class="li-avatar '+r.status+'">'+initials+'</div><div><div class="li-name">'+name.trim()+'</div><div class="li-meta">'+meta+'</div></div></div>'+
-      '<div class="li-right">'+(total>0?'<div class="li-amount" style="color:var(--o)">'+fmt(total)+'</div>':'')+
-      '<div class="li-badge '+r.status+'">'+r.status+'</div></div></div>';
+function getListDesc(s,a){if(!a)return'Archived records.';return{lead:'New contacts and inquiries.',estimate:'Leads with quotes ready for review.',project:'Jobs on your calendar.',completed:'Finished jobs.'}[s]||''}
+function filterList(){
+  const q=(document.getElementById('searchInput').value||'').toLowerCase();
+  const items=db.records.filter(r=>r.status===nav.folderStatus&&r.active===nav.folderActive);
+  const f=q?items.filter(r=>[r.firstName,r.lastName,r.company,r.address,r.city,r.email].join(' ').toLowerCase().includes(q)):items;
+  if(!f.length){document.getElementById('listItems').innerHTML='<div class="empty"><div class="empty-icon">&#128194;</div><div class="empty-text">No records here yet.</div></div>';return}
+  document.getElementById('listItems').innerHTML=f.map(r=>{
+    const name=(r.firstName||'')+' '+(r.lastName||'');
+    const ini=((r.firstName||'?')[0]+(r.lastName||'?')[0]).toUpperCase();
+    const ec=r.estimates.length;
+    const tot=r.estimates.reduce((s,e)=>s+e.systems.reduce((s2,sys)=>s2+(sys.sqft*(sys.sellRate||0)),0),0);
+    const meta=[r.company,r.city&&r.state?r.city+', '+r.state:r.city||r.state,ec?ec+' estimate'+(ec>1?'s':''):''].filter(Boolean).join(' \u00b7 ');
+    return'<div class="list-item" onclick="goRecord(\''+r.id+'\')"><div class="li-left"><div class="li-avatar '+r.status+'">'+ini+'</div><div><div class="li-name">'+name.trim()+'</div><div class="li-meta">'+meta+'</div></div></div><div class="li-right">'+(tot>0?'<div class="li-amount">'+fmt(tot)+'</div>':'')+'<div class="li-badge '+r.status+'">'+r.status+'</div></div></div>'
   }).join('');
 }
 
 // ═══════════════════════════════════════════════════════════
-// SECTION 6: RECORD DETAIL
+// RECORD
 // ═══════════════════════════════════════════════════════════
-
-function getRecord() { return db.records.find(r=>r.id===nav.recordId); }
-
-function renderRecord() {
-  const rec = getRecord();
-  if (!rec) { goHome(); return; }
-  const name = ((rec.firstName||'')+ ' '+(rec.lastName||'')).trim() || 'New Lead';
-  document.getElementById('recordHeader').innerHTML = '<h2>'+name+'</h2>'+(rec.company?'<p>'+rec.company+'</p>':'');
-
-  // Status pills
-  document.getElementById('statusPills').innerHTML = STATUSES.map(s =>
-    '<div class="status-pill '+s.color+(rec.status===s.id?' active':'')+'" onclick="changeStatus(\''+s.id+'\')">'+s.label+'</div>'
-  ).join('');
-
-  // Active toggle
-  document.getElementById('recActive').checked = rec.active;
-
-  // Fields
-  document.getElementById('recFirst').value = rec.firstName||'';
-  document.getElementById('recLast').value = rec.lastName||'';
-  document.getElementById('recCompany').value = rec.company||'';
-  document.getElementById('recEmail').value = rec.email||'';
-  document.getElementById('recPhone').value = rec.phone||'';
-  document.getElementById('recPhoneType').value = rec.phoneType||'cell';
-  document.getElementById('recBestTime').value = rec.bestTimeToCall||'';
-  document.getElementById('recAddress').value = rec.address||'';
-  document.getElementById('recCity').value = rec.city||'';
-  document.getElementById('recState').value = rec.state||'';
-  document.getElementById('recZip').value = rec.zip||'';
-  document.getElementById('recNotes').value = rec.notes||'';
-
-  // Estimates list
+function getRecord(){return db.records.find(r=>r.id===nav.recordId)}
+function renderRecord(){
+  const rec=getRecord();if(!rec){goHome();return}
+  const name=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'New Lead';
+  document.getElementById('recordHeader').innerHTML='<h2>'+name+'</h2>'+(rec.company?'<p>'+rec.company+'</p>':'');
+  document.getElementById('statusPills').innerHTML=STATUSES.map(s=>'<button class="status-pill '+s.color+(rec.status===s.id?' active':'')+'" onclick="changeStatus(\''+s.id+'\')">'+s.label+'</button>').join('');
+  document.getElementById('recActive').checked=rec.active;
+  document.getElementById('recFirst').value=rec.firstName||'';
+  document.getElementById('recLast').value=rec.lastName||'';
+  document.getElementById('recCompany').value=rec.company||'';
+  document.getElementById('recEmail').value=rec.email||'';
+  document.getElementById('recPhone').value=rec.phone||'';
+  document.getElementById('recPhoneType').value=rec.phoneType||'cell';
+  document.getElementById('recBestTime').value=rec.bestTimeToCall||'';
+  document.getElementById('recAddress').value=rec.address||'';
+  document.getElementById('recCity').value=rec.city||'';
+  document.getElementById('recState').value=rec.state||'';
+  document.getElementById('recZip').value=rec.zip||'';
+  document.getElementById('recNotes').value=rec.notes||'';
   renderEstimatesList(rec);
 }
-
-function renderEstimatesList(rec) {
-  if (!rec.estimates.length) {
-    document.getElementById('estimatesList').innerHTML = '<div class="empty"><div class="empty-icon">&#128203;</div><div class="empty-text">No estimates yet. Click + New Estimate to start quoting.</div></div>';
-    return;
-  }
-  document.getElementById('estimatesList').innerHTML = rec.estimates.map(est => {
-    const total = est.systems.reduce((s,sys) => s + (sys.sqft*(sys.sellRate||0)),0);
-    const cost = est.systems.reduce((s,sys) => {
-      const prod = PRODUCTS.find(p=>p.id===sys.productId);
-      const tc = TOPCOATS.find(t=>t.id===sys.topcoatId);
-      return s + (prod?prod.cost*sys.sqft:0) + (tc?tc.cost*sys.sqft:0);
-    },0);
-    const areas = est.systems.map(s=>s.areaName||'Unnamed').join(', ');
-    const sqft = est.systems.reduce((s,sys)=>s+sys.sqft,0);
-    return '<div class="sys-card" onclick="goEstimate(\''+est.id+'\')">'+
-      '<div class="sys-left"><div class="sys-area">'+(est.name||'Estimate')+'</div>'+
-      '<div class="sys-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' &bull; '+sqft.toLocaleString()+' sqft'+(areas?' &bull; '+areas:'')+'</div></div>'+
-      '<div class="sys-right"><div class="sys-price">'+fmt(total)+'</div>'+
-      (cost>0?'<div class="sys-cost">Cost: '+fmt(cost)+'</div>':'')+'</div></div>';
+function renderEstimatesList(rec){
+  if(!rec.estimates.length){document.getElementById('estimatesList').innerHTML='<div class="empty"><div class="empty-icon">&#9997;</div><div class="empty-text">No estimates yet. Create one to start quoting.</div></div>';return}
+  document.getElementById('estimatesList').innerHTML=rec.estimates.map(est=>{
+    const tot=est.systems.reduce((s,sys)=>s+(sys.sqft*(sys.sellRate||0)),0);
+    const cost=est.systems.reduce((s,sys)=>{const p=PRODUCTS.find(p=>p.id===sys.productId);const t=TOPCOATS.find(t=>t.id===sys.topcoatId);return s+(p?p.cost*sys.sqft:0)+(t?t.cost*sys.sqft:0)},0);
+    const sqft=est.systems.reduce((s,sys)=>s+sys.sqft,0);
+    const areas=est.systems.map(s=>s.areaName||'Unnamed').join(', ');
+    return'<div class="sys-card'+(tot>0?' has-product':'')+'" onclick="goEstimate(\''+est.id+'\')"><div><div class="sys-area">'+(est.name||'Estimate')+'</div><div class="sys-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' \u00b7 '+sqft.toLocaleString()+' sqft'+(areas?' \u00b7 '+areas:'')+'</div></div><div class="sys-right"><div class="sys-price">'+fmt(tot)+'</div>'+(cost>0?'<div class="sys-cost">Cost '+fmt(cost)+'</div>':'')+'</div></div>'
   }).join('');
 }
-
-function saveRecord() {
-  const rec = getRecord();
-  if (!rec) return;
-  rec.firstName = document.getElementById('recFirst').value.trim();
-  rec.lastName = document.getElementById('recLast').value.trim();
-  rec.company = document.getElementById('recCompany').value.trim();
-  rec.email = document.getElementById('recEmail').value.trim();
-  rec.phone = document.getElementById('recPhone').value.trim();
-  rec.phoneType = document.getElementById('recPhoneType').value;
-  rec.bestTimeToCall = document.getElementById('recBestTime').value.trim();
-  rec.address = document.getElementById('recAddress').value.trim();
-  rec.city = document.getElementById('recCity').value.trim();
-  rec.state = document.getElementById('recState').value.trim();
-  rec.zip = document.getElementById('recZip').value.trim();
-  rec.notes = document.getElementById('recNotes').value.trim();
-  rec.updatedAt = new Date().toISOString();
-  saveDB(db);
-  renderBreadcrumb();
-  toast('Saved','Record updated successfully.');
+function saveRecord(){
+  const rec=getRecord();if(!rec)return;
+  rec.firstName=document.getElementById('recFirst').value.trim();
+  rec.lastName=document.getElementById('recLast').value.trim();
+  rec.company=document.getElementById('recCompany').value.trim();
+  rec.email=document.getElementById('recEmail').value.trim();
+  rec.phone=document.getElementById('recPhone').value.trim();
+  rec.phoneType=document.getElementById('recPhoneType').value;
+  rec.bestTimeToCall=document.getElementById('recBestTime').value.trim();
+  rec.address=document.getElementById('recAddress').value.trim();
+  rec.city=document.getElementById('recCity').value.trim();
+  rec.state=document.getElementById('recState').value.trim();
+  rec.zip=document.getElementById('recZip').value.trim();
+  rec.notes=document.getElementById('recNotes').value.trim();
+  rec.updatedAt=new Date().toISOString();
+  saveDB(db);renderBreadcrumb();toast('Saved','Record updated.');
 }
-
-function changeStatus(newStatus) {
-  const rec = getRecord();
-  if (!rec) return;
-  rec.status = newStatus;
-  rec.active = true;
-  rec.updatedAt = new Date().toISOString();
-  saveDB(db);
-  nav.folderStatus = newStatus;
-  nav.folderActive = true;
-  renderRecord();
-  renderBreadcrumb();
-  toast('Status Changed','Moved to '+STATUSES.find(s=>s.id===newStatus).label+'s.');
-}
-
-function toggleActive() {
-  const rec = getRecord();
-  if (!rec) return;
-  rec.active = document.getElementById('recActive').checked;
-  rec.updatedAt = new Date().toISOString();
-  saveDB(db);
-  nav.folderActive = rec.active;
-  renderBreadcrumb();
-  toast(rec.active?'Activated':'Deactivated','Record moved to '+(rec.active?'active':'inactive')+'.');
-}
-
-function newRecord() {
-  const rec = {
-    id:uid(), status:'lead', active:true,
-    createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(),
-    firstName:'',lastName:'',company:'',email:'',phone:'',phoneType:'cell',
-    bestTimeToCall:'',address:'',city:'',state:'',zip:'',notes:'',
-    estimates:[]
-  };
-  db.records.unshift(rec);
-  saveDB(db);
-  goRecord(rec.id);
-  toast('New Lead','Enter the contact details below.');
-}
-
-function confirmDeleteRecord() {
-  openConfirm('Delete Record','Are you sure you want to permanently delete this record and all its estimates?',() => {
-    db.records = db.records.filter(r=>r.id!==nav.recordId);
-    saveDB(db);
-    goFolder(nav.folderStatus,nav.folderActive);
-    toast('Deleted','Record removed.');
-  });
-}
+function changeStatus(s){const rec=getRecord();if(!rec)return;rec.status=s;rec.active=true;rec.updatedAt=new Date().toISOString();saveDB(db);nav.folderStatus=s;nav.folderActive=true;renderRecord();renderBreadcrumb();toast('Moved','Now in '+STATUSES.find(x=>x.id===s).label+'s.')}
+function toggleActive(){const rec=getRecord();if(!rec)return;rec.active=document.getElementById('recActive').checked;rec.updatedAt=new Date().toISOString();saveDB(db);nav.folderActive=rec.active;renderBreadcrumb();toast(rec.active?'Active':'Archived',rec.active?'Record is active.':'Moved to inactive.')}
+function newRecord(){const rec={id:uid(),status:'lead',active:true,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),firstName:'',lastName:'',company:'',email:'',phone:'',phoneType:'cell',bestTimeToCall:'',address:'',city:'',state:'',zip:'',notes:'',estimates:[]};db.records.unshift(rec);saveDB(db);goRecord(rec.id);toast('New Lead','Enter contact details.')}
+function confirmDeleteRecord(){openConfirm('Delete Record','Permanently delete this record and all estimates?',()=>{db.records=db.records.filter(r=>r.id!==nav.recordId);saveDB(db);goFolder(nav.folderStatus,nav.folderActive);toast('Deleted','Record removed.')})}
 
 // ═══════════════════════════════════════════════════════════
-// SECTION 7: ESTIMATE DETAIL
+// ESTIMATE
 // ═══════════════════════════════════════════════════════════
-
-function getEstimate() {
-  const rec = getRecord();
-  return rec ? rec.estimates.find(e=>e.id===nav.estimateId) : null;
-}
-
-function renderEstimate() {
-  const est = getEstimate();
-  const rec = getRecord();
-  if (!est||!rec) { goRecord(nav.recordId); return; }
-
-  const recName = ((rec.firstName||'')+ ' '+(rec.lastName||'')).trim() || 'Client';
-  document.getElementById('estHeader').innerHTML = '<h2>'+(est.name||'Estimate')+'</h2><p>'+recName+'</p>';
-
-  // Total bar
-  const totalPrice = est.systems.reduce((s,sys) => s + (sys.sqft*(sys.sellRate||0)),0);
-  const totalCost = est.systems.reduce((s,sys) => {
-    const prod = PRODUCTS.find(p=>p.id===sys.productId);
-    const tc = TOPCOATS.find(t=>t.id===sys.topcoatId);
-    return s + (prod?prod.cost*sys.sqft:0) + (tc?tc.cost*sys.sqft:0);
-  },0);
-  const totalSqft = est.systems.reduce((s,sys)=>s+sys.sqft,0);
-  const margin = totalPrice>0 ? ((totalPrice-totalCost)/totalPrice*100) : 0;
-
-  document.getElementById('estTotalBar').innerHTML =
-    '<div><div class="est-total-left">Estimate Total</div><div class="est-total-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' &bull; '+totalSqft.toLocaleString()+' sqft</div></div>'+
-    '<div style="text-align:right"><div class="est-total-amount">'+fmt(totalPrice)+'</div>'+
-    '<div class="est-total-detail">Material: '+fmt(totalCost)+' &bull; Margin: '+margin.toFixed(1)+'%</div></div>';
-
-  // Systems list
-  if (!est.systems.length) {
-    document.getElementById('systemsList').innerHTML = '<div class="empty"><div class="empty-icon">&#9874;</div><div class="empty-text">No areas yet. Click + New System to add a driveway, patio, garage, etc.</div></div>';
-    return;
-  }
-  document.getElementById('systemsList').innerHTML = est.systems.map((sys,i) => {
-    const prod = PRODUCTS.find(p=>p.id===sys.productId);
-    const tc = TOPCOATS.find(t=>t.id===sys.topcoatId);
-    const price = sys.sqft * (sys.sellRate||0);
-    const cost = (prod?prod.cost*sys.sqft:0) + (tc?tc.cost*sys.sqft:0);
-    const detail = [sys.sqft?sys.sqft.toLocaleString()+' sqft':'',prod?prod.name:'No system selected',sys.sellRate?'$'+sys.sellRate.toFixed(2)+'/sqft':''].filter(Boolean).join(' &bull; ');
-    return '<div class="sys-card" style="border-left:3px solid var(--'+(prod?'o':'bd2')+')" onclick="goSystem(\''+sys.id+'\')">'+
-      '<div class="sys-left"><div class="sys-area">'+(sys.areaName||'Area '+(i+1))+'</div>'+
-      '<div class="sys-detail">'+detail+'</div></div>'+
-      '<div class="sys-right"><div class="sys-price">'+fmt(price)+'</div>'+
-      (cost>0?'<div class="sys-cost">Cost: '+fmt(cost)+'</div>':'')+'</div></div>';
+function getEstimate(){const rec=getRecord();return rec?rec.estimates.find(e=>e.id===nav.estimateId):null}
+function renderEstimate(){
+  const est=getEstimate();const rec=getRecord();if(!est||!rec){goRecord(nav.recordId);return}
+  const rn=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'Client';
+  document.getElementById('estHeader').innerHTML='<h2>'+(est.name||'Estimate')+'</h2><p>'+rn+'</p>';
+  const tp=est.systems.reduce((s,sys)=>s+(sys.sqft*(sys.sellRate||0)),0);
+  const tc=est.systems.reduce((s,sys)=>{const p=PRODUCTS.find(p=>p.id===sys.productId);const t=TOPCOATS.find(t=>t.id===sys.topcoatId);return s+(p?p.cost*sys.sqft:0)+(t?t.cost*sys.sqft:0)},0);
+  const sqft=est.systems.reduce((s,sys)=>s+sys.sqft,0);
+  const mg=tp>0?((tp-tc)/tp*100):0;
+  document.getElementById('estTotalBar').innerHTML='<div><div class="est-total-left">Estimate Total</div><div class="est-total-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' \u00b7 '+sqft.toLocaleString()+' sqft</div></div><div style="text-align:right"><div class="est-total-amount">'+fmt(tp)+'</div><div class="est-total-detail">Cost '+fmt(tc)+' \u00b7 Margin '+mg.toFixed(1)+'%</div></div>';
+  if(!est.systems.length){document.getElementById('systemsList').innerHTML='<div class="empty"><div class="empty-icon">&#9874;</div><div class="empty-text">Add an area to start building this estimate.</div></div>';return}
+  document.getElementById('systemsList').innerHTML=est.systems.map((sys,i)=>{
+    const prod=PRODUCTS.find(p=>p.id===sys.productId);const tc=TOPCOATS.find(t=>t.id===sys.topcoatId);
+    const pr=sys.sqft*(sys.sellRate||0);const co=(prod?prod.cost*sys.sqft:0)+(tc?tc.cost*sys.sqft:0);
+    const d=[sys.sqft?sys.sqft.toLocaleString()+' sqft':'',prod?prod.name:'No system',sys.sellRate?'$'+sys.sellRate.toFixed(2)+'/sqft':''].filter(Boolean).join(' \u00b7 ');
+    return'<div class="sys-card'+(prod?' has-product':'')+'" onclick="goSystem(\''+sys.id+'\')"><div><div class="sys-area">'+(sys.areaName||'Area '+(i+1))+'</div><div class="sys-detail">'+d+'</div></div><div class="sys-right"><div class="sys-price">'+fmt(pr)+'</div>'+(co>0?'<div class="sys-cost">Cost '+fmt(co)+'</div>':'')+'</div></div>'
   }).join('');
 }
-
-function newEstimate() {
-  const rec = getRecord();
-  if (!rec) return;
-  // Auto-save current record fields first
-  saveRecord();
-  const count = rec.estimates.length + 1;
-  const est = { id:uid(), name:'Estimate #'+count, createdAt:new Date().toISOString(), systems:[] };
-  rec.estimates.push(est);
-  rec.updatedAt = new Date().toISOString();
-  // Auto-move to estimate status if still a lead
-  if (rec.status === 'lead') { rec.status = 'estimate'; nav.folderStatus = 'estimate'; }
-  saveDB(db);
-  goEstimate(est.id);
-  toast('New Estimate','Add areas below to start quoting.');
-}
-
-function saveEstimate() {
-  saveDB(db);
-  toast('Saved','Estimate saved.');
-}
-
-function confirmDeleteEstimate() {
-  const rec = getRecord();
-  if (!rec) return;
-  openConfirm('Delete Estimate','Delete this estimate and all its systems?',() => {
-    rec.estimates = rec.estimates.filter(e=>e.id!==nav.estimateId);
-    rec.updatedAt = new Date().toISOString();
-    saveDB(db);
-    goRecord(nav.recordId);
-    toast('Deleted','Estimate removed.');
-  });
-}
+function newEstimate(){const rec=getRecord();if(!rec)return;saveRecord();const c=rec.estimates.length+1;const est={id:uid(),name:'Estimate #'+c,createdAt:new Date().toISOString(),systems:[]};rec.estimates.push(est);rec.updatedAt=new Date().toISOString();if(rec.status==='lead'){rec.status='estimate';nav.folderStatus='estimate'}saveDB(db);goEstimate(est.id);toast('Created','Add areas to start quoting.')}
+function saveEstimate(){saveDB(db);toast('Saved','Estimate saved.')}
+function confirmDeleteEstimate(){const rec=getRecord();if(!rec)return;openConfirm('Delete Estimate','Delete this estimate and all areas?',()=>{rec.estimates=rec.estimates.filter(e=>e.id!==nav.estimateId);rec.updatedAt=new Date().toISOString();saveDB(db);goRecord(nav.recordId);toast('Deleted','Estimate removed.')})}
 
 // ═══════════════════════════════════════════════════════════
-// SECTION 8: SYSTEM EDITOR
+// SYSTEM EDITOR
 // ═══════════════════════════════════════════════════════════
-
-function getSystem() {
-  const est = getEstimate();
-  return est ? est.systems.find(s=>s.id===nav.systemId) : null;
+function getSystem(){const est=getEstimate();return est?est.systems.find(s=>s.id===nav.systemId):null}
+function renderSystem(){
+  const sys=getSystem();if(!sys){goEstimate(nav.estimateId);return}
+  document.getElementById('sysHeader').innerHTML='<h2>'+(sys.areaName||'New Area')+'</h2><p>Select a product system and set your sell rate.</p>';
+  document.getElementById('sysArea').value=sys.areaName||'';
+  document.getElementById('sysLength').value=sys.length||0;
+  document.getElementById('sysWidth').value=sys.width||1;
+  document.getElementById('sysSqft').value=sys.sqft||0;
+  document.getElementById('sysSellRate').value=sys.sellRate||0;
+  document.getElementById('sysNotes').value=sys.notes||'';
+  seriesFilter='All';renderSeriesFilter();renderProductList(sys);renderTopcoatList(sys);calcSystem();
 }
-
-function renderSystem() {
-  const sys = getSystem();
-  if (!sys) { goEstimate(nav.estimateId); return; }
-
-  document.getElementById('sysHeader').innerHTML = '<h2>'+(sys.areaName||'New System')+'</h2><p>Configure area, select product system, adjust pricing.</p>';
-
-  // Fields
-  document.getElementById('sysArea').value = sys.areaName||'';
-  document.getElementById('sysLength').value = sys.length||0;
-  document.getElementById('sysWidth').value = sys.width||1;
-  document.getElementById('sysSqft').value = sys.sqft||0;
-  document.getElementById('sysSellRate').value = sys.sellRate||0;
-  document.getElementById('sysNotes').value = sys.notes||'';
-
-  // Series filter
-  seriesFilter = 'All';
-  renderSeriesFilter();
-  renderProductList(sys);
-  renderTopcoatList(sys);
-  calcSystem();
+function renderSeriesFilter(){const s=['All','C-Series','M-Series','G-Series','E-Series','I-Series'];document.getElementById('seriesFilter').innerHTML=s.map(x=>'<button class="sf-btn'+(x===seriesFilter?' ac':'')+'" onclick="setSeriesFilter(\''+x+'\')">'+x+'</button>').join('')}
+function setSeriesFilter(s){seriesFilter=s;renderSeriesFilter();const sys=getSystem();if(sys)renderProductList(sys)}
+function renderProductList(sys){
+  const ps=seriesFilter==='All'?PRODUCTS:PRODUCTS.filter(p=>p.series===seriesFilter);
+  document.getElementById('prodList').innerHTML=ps.map(p=>{const sel=sys.productId===p.id;return'<div class="prod-option'+(sel?' sel':'')+'" onclick="selectProduct(\''+p.id+'\')"><div><div class="prod-name">'+p.name+'</div><div class="prod-sku">'+p.sku+' \u00b7 '+p.cat+'</div></div><div class="prod-prices"><div class="cost">'+fmt(p.cost)+'/sf</div><div class="sell">Sell '+fmt(p.low)+'\u2013'+fmt(p.mid)+'</div></div></div>'}).join('');
 }
-
-function renderSeriesFilter() {
-  const series = ['All','C-Series','M-Series','G-Series','E-Series','I-Series'];
-  document.getElementById('seriesFilter').innerHTML = series.map(s =>
-    '<button class="sf-btn'+(s===seriesFilter?' ac':'')+'" onclick="setSeriesFilter(\''+s+'\')">'+s+'</button>'
-  ).join('');
+function renderTopcoatList(sys){
+  document.getElementById('tcList').innerHTML=TOPCOATS.map(t=>{const sel=(sys.topcoatId||'tc-none')===t.id;return'<div class="prod-option'+(sel?' sel':'')+'" onclick="selectTopcoat(\''+t.id+'\')"><div><div class="prod-name">'+t.name+'</div>'+(t.desc?'<div class="prod-sku">'+t.desc+'</div>':'')+'</div><div class="prod-prices"><div class="cost">'+(t.cost>0?fmt(t.cost)+'/sf':'\u2014')+'</div></div></div>'}).join('');
 }
-
-function setSeriesFilter(s) {
-  seriesFilter = s;
-  renderSeriesFilter();
-  const sys = getSystem();
-  if (sys) renderProductList(sys);
+function selectProduct(id){const sys=getSystem();if(!sys)return;sys.productId=id;const p=PRODUCTS.find(p=>p.id===id);if(p&&!sys.sellRate){sys.sellRate=p.low;document.getElementById('sysSellRate').value=p.low.toFixed(2)}renderProductList(sys);calcSystem()}
+function selectTopcoat(id){const sys=getSystem();if(!sys)return;sys.topcoatId=id==='tc-none'?null:id;renderTopcoatList(sys);calcSystem()}
+function calcSystem(sqm){
+  const sys=getSystem();if(!sys)return;
+  const l=parseFloat(document.getElementById('sysLength').value)||0;
+  const w=parseFloat(document.getElementById('sysWidth').value)||1;
+  let sq=sqm?(parseFloat(document.getElementById('sysSqft').value)||0):(l*w);
+  if(!sqm)document.getElementById('sysSqft').value=sq;
+  const sr=parseFloat(document.getElementById('sysSellRate').value)||0;
+  const pr=sq*sr;document.getElementById('sysPrice').textContent=fmt(pr);
+  sys.areaName=document.getElementById('sysArea').value.trim();sys.length=l;sys.width=w;sys.sqft=sq;sys.sellRate=sr;sys.notes=document.getElementById('sysNotes').value.trim();
+  const prod=PRODUCTS.find(p=>p.id===sys.productId);const tc=TOPCOATS.find(t=>t.id===sys.topcoatId);
+  const mc=(prod?prod.cost*sq:0)+(tc?tc.cost*sq:0);const mg=pr>0?((pr-mc)/pr*100):0;const pf=pr-mc;
+  document.getElementById('sysStats').innerHTML='<div class="sx hl"><div class="sl">System Price</div><div class="sv">'+fmt(pr)+'</div></div><div class="sx"><div class="sl">Material Cost</div><div class="sv" style="color:var(--comp)">'+fmt(mc)+'</div></div><div class="sx"><div class="sl">Gross Profit</div><div class="sv" style="color:var(--success)">'+fmt(pf)+'</div></div><div class="sx"><div class="sl">Margin</div><div class="sv" style="color:'+(mg>=50?'var(--success)':mg>=30?'var(--accent)':'var(--comp)')+'">'+mg.toFixed(1)+'%</div></div>';
 }
-
-function renderProductList(sys) {
-  const prods = seriesFilter==='All' ? PRODUCTS : PRODUCTS.filter(p=>p.series===seriesFilter);
-  document.getElementById('prodList').innerHTML = prods.map(p => {
-    const sel = sys.productId===p.id;
-    return '<div class="prod-option'+(sel?' sel':'')+'" onclick="selectProduct(\''+p.id+'\')">'+
-      '<div><div class="prod-name">'+p.name+'</div><div class="prod-sku">'+p.sku+' &bull; '+p.series+'</div></div>'+
-      '<div class="prod-prices"><div class="cost">'+fmt(p.cost)+'/sqft</div><div class="sell">'+fmt(p.low)+' &ndash; '+fmt(p.mid)+'</div></div></div>';
-  }).join('');
-}
-
-function renderTopcoatList(sys) {
-  document.getElementById('tcList').innerHTML = TOPCOATS.map(t => {
-    const sel = (sys.topcoatId||'tc-none')===t.id;
-    return '<div class="prod-option'+(sel?' sel':'')+'" onclick="selectTopcoat(\''+t.id+'\')">'+
-      '<div><div class="prod-name">'+t.name+'</div>'+(t.desc?'<div class="prod-sku">'+t.desc+'</div>':'')+'</div>'+
-      '<div class="prod-prices"><div class="cost">'+(t.cost>0?fmt(t.cost)+'/sqft':'&mdash;')+'</div></div></div>';
-  }).join('');
-}
-
-function selectProduct(id) {
-  const sys = getSystem();
-  if (!sys) return;
-  sys.productId = id;
-  const prod = PRODUCTS.find(p=>p.id===id);
-  if (prod && (!sys.sellRate || sys.sellRate===0)) {
-    sys.sellRate = prod.low;
-    document.getElementById('sysSellRate').value = prod.low.toFixed(2);
-  }
-  renderProductList(sys);
-  calcSystem();
-}
-
-function selectTopcoat(id) {
-  const sys = getSystem();
-  if (!sys) return;
-  sys.topcoatId = id==='tc-none'?null:id;
-  renderTopcoatList(sys);
-  calcSystem();
-}
-
-function calcSystem(sqftManual) {
-  const sys = getSystem();
-  if (!sys) return;
-
-  const length = parseFloat(document.getElementById('sysLength').value)||0;
-  const width = parseFloat(document.getElementById('sysWidth').value)||1;
-  let sqft;
-
-  if (sqftManual) {
-    sqft = parseFloat(document.getElementById('sysSqft').value)||0;
-  } else {
-    sqft = length * width;
-    document.getElementById('sysSqft').value = sqft;
-  }
-
-  const sellRate = parseFloat(document.getElementById('sysSellRate').value)||0;
-  const price = sqft * sellRate;
-  document.getElementById('sysPrice').textContent = fmt(price);
-
-  // Save to state
-  sys.areaName = document.getElementById('sysArea').value.trim();
-  sys.length = length;
-  sys.width = width;
-  sys.sqft = sqft;
-  sys.sellRate = sellRate;
-  sys.notes = document.getElementById('sysNotes').value.trim();
-
-  // Stats
-  const prod = PRODUCTS.find(p=>p.id===sys.productId);
-  const tc = TOPCOATS.find(t=>t.id===sys.topcoatId);
-  const matCost = (prod?prod.cost*sqft:0) + (tc?tc.cost*sqft:0);
-  const margin = price>0 ? ((price-matCost)/price*100) : 0;
-  const profit = price - matCost;
-
-  document.getElementById('sysStats').innerHTML =
-    '<div class="sx hl"><div class="sl">System Price</div><div class="sv">'+fmt(price)+'</div></div>'+
-    '<div class="sx"><div class="sl">Material Cost</div><div class="sv" style="color:var(--r)">'+fmt(matCost)+'</div></div>'+
-    '<div class="sx"><div class="sl">Gross Profit</div><div class="sv" style="color:var(--g)">'+fmt(profit)+'</div></div>'+
-    '<div class="sx"><div class="sl">Margin</div><div class="sv" style="color:'+(margin>=50?'var(--g)':margin>=30?'var(--o)':'var(--r)')+'">'+margin.toFixed(1)+'%</div></div>';
-}
-
-function saveSystem() {
-  calcSystem();
-  saveDB(db);
-  renderBreadcrumb();
-  toast('Saved','System saved.');
-}
-
-function newSystem() {
-  const est = getEstimate();
-  if (!est) return;
-  const sys = { id:uid(), areaName:'', length:0, width:1, sqft:0, productId:null, sellRate:0, topcoatId:null, notes:'' };
-  est.systems.push(sys);
-  saveDB(db);
-  goSystem(sys.id);
-}
-
-function confirmDeleteSystem() {
-  const est = getEstimate();
-  if (!est) return;
-  openConfirm('Delete System','Remove this area from the estimate?',() => {
-    est.systems = est.systems.filter(s=>s.id!==nav.systemId);
-    saveDB(db);
-    goEstimate(nav.estimateId);
-    toast('Deleted','System removed.');
-  });
-}
+function saveSystem(){calcSystem();saveDB(db);renderBreadcrumb();toast('Saved','Area saved.')}
+function newSystem(){const est=getEstimate();if(!est)return;const sys={id:uid(),areaName:'',length:0,width:1,sqft:0,productId:null,sellRate:0,topcoatId:null,notes:''};est.systems.push(sys);saveDB(db);goSystem(sys.id)}
+function confirmDeleteSystem(){const est=getEstimate();if(!est)return;openConfirm('Remove Area','Remove this area from the estimate?',()=>{est.systems=est.systems.filter(s=>s.id!==nav.systemId);saveDB(db);goEstimate(nav.estimateId);toast('Removed','Area removed.')})}
 
 // ═══════════════════════════════════════════════════════════
-// SECTION 9: MODALS & TOAST
+// MODALS / TOAST / IMPORT-EXPORT
 // ═══════════════════════════════════════════════════════════
-
-function openConfirm(title, msg, onYes) {
-  document.getElementById('confirmTitle').textContent = title;
-  document.getElementById('confirmMsg').textContent = msg;
-  document.getElementById('confirmYes').onclick = () => { closeConfirm(); onYes(); };
-  document.getElementById('confirmModal').classList.add('active');
-}
-function closeConfirm() { document.getElementById('confirmModal').classList.remove('active'); }
-function openExport() { document.getElementById('exportModal').classList.add('active'); }
-function closeExport() { document.getElementById('exportModal').classList.remove('active'); }
-function openImport() { document.getElementById('importModal').classList.add('active'); }
-function closeImport() { document.getElementById('importModal').classList.remove('active'); }
-
-function toast(t,m) {
-  const el=document.getElementById('toast');
-  document.getElementById('toastT').textContent=t;
-  document.getElementById('toastM').textContent=m;
-  el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),3000);
-}
+function openConfirm(t,m,fn){document.getElementById('confirmTitle').textContent=t;document.getElementById('confirmMsg').textContent=m;document.getElementById('confirmYes').onclick=()=>{closeConfirm();fn()};document.getElementById('confirmModal').classList.add('active')}
+function closeConfirm(){document.getElementById('confirmModal').classList.remove('active')}
+function openExport(){document.getElementById('exportModal').classList.add('active')}
+function closeExport(){document.getElementById('exportModal').classList.remove('active')}
+function openImport(){document.getElementById('importModal').classList.add('active')}
+function closeImport(){document.getElementById('importModal').classList.remove('active')}
+function toast(t,m){const el=document.getElementById('toast');document.getElementById('toastT').textContent=t;document.getElementById('toastM').textContent=m;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000)}
+function doExport(){const b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='coatings-estimator-'+new Date().toISOString().slice(0,10)+'.json';a.click();closeExport();toast('Exported','Download started.')}
+function doImport(){const f=document.getElementById('importFile').files[0];if(!f){toast('Error','Select a file.');return}const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d.records&&Array.isArray(d.records)){db=d;saveDB(db);closeImport();goHome();toast('Imported',db.records.length+' records loaded.')}else{toast('Error','Invalid format.')}}catch{toast('Error','Could not parse file.')}};r.readAsText(f)}
 
 // ═══════════════════════════════════════════════════════════
-// SECTION 10: IMPORT / EXPORT
+// INIT
 // ═══════════════════════════════════════════════════════════
-
-function doExport() {
-  const blob = new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'coatings-estimator-'+new Date().toISOString().slice(0,10)+'.json';
-  a.click();
-  closeExport();
-  toast('Exported','Data downloaded as JSON.');
-}
-
-function doImport() {
-  const file = document.getElementById('importFile').files[0];
-  if (!file) { toast('Error','No file selected.'); return; }
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      const imported = JSON.parse(e.target.result);
-      if (imported.records && Array.isArray(imported.records)) {
-        db = imported;
-        saveDB(db);
-        closeImport();
-        goHome();
-        toast('Imported','Data loaded — '+db.records.length+' records.');
-      } else {
-        toast('Error','Invalid file format.');
-      }
-    } catch { toast('Error','Could not parse file.'); }
-  };
-  reader.readAsText(file);
-}
-
-// ═══════════════════════════════════════════════════════════
-// SECTION 11: INITIALIZATION
-// ═══════════════════════════════════════════════════════════
-
-renderHome();
-renderBreadcrumb();
-
+renderHome();renderBreadcrumb();
 </script>
 </body>
 </html>

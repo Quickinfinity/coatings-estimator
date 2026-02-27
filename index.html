@@ -6,7 +6,7 @@
 <title>Coatings Estimator — The Concrete Protector</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Coatings%20Estimator%22%2C%22short_name%22%3A%22CE%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2309090b%22%2C%22theme_color%22%3A%22%23f59e0b%22%7D">
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Coatings%20Estimator%22%2C%22short_name%22%3A%22CE%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2316161a%22%2C%22theme_color%22%3A%22%23f59e0b%22%7D">
 <meta name="theme-color" content="#f59e0b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,51 +16,51 @@
    ═══════════════════════════════════════════════════════ */
 :root {
   /* Surface layers */
-  --bg: #09090b;
-  --s1: #111113;
-  --s2: #18181b;
-  --s3: #1f1f23;
-  --s4: #27272a;
+  --bg: #16161a;
+  --s1: #1c1c22;
+  --s2: #232329;
+  --s3: #2a2a32;
+  --s4: #35353d;
   /* Borders */
-  --b1: rgba(255,255,255,.06);
-  --b2: rgba(255,255,255,.1);
-  --b3: rgba(255,255,255,.15);
+  --b1: rgba(255,255,255,.08);
+  --b2: rgba(255,255,255,.13);
+  --b3: rgba(255,255,255,.18);
   /* Text */
-  --t1: #fafafa;
-  --t2: #a1a1aa;
-  --t3: #71717a;
-  --t4: #52525b;
+  --t1: #f4f4f5;
+  --t2: #a8a8b3;
+  --t3: #7e7e8a;
+  --t4: #5c5c66;
   /* Accent */
   --accent: #f59e0b;
   --accent2: #fbbf24;
-  --accent-glow: rgba(245,158,11,.15);
-  --accent-glow2: rgba(245,158,11,.08);
+  --accent-glow: rgba(245,158,11,.18);
+  --accent-glow2: rgba(245,158,11,.10);
   /* Pipeline */
-  --lead: #3b82f6;
-  --lead-soft: rgba(59,130,246,.12);
-  --est: #f97316;
-  --est-soft: rgba(249,115,22,.12);
-  --proj: #10b981;
-  --proj-soft: rgba(16,185,129,.12);
-  --comp: #ef4444;
-  --comp-soft: rgba(239,68,68,.12);
+  --lead: #5b9bf5;
+  --lead-soft: rgba(91,155,245,.14);
+  --est: #fb923c;
+  --est-soft: rgba(251,146,60,.14);
+  --proj: #34d399;
+  --proj-soft: rgba(52,211,153,.14);
+  --comp: #f87171;
+  --comp-soft: rgba(248,113,113,.14);
   /* Semantic */
-  --success: #10b981;
-  --danger: #ef4444;
-  --info: #3b82f6;
+  --success: #34d399;
+  --danger: #f87171;
+  --info: #5b9bf5;
   /* Glass */
-  --glass: rgba(255,255,255,.03);
-  --glass2: rgba(255,255,255,.05);
+  --glass: rgba(255,255,255,.04);
+  --glass2: rgba(255,255,255,.07);
   /* Radius */
   --r-sm: 8px;
   --r-md: 12px;
   --r-lg: 16px;
   --r-xl: 20px;
   /* Shadow */
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
-  --shadow-md: 0 4px 12px rgba(0,0,0,.4);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,.5);
-  --shadow-glow: 0 0 40px rgba(245,158,11,.06);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.25);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.4);
+  --shadow-glow: 0 0 40px rgba(245,158,11,.08);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -79,7 +79,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
    ═══════════════════════════════════════════════════════ */
 .hdr{
   position:sticky;top:0;z-index:100;
-  background:rgba(9,9,11,.82);
+  background:rgba(22,22,26,.85);
   backdrop-filter:blur(20px) saturate(1.4);
   -webkit-backdrop-filter:blur(20px) saturate(1.4);
   border-bottom:1px solid var(--b1);

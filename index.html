@@ -949,16 +949,16 @@ const PRODUCTS=[
   {id:'i503',sku:'I-503',name:'Poly-Hard Quartz PP-90',series:'I-Series',cat:'Specialty',cost:3.06,low:8.50,mid:16.00},
 ];
 const TOPCOATS=[
-  {id:'tc-none',name:'None',cost:0,desc:'No additional top coat'},
-  {id:'ut4451',sku:'UT-4451',name:'Protectorthane (Interior)',cost:0.37,desc:'Interior polyurethane'},
-  {id:'tj3113',sku:'TJ-3113',name:'Acrylic Floor Finish',cost:0.02,desc:'Economical acrylic'},
-  {id:'ut4501',sku:'UT-4501',name:'WB 421 Gloss Urethane',cost:0.42,desc:'Water-based high-gloss'},
-  {id:'ut4499',sku:'UT-4499',name:'WB 221 Satin Urethane',cost:0.50,desc:'Water-based satin'},
-  {id:'en6303',sku:'EN-6303',name:'Epoxy Neat Coat',cost:0.79,desc:'Smooth epoxy finish'},
-  {id:'ut4515',sku:'UT-4515',name:'Perfect Poly 90',cost:0.65,desc:'Premium polyaspartic'},
-  {id:'ut4304',sku:'UT-4304',name:'Graniseal',cost:1.25,desc:'Graniflex sealer'},
-  {id:'ut4463',sku:'UT-4463',name:'Grey Protectorthane',cost:0.59,desc:'Grey-tinted protectorthane'},
-  {id:'ut4513',sku:'UT-4513',name:'SLV 90',cost:0.85,desc:'SLV polyaspartic'},
+  {id:'tc-none',name:'None',cost:0,desc:'No additional top coat',unitPrice:0,coverage:1},
+  {id:'ut4451',sku:'UT-4451',name:'Protectorthane (Interior)',cost:0.37,desc:'Interior polyurethane',unitPrice:110.67,coverage:300},
+  {id:'tj3113',sku:'TJ-3113',name:'Acrylic Floor Finish',cost:0.02,desc:'Economical acrylic',unitPrice:36.23,coverage:2000},
+  {id:'ut4501',sku:'UT-4501',name:'WB 421 Gloss Urethane',cost:0.42,desc:'Water-based high-gloss',unitPrice:126.25,coverage:300},
+  {id:'ut4499',sku:'UT-4499',name:'WB 221 Satin Urethane',cost:0.50,desc:'Water-based satin',unitPrice:151.35,coverage:300},
+  {id:'en6303',sku:'EN-6303',name:'Epoxy Neat Coat',cost:0.79,desc:'Smooth epoxy finish',unitPrice:78.89,coverage:100},
+  {id:'ut4515',sku:'UT-4515',name:'Perfect Poly 90',cost:0.65,desc:'Premium polyaspartic',unitPrice:129.39,coverage:200},
+  {id:'ut4304',sku:'UT-4304',name:'Graniseal',cost:1.25,desc:'Graniflex sealer',unitPrice:124.92,coverage:100},
+  {id:'ut4463',sku:'UT-4463',name:'Grey Protectorthane',cost:0.59,desc:'Grey-tinted protectorthane',unitPrice:129.79,coverage:220},
+  {id:'ut4513',sku:'UT-4513',name:'SLV 90',cost:0.85,desc:'SLV polyaspartic',unitPrice:170.13,coverage:200},
 ];
 const REPAIRS=[
   {id:'si1652',sku:'SI-1652',name:'Quick Patch',cost:0.77,unit:'sqft'},
@@ -976,39 +976,64 @@ const ADDONS=[
   {id:'a606',sku:'EC-4209',name:'Easy Cove 6"',cost:8.61,low:14.00,mid:18.00,unit:'lnft'},
   {id:'a607',sku:'MG-2519',name:'Flooring Logo',cost:17.00,low:40.00,mid:65.00,unit:'each'},
 ];
-// Ingredient breakdowns per system (coverage = sqft per unit)
+// Ingredient breakdowns per system — all data from System Costing Jobber spreadsheet
+// coverage = sqft per purchasable unit, costPer = price per unit (from YEILD tab)
 const INGREDIENTS={
-  'c101':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Wood Grain Tool Kit',sku:'TK-WG',coverage:500,unit:'kit',costPer:85},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Exterior Acrylic Sealer',sku:'SL-200',coverage:250,unit:'gal',costPer:68}],
-  'c102':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Wood Grain Tool Kit',sku:'TK-WG',coverage:500,unit:'kit',costPer:85},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Interior Acrylic Sealer',sku:'SL-201',coverage:200,unit:'gal',costPer:78}],
-  'c103':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Flagstone Pattern Tool',sku:'TK-FS',coverage:500,unit:'kit',costPer:95},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Exterior Acrylic Sealer',sku:'SL-200',coverage:250,unit:'gal',costPer:68}],
-  'c104':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Flagstone Pattern Tool',sku:'TK-FS',coverage:500,unit:'kit',costPer:95},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Interior Acrylic Sealer',sku:'SL-201',coverage:200,unit:'gal',costPer:78}],
-  'c105':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Slate Stamp Set',sku:'TK-SS',coverage:500,unit:'kit',costPer:90},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Exterior Acrylic Sealer',sku:'SL-200',coverage:250,unit:'gal',costPer:68}],
-  'c106':[{name:'Concrete Stain Base',sku:'CS-100',coverage:250,unit:'gal',costPer:45},{name:'Slate Stamp Set',sku:'TK-SS',coverage:500,unit:'kit',costPer:90},{name:'Antiquing Wash',sku:'AW-100',coverage:300,unit:'gal',costPer:35},{name:'Interior Acrylic Sealer',sku:'SL-201',coverage:200,unit:'gal',costPer:78}],
-  'm201':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Metallic Marble Stain',sku:'MM-201',coverage:160,unit:'gal',costPer:135},{name:'High-Gloss Urethane',sku:'UT-4501',coverage:350,unit:'gal',costPer:148}],
-  'm202':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Metallic Marble Stain',sku:'MM-201',coverage:160,unit:'gal',costPer:135},{name:'Satin Urethane',sku:'UT-4499',coverage:350,unit:'gal',costPer:155}],
-  'm203':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Metallic Marble Stain',sku:'MM-201',coverage:160,unit:'gal',costPer:135},{name:'Acrylic Finish',sku:'TJ-3113',coverage:400,unit:'gal',costPer:42}],
-  'm204':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Italian Marble Epoxy',sku:'IM-204',coverage:100,unit:'gal',costPer:165},{name:'Acrylic Finish',sku:'TJ-3113',coverage:400,unit:'gal',costPer:42}],
-  'm205':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Italian Marble Epoxy',sku:'IM-204',coverage:100,unit:'gal',costPer:165},{name:'High-Gloss Urethane',sku:'UT-4501',coverage:350,unit:'gal',costPer:148}],
-  'm206':[{name:'Epoxy Primer',sku:'EP-100',coverage:200,unit:'gal',costPer:95},{name:'Italian Marble Epoxy',sku:'IM-204',coverage:100,unit:'gal',costPer:165},{name:'Satin Urethane',sku:'UT-4499',coverage:350,unit:'gal',costPer:155}],
-  'g301':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Vinyl Flake (Broadcast)',sku:'FK-100',coverage:40,unit:'bucket',costPer:55},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
-  'g302':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Vinyl Flake (Broadcast)',sku:'FK-100',coverage:40,unit:'bucket',costPer:55},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
-  'g303':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Vinyl Flake (Neat Coat)',sku:'FK-101',coverage:80,unit:'bucket',costPer:55},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
-  'g304':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Vinyl Flake (Broadcast)',sku:'FK-100',coverage:40,unit:'bucket',costPer:55},{name:'Protectorthane',sku:'UT-4451',coverage:350,unit:'gal',costPer:130}],
-  'g305':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (#1)',sku:'QZ-100',coverage:25,unit:'bag',costPer:28},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
-  'g306':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (#1)',sku:'QZ-100',coverage:25,unit:'bag',costPer:28},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
-  'g307':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (Neat)',sku:'QZ-101',coverage:50,unit:'bag',costPer:28},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
-  'g308':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (#1)',sku:'QZ-100',coverage:25,unit:'bag',costPer:28},{name:'Protectorthane',sku:'UT-4451',coverage:350,unit:'gal',costPer:130}],
-  'g309':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (#2)',sku:'QZ-200',coverage:20,unit:'bag',costPer:32},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
-  'g310':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Quartz Aggregate (#2)',sku:'QZ-200',coverage:20,unit:'bag',costPer:32},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
-  'g311':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Marble-Flex Flake',sku:'FK-300',coverage:40,unit:'bucket',costPer:65},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
-  'g312':[{name:'Graniflex Base',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Graniflex Base (Flex Coat)',sku:'GF-100',coverage:50,unit:'kit',costPer:89},{name:'Perfect Poly 90 (Solid)',sku:'UT-4515',coverage:350,unit:'gal',costPer:228},{name:'Perfect Poly 90 (Design)',sku:'UT-4515',coverage:700,unit:'gal',costPer:228},{name:'Marble Spray',sku:'MQ-604L',coverage:100,unit:'can',costPer:15},{name:'Perfect Poly 90 (Clear)',sku:'UT-4515',coverage:350,unit:'gal',costPer:228},{name:'Poly Fusion Color Pak',sku:'UT-4421',coverage:80,unit:'qt',costPer:75}],
-  'e401':[{name:'Protector Epoxy',sku:'PE-100',coverage:160,unit:'gal',costPer:125},{name:'Vinyl Flake (Broadcast)',sku:'FK-100',coverage:40,unit:'bucket',costPer:55},{name:'Protectorthane',sku:'UT-4451',coverage:350,unit:'gal',costPer:130}],
-  'e402':[{name:'Protector Epoxy',sku:'PE-100',coverage:160,unit:'gal',costPer:125},{name:'Vinyl Flake (Broadcast)',sku:'FK-100',coverage:40,unit:'bucket',costPer:55},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
-  'e403':[{name:'Protector Epoxy',sku:'PE-100',coverage:160,unit:'gal',costPer:125},{name:'Vinyl Flake (Neat Coat)',sku:'FK-101',coverage:80,unit:'bucket',costPer:55},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:160,unit:'gal',costPer:126}],
-  'e404':[{name:'Resinous 123 Epoxy',sku:'R123',coverage:200,unit:'gal',costPer:110},{name:'Acrylic Floor Finish',sku:'TJ-3113',coverage:400,unit:'gal',costPer:42}],
-  'i501':[{name:'SCP Densifier',sku:'SCP-D',coverage:200,unit:'gal',costPer:32},{name:'SCP Guard',sku:'SCP-G',coverage:400,unit:'gal',costPer:28}],
-  'i502':[{name:'Poly-Hard Base',sku:'PH-100',coverage:100,unit:'gal',costPer:165},{name:'Super-Nova Metallic',sku:'SN-100',coverage:150,unit:'gal',costPer:120},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
-  'i503':[{name:'Poly-Hard Base',sku:'PH-100',coverage:100,unit:'gal',costPer:165},{name:'Quartz Aggregate (#1)',sku:'QZ-100',coverage:25,unit:'bag',costPer:28},{name:'Perfect Poly 90',sku:'UT-4515',coverage:350,unit:'gal',costPer:228}],
+  // ── C-Series: Cementitious Overlay ──
+  // Exterior: texture mix(x2) + resin(x2) + pigment(x2) + acrylic shield(x2)
+  'c101':[{name:'CP Texture Mix (2 coats)',sku:'DM-3913',coverage:100,unit:'bag',costPer:29.52},{name:'HD Resin (2 coats)',sku:'DM-5406',coverage:100,unit:'gal',costPer:29.83},{name:'CP Mineral Pigment (2 coats)',sku:'DC-2022',coverage:700,unit:'qt',costPer:31.52},{name:'Acrylic Shield (2 coats)',sku:'SE-2803',coverage:75,unit:'gal',costPer:38.13}],
+  'c103':[{name:'CP Texture Mix (2 coats)',sku:'DM-3913',coverage:100,unit:'bag',costPer:29.52},{name:'HD Resin (2 coats)',sku:'DM-5406',coverage:100,unit:'gal',costPer:29.83},{name:'CP Mineral Pigment (2 coats)',sku:'DC-2022',coverage:700,unit:'qt',costPer:31.52},{name:'Acrylic Shield (2 coats)',sku:'SE-2803',coverage:75,unit:'gal',costPer:38.13}],
+  'c105':[{name:'CP Texture Mix (2 coats)',sku:'DM-3913',coverage:100,unit:'bag',costPer:29.52},{name:'HD Resin (2 coats)',sku:'DM-5406',coverage:100,unit:'gal',costPer:29.83},{name:'CP Mineral Pigment (2 coats)',sku:'DC-2022',coverage:700,unit:'qt',costPer:31.52},{name:'Acrylic Shield (2 coats)',sku:'SE-2803',coverage:75,unit:'gal',costPer:38.13}],
+  // Interior: texture mix(x2) + resin(x2) + pigment(x2) + epoxy neat coat
+  'c102':[{name:'CP Texture Mix (2 coats)',sku:'DM-3913',coverage:100,unit:'bag',costPer:29.52},{name:'HD Resin (2 coats)',sku:'DM-5406',coverage:100,unit:'gal',costPer:29.83},{name:'CP Mineral Pigment (2 coats)',sku:'DC-2022',coverage:700,unit:'qt',costPer:31.52},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:100,unit:'gal',costPer:78.89}],
+  'c104':[{name:'CP Texture Mix (2 coats)',sku:'DM-3913',coverage:100,unit:'bag',costPer:29.52},{name:'HD Resin (2 coats)',sku:'DM-5406',coverage:100,unit:'gal',costPer:29.83},{name:'CP Mineral Pigment (2 coats)',sku:'DC-2022',coverage:700,unit:'qt',costPer:31.52},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:100,unit:'gal',costPer:78.89}],
+  'c106':[{name:'CP Texture Mix (2 coats)',sku:'DM-3913',coverage:100,unit:'bag',costPer:29.52},{name:'HD Resin (2 coats)',sku:'DM-5406',coverage:100,unit:'gal',costPer:29.83},{name:'CP Mineral Pigment (2 coats)',sku:'DC-2022',coverage:700,unit:'qt',costPer:31.52},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:100,unit:'gal',costPer:78.89}],
+  // ── M-Series: Metallic Marble Stain (m201-m203) ──
+  // Neat coat base + neat coat top + metallics + topcoat
+  'm201':[{name:'Epoxy Neat Coat (base)',sku:'EN-6303',coverage:60,unit:'gal',costPer:78.89},{name:'Epoxy Neat Coat (top)',sku:'EN-6303',coverage:60,unit:'gal',costPer:78.89},{name:'Marble Metallics',sku:'MQ-001',coverage:375,unit:'qt',costPer:29.96},{name:'WB 421 Gloss Urethane',sku:'UT-4501',coverage:300,unit:'gal',costPer:126.25}],
+  'm202':[{name:'Epoxy Neat Coat (base)',sku:'EN-6303',coverage:60,unit:'gal',costPer:78.89},{name:'Epoxy Neat Coat (top)',sku:'EN-6303',coverage:60,unit:'gal',costPer:78.89},{name:'Marble Metallics',sku:'MQ-001',coverage:375,unit:'qt',costPer:29.96},{name:'WB 221 Satin Urethane',sku:'UT-4499',coverage:300,unit:'gal',costPer:151.35}],
+  'm203':[{name:'Epoxy Neat Coat (base)',sku:'EN-6303',coverage:60,unit:'gal',costPer:78.89},{name:'Epoxy Neat Coat (top)',sku:'EN-6303',coverage:60,unit:'gal',costPer:78.89},{name:'Marble Metallics',sku:'MQ-001',coverage:375,unit:'qt',costPer:29.96},{name:'Acrylic Floor Finish',sku:'TJ-3113',coverage:2000,unit:'gal',costPer:36.23}],
+  // ── M-Series: Italian Marble Epoxy (m204-m206) ──
+  // NC base + color pak + NC top + metallics + spray + NC clear + topcoat
+  'm204':[{name:'Epoxy Neat Coat (base)',sku:'EN-6303',coverage:100,unit:'gal',costPer:78.89},{name:'Barricade Color Pak',sku:'SE-2839',coverage:450,unit:'qt',costPer:75.78},{name:'Epoxy Neat Coat (top)',sku:'EN-6303',coverage:80,unit:'gal',costPer:78.89},{name:'Marble Metallics',sku:'MQ-001',coverage:240,unit:'qt',costPer:29.96},{name:'Marble Spray',sku:'MQ-604L',coverage:100,unit:'can',costPer:14.97},{name:'Epoxy Neat Coat (clear)',sku:'EN-6303',coverage:150,unit:'gal',costPer:78.89},{name:'Acrylic Floor Finish',sku:'TJ-3113',coverage:2000,unit:'gal',costPer:36.23}],
+  'm205':[{name:'Epoxy Neat Coat (base)',sku:'EN-6303',coverage:100,unit:'gal',costPer:78.89},{name:'Barricade Color Pak',sku:'SE-2839',coverage:450,unit:'qt',costPer:75.78},{name:'Epoxy Neat Coat (top)',sku:'EN-6303',coverage:80,unit:'gal',costPer:78.89},{name:'Marble Metallics',sku:'MQ-001',coverage:240,unit:'qt',costPer:29.96},{name:'Marble Spray',sku:'MQ-604L',coverage:100,unit:'can',costPer:14.97},{name:'Epoxy Neat Coat (clear)',sku:'EN-6303',coverage:150,unit:'gal',costPer:78.89},{name:'WB 421 Gloss Urethane',sku:'UT-4501',coverage:300,unit:'gal',costPer:126.25}],
+  'm206':[{name:'Epoxy Neat Coat (base)',sku:'EN-6303',coverage:100,unit:'gal',costPer:78.89},{name:'Barricade Color Pak',sku:'SE-2839',coverage:450,unit:'qt',costPer:75.78},{name:'Epoxy Neat Coat (top)',sku:'EN-6303',coverage:80,unit:'gal',costPer:78.89},{name:'Marble Metallics',sku:'MQ-001',coverage:240,unit:'qt',costPer:29.96},{name:'Marble Spray',sku:'MQ-604L',coverage:100,unit:'can',costPer:14.97},{name:'Epoxy Neat Coat (clear)',sku:'EN-6303',coverage:150,unit:'gal',costPer:78.89},{name:'WB 221 Satin Urethane',sku:'UT-4499',coverage:300,unit:'gal',costPer:151.35}],
+  // ── G-Series: Graniflex Flake (g301-g304) ──
+  // Permaflex prime + broadcast + flake + topcoat
+  'g301':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Stone Blend Flake',sku:'CF-STN1/4',coverage:7,unit:'lb',costPer:2.75},{name:'Perfect Poly 90',sku:'UT-4515',coverage:100,unit:'gal',costPer:129.39}],
+  'g302':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Stone Blend Flake',sku:'CF-STN1/4',coverage:7,unit:'lb',costPer:2.75},{name:'Graniseal',sku:'UT-4304',coverage:100,unit:'gal',costPer:124.92}],
+  'g303':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Stone Blend Flake',sku:'CF-STN1/4',coverage:7,unit:'lb',costPer:2.75},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:100,unit:'gal',costPer:78.89}],
+  'g304':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Stone Blend Flake',sku:'CF-STN1/4',coverage:7,unit:'lb',costPer:2.75},{name:'Protectorthane',sku:'UT-4451',coverage:100,unit:'gal',costPer:110.67}],
+  // ── G-Series: GraniQuartz Single (g305-g308) ──
+  // Permaflex prime + broadcast + quartz + topcoat (80 sqft/gal for quartz systems)
+  'g305':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Decorative Quartz',sku:'CQ-BLD',coverage:2,unit:'lb',costPer:0.60},{name:'Perfect Poly 90',sku:'UT-4515',coverage:80,unit:'gal',costPer:129.39}],
+  'g306':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Decorative Quartz',sku:'CQ-BLD',coverage:2,unit:'lb',costPer:0.60},{name:'Graniseal',sku:'UT-4304',coverage:80,unit:'gal',costPer:124.92}],
+  'g307':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Decorative Quartz',sku:'CQ-BLD',coverage:2,unit:'lb',costPer:0.60},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:80,unit:'gal',costPer:78.89}],
+  'g308':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Decorative Quartz',sku:'CQ-BLD',coverage:2,unit:'lb',costPer:0.60},{name:'Protectorthane',sku:'UT-4451',coverage:80,unit:'gal',costPer:110.67}],
+  // ── G-Series: GraniQuartz Double (g309-g310) ──
+  // Permaflex prime + broadcast + quartz + PP90 intercoat + quartz + final topcoat
+  'g309':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Decorative Quartz (1st)',sku:'CQ-BLD',coverage:2,unit:'lb',costPer:0.60},{name:'Perfect Poly 90 (intercoat)',sku:'UT-4515',coverage:175,unit:'gal',costPer:129.39},{name:'Decorative Quartz (2nd)',sku:'CQ-BLD',coverage:2,unit:'lb',costPer:0.60},{name:'Perfect Poly 90 (final)',sku:'UT-4515',coverage:100,unit:'gal',costPer:129.39}],
+  'g310':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Decorative Quartz (1st)',sku:'CQ-BLD',coverage:2,unit:'lb',costPer:0.60},{name:'Perfect Poly 90 (intercoat)',sku:'UT-4515',coverage:175,unit:'gal',costPer:129.39},{name:'Decorative Quartz (2nd)',sku:'CQ-BLD',coverage:2,unit:'lb',costPer:0.60},{name:'Graniseal',sku:'UT-4304',coverage:150,unit:'gal',costPer:124.92}],
+  // ── G-Series: Marble-Flex (g311) ──
+  // Permaflex prime + broadcast + spray + PP90 (2 coats)
+  'g311':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (broadcast)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Marble Spray',sku:'MQ-604L',coverage:100,unit:'can',costPer:14.97},{name:'Perfect Poly 90 (seal)',sku:'UT-4515',coverage:175,unit:'gal',costPer:129.39},{name:'Perfect Poly 90 (topcoat)',sku:'UT-4515',coverage:122,unit:'gal',costPer:129.39}],
+  // ── G-Series: Marble-Flex w/ Solid Poly 90 (g312) ──
+  // From system pricing: prime + flex coat + PP90 solid + PP90 design + spray + PP90 clear + color pak
+  'g312':[{name:'Permaflex (prime)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Permaflex (flex coat)',sku:'PFA-1010',coverage:220,unit:'gal',costPer:99.55},{name:'Perfect Poly 90 (solid)',sku:'UT-4515',coverage:200,unit:'gal',costPer:129.39},{name:'Perfect Poly 90 (design)',sku:'UT-4515',coverage:400,unit:'gal',costPer:129.39},{name:'Marble Spray',sku:'MQ-604L',coverage:100,unit:'can',costPer:14.97},{name:'Perfect Poly 90 (clear)',sku:'UT-4515',coverage:200,unit:'gal',costPer:129.39},{name:'Poly Fusion Color Pak',sku:'UT-4421',coverage:450,unit:'qt',costPer:74.77}],
+  // ── E-Series: Protector-Flake (e401-e403) ──
+  // Base coat epoxy + flake + topcoat
+  'e401':[{name:'Base Coat Epoxy',sku:'EB-6127',coverage:200,unit:'gal',costPer:87.82},{name:'Stone Blend Flake',sku:'CF-STN1/4',coverage:7,unit:'lb',costPer:2.75},{name:'Protectorthane',sku:'UT-4451',coverage:100,unit:'gal',costPer:110.67}],
+  'e402':[{name:'Base Coat Epoxy',sku:'EB-6127',coverage:200,unit:'gal',costPer:87.82},{name:'Stone Blend Flake',sku:'CF-STN1/4',coverage:7,unit:'lb',costPer:2.75},{name:'Perfect Poly 90',sku:'UT-4515',coverage:100,unit:'gal',costPer:129.39}],
+  'e403':[{name:'Base Coat Epoxy',sku:'EB-6127',coverage:200,unit:'gal',costPer:87.82},{name:'Stone Blend Flake',sku:'CF-STN1/4',coverage:7,unit:'lb',costPer:2.75},{name:'Epoxy Neat Coat',sku:'EN-6303',coverage:125,unit:'gal',costPer:78.89}],
+  // ── E-Series: Resinous 123 (e404) ──
+  // Base coat epoxy + 2 coats grey protectorthane
+  'e404':[{name:'Base Coat Epoxy',sku:'EB-6127',coverage:220,unit:'gal',costPer:87.82},{name:'Grey Protectorthane (coat 1)',sku:'UT-4463',coverage:400,unit:'gal',costPer:129.79},{name:'Grey Protectorthane (coat 2)',sku:'UT-4463',coverage:400,unit:'gal',costPer:129.79}],
+  // ── I-Series: SCP Polish (i501) ──
+  'i501':[{name:'SCP Cutter',sku:'SCP-6103',coverage:300,unit:'gal',costPer:48.53},{name:'SCP Hardener',sku:'SCP-6107',coverage:400,unit:'gal',costPer:27.04},{name:'Hydro Polish',sku:'SCP-6169',coverage:750,unit:'gal',costPer:26.64},{name:'SCP Sealer',sku:'SCP-6113',coverage:2000,unit:'gal',costPer:85.57}],
+  // ── I-Series: Poly-Hard Super-Nova (i502) ──
+  'i502':[{name:'PolyHard',sku:'IC-3018',coverage:60,unit:'kit',costPer:113.88},{name:'Super Nova',sku:'EM-4491',coverage:150,unit:'gal',costPer:143.37}],
+  // ── I-Series: Poly-Hard Quartz PP-90 (i503) ──
+  'i503':[{name:'PolyHard',sku:'IC-3018',coverage:60,unit:'kit',costPer:113.88},{name:'Decorative Quartz',sku:'CQ-BLD',coverage:2,unit:'lb',costPer:0.60},{name:'Perfect Poly 90',sku:'UT-4515',coverage:150,unit:'gal',costPer:129.39}],
 };
 const STATUSES=[{id:'lead',label:'Lead',color:'lead'},{id:'estimate',label:'Estimate',color:'est'},{id:'project',label:'Project',color:'proj'},{id:'completed',label:'Completed',color:'comp'}];
 const FOLDER_ICONS={lead:'&#9993;',estimate:'&#9997;',project:'&#9874;',completed:'&#10003;'};
@@ -1336,9 +1361,9 @@ function getSystemIngredients(sys){
     const unitsNeeded=Math.ceil(sqft/ing.coverage);
     items.push({name:ing.name,sku:ing.sku,qty:unitsNeeded,unit:ing.unit,costPer:ing.costPer,totalCost:unitsNeeded*ing.costPer,source:'system',area:sys.areaName||'Unnamed'});
   })}
-  // Top coat
+  // Top coat (uses real coverage rates from YEILD tab)
   const tc=TOPCOATS.find(t=>t.id===sys.topcoatId);
-  if(tc&&tc.cost>0){items.push({name:tc.name,sku:tc.sku||'',qty:Math.ceil(sqft/350),unit:'gal',costPer:tc.cost*350,totalCost:tc.cost*sqft,source:'topcoat',area:sys.areaName||'Unnamed'})}
+  if(tc&&tc.cost>0){const tcCov=tc.coverage||200;const tcQty=Math.ceil(sqft/tcCov);const tcUnit=tc.unitPrice||0;items.push({name:tc.name,sku:tc.sku||'',qty:tcQty,unit:'gal',costPer:tcUnit,totalCost:tcQty*tcUnit,source:'topcoat',area:sys.areaName||'Unnamed'})}
   // Repairs
   if(sys.repairs){Object.entries(sys.repairs).forEach(([id,r])=>{if(r.on&&r.qty>0){const def=REPAIRS.find(x=>x.id===id);if(def)items.push({name:def.name,sku:def.sku,qty:r.qty,unit:def.unit,costPer:def.cost,totalCost:def.cost*r.qty,source:'repair',area:sys.areaName||'Unnamed'})}})}
   // Add-ons

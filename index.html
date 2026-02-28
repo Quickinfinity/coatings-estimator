@@ -877,6 +877,7 @@ body.sb-collapsed .hdr,body.sb-collapsed .breadcrumb,body.sb-collapsed .mc{margi
 <!-- HOME -->
 <div class="screen ac" id="scr-home">
   <div class="home-greeting" id="homeGreeting"></div>
+  <div style="margin-bottom:16px;position:relative"><input type="text" id="globalSearch" placeholder="Search all records..." oninput="globalSearchRender()" style="width:100%;padding-right:32px"><div id="globalSearchResults" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--s2);border:1px solid var(--b2);border-radius:10px;max-height:300px;overflow-y:auto;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,.4)"></div></div>
   <div class="wf-grid" id="workflowCards"></div>
   <div id="overdueAlert"></div>
   <div class="home-bottom">
@@ -944,26 +945,26 @@ body.sb-collapsed .hdr,body.sb-collapsed .breadcrumb,body.sb-collapsed .mc{margi
   <div class="cd">
     <div class="ct"><span class="ic ib">&#9786;</span> Contact</div>
     <div class="g2">
-      <div class="fg"><label>First Name</label><input type="text" id="recFirst" placeholder="First name"></div>
-      <div class="fg"><label>Last Name</label><input type="text" id="recLast" placeholder="Last name"></div>
+      <div class="fg"><label>First Name</label><input type="text" id="recFirst" placeholder="First name" autocomplete="given-name" oninput="autoSaveRecord()"></div>
+      <div class="fg"><label>Last Name</label><input type="text" id="recLast" placeholder="Last name" autocomplete="family-name" oninput="autoSaveRecord()"></div>
     </div>
     <div class="g2">
-      <div class="fg"><label>Company</label><input type="text" id="recCompany" placeholder="Company name"></div>
-      <div class="fg"><label>Email</label><input type="email" id="recEmail" placeholder="email@example.com"></div>
+      <div class="fg"><label>Company</label><input type="text" id="recCompany" placeholder="Company name" autocomplete="organization" oninput="autoSaveRecord()"></div>
+      <div class="fg"><label>Email</label><input type="email" id="recEmail" placeholder="email@example.com" autocomplete="email" oninput="autoSaveRecord()"></div>
     </div>
     <div class="g3">
-      <div class="fg"><label>Phone</label><input type="tel" id="recPhone" placeholder="(555) 123-4567"></div>
-      <div class="fg"><label>Type</label><select id="recPhoneType"><option value="cell">Cell</option><option value="home">Home</option><option value="office">Office</option></select></div>
-      <div class="fg"><label>Best Time to Call</label><input type="text" id="recBestTime" placeholder="e.g. After 5pm"></div>
+      <div class="fg"><label>Phone</label><input type="tel" id="recPhone" placeholder="(555) 123-4567" autocomplete="tel" oninput="autoSaveRecord()"></div>
+      <div class="fg"><label>Type</label><select id="recPhoneType" onchange="autoSaveRecord()"><option value="cell">Cell</option><option value="home">Home</option><option value="office">Office</option></select></div>
+      <div class="fg"><label>Best Time to Call</label><input type="text" id="recBestTime" placeholder="e.g. After 5pm" oninput="autoSaveRecord()"></div>
     </div>
     <div id="quickContactBtns" style="display:flex;gap:8px;margin:8px 0 12px"></div>
-    <div class="fg"><label>Address</label><input type="text" id="recAddress" placeholder="Street address"></div>
+    <div class="fg"><label>Address</label><input type="text" id="recAddress" placeholder="Street address" autocomplete="street-address" oninput="autoSaveRecord()"></div>
     <div class="g3">
-      <div class="fg"><label>City</label><input type="text" id="recCity" placeholder="City"></div>
-      <div class="fg"><label>State</label><input type="text" id="recState" placeholder="State"></div>
-      <div class="fg"><label>Zip</label><input type="text" id="recZip" placeholder="Zip code"></div>
+      <div class="fg"><label>City</label><input type="text" id="recCity" placeholder="City" autocomplete="address-level2" oninput="autoSaveRecord()"></div>
+      <div class="fg"><label>State</label><input type="text" id="recState" placeholder="ST" maxlength="2" style="text-transform:uppercase" autocomplete="address-level1" oninput="autoSaveRecord()"></div>
+      <div class="fg"><label>Zip</label><input type="text" id="recZip" placeholder="Zip" inputmode="numeric" autocomplete="postal-code" oninput="autoSaveRecord()"></div>
     </div>
-    <div class="fg"><label>Notes</label><textarea id="recNotes" placeholder="Additional notes..."></textarea></div>
+    <div class="fg"><label>Notes</label><textarea id="recNotes" placeholder="Additional notes..." oninput="autoSaveRecord()"></textarea></div>
   </div>
   <div class="cd">
     <div class="ct" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span class="ic ior">&#9998;</span> Estimates</div><button class="btn btn-primary" onclick="newEstimate()">+ New Estimate</button></div>
@@ -988,7 +989,8 @@ body.sb-collapsed .hdr,body.sb-collapsed .breadcrumb,body.sb-collapsed .mc{margi
       <button class="btn btn-ghost" onclick="emailProposal()">Email Quote</button>
       <button class="btn btn-ghost" onclick="textProposal()">Text Quote</button>
       <button class="btn btn-success" id="estSaveBtn" onclick="saveEstimate()">Save</button>
-      <button class="btn btn-danger" onclick="confirmDeleteEstimate()">Delete Estimate</button>
+      <button class="btn btn-ghost" onclick="duplicateEstimate()">Duplicate</button>
+      <button class="btn btn-danger" onclick="confirmDeleteEstimate()">Delete</button>
     </div>
   </div>
   <div class="est-total" id="estTotalBar"></div>
@@ -1080,10 +1082,12 @@ body.sb-collapsed .hdr,body.sb-collapsed .breadcrumb,body.sb-collapsed .mc{margi
 
 <!-- SYSTEM EDITOR -->
 <div class="screen" id="scr-system">
+  <div style="margin-bottom:8px"><a href="#" onclick="event.preventDefault();saveSystem();goEstimate(nav.estimateId)" style="font-size:12px;color:var(--accent);text-decoration:none">&larr; Back to Estimate</a></div>
   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
     <div class="sh" style="margin-bottom:0;flex:1" id="sysHeader"></div>
     <div class="btn-row">
       <button class="btn btn-success" onclick="saveSystem()">Save</button>
+      <button class="btn btn-ghost" onclick="duplicateSystem()">Duplicate</button>
       <button class="btn btn-danger" onclick="confirmDeleteSystem()">Remove</button>
     </div>
   </div>
@@ -1092,7 +1096,7 @@ body.sb-collapsed .hdr,body.sb-collapsed .breadcrumb,body.sb-collapsed .mc{margi
     <div class="g3">
       <div class="fg"><label>Area Name</label><input type="text" id="sysArea" placeholder="e.g. Driveway, Patio, Garage" oninput="calcSystem()"></div>
       <div class="fg"><label>Length (ft)</label><input type="number" id="sysLength" value="0" min="0" step="1" oninput="calcSystem()"></div>
-      <div class="fg"><label>Width (ft)</label><input type="number" id="sysWidth" value="1" min="0" step="1" oninput="calcSystem()"></div>
+      <div class="fg"><label>Width (ft)</label><input type="number" id="sysWidth" value="0" min="0" step="1" oninput="calcSystem()"></div>
     </div>
     <div class="g3">
       <div class="fg"><label>Square Feet</label><input type="number" id="sysSqft" value="0" min="0" step="1" oninput="calcSystem(true)"></div>
@@ -1400,6 +1404,10 @@ function getAllTopcoats(){return[...TOPCOATS,...(settings&&settings.customTopcoa
 function getAllRepairs(){return[...REPAIRS,...(settings&&settings.customRepairs||[])]}
 function getAllAddons(){return[...ADDONS,...(settings&&settings.customAddons||[])]}
 
+// ── Auto-save (debounced) ────────────────────────────────
+let _autoSaveTimer=null;
+function autoSave(){clearTimeout(_autoSaveTimer);_autoSaveTimer=setTimeout(()=>{saveDB(db)},800)}
+
 const STATUSES=[{id:'lead',label:'Lead',color:'lead'},{id:'estimate',label:'Estimate',color:'est'},{id:'project',label:'Project',color:'proj'},{id:'completed',label:'Completed',color:'comp'}];
 const FOLDER_ICONS={lead:'&#9993;',estimate:'&#9997;',project:'&#9874;',completed:'&#10003;'};
 
@@ -1612,6 +1620,20 @@ function toggleArchived(){
   const el=document.getElementById('archivedSection');
   el.style.display=el.style.display==='none'?'block':'none';
 }
+function globalSearchRender(){
+  const q=(document.getElementById('globalSearch').value||'').toLowerCase().trim();
+  const box=document.getElementById('globalSearchResults');
+  if(!q||q.length<2){box.style.display='none';return}
+  const results=db.records.filter(r=>[r.firstName,r.lastName,r.company,r.address,r.city,r.email,r.phone,r.notes].join(' ').toLowerCase().includes(q)).slice(0,8);
+  if(!results.length){box.innerHTML='<div style="padding:12px;font-size:12px;color:var(--t4)">No results found.</div>';box.style.display='block';return}
+  box.innerHTML=results.map(r=>{
+    const name=((r.firstName||'')+' '+(r.lastName||'')).trim()||'Unnamed';
+    const ini=((r.firstName||'?')[0]+(r.lastName||'?')[0]).toUpperCase();
+    const meta=[r.company,r.city,r.phone].filter(Boolean).join(' \u00b7 ');
+    return'<div class="list-item" onclick="document.getElementById(\'globalSearch\').value=\'\';document.getElementById(\'globalSearchResults\').style.display=\'none\';goFolder(\''+r.status+'\','+r.active+');setTimeout(()=>goRecord(\''+r.id+'\'),50)" style="padding:10px 14px;cursor:pointer"><div class="li-left"><div class="li-avatar '+r.status+'" style="width:28px;height:28px;font-size:10px;border-radius:6px">'+ini+'</div><div><div class="li-name" style="font-size:13px">'+name+'</div><div class="li-meta">'+meta+'</div></div></div><div class="li-right"><div class="li-badge '+r.status+'" style="font-size:10px">'+r.status+'</div></div></div>'
+  }).join('');
+  box.style.display='block';
+}
 
 // ═══════════════════════════════════════════════════════════
 // LIST
@@ -1663,7 +1685,7 @@ function filterList(){
   // Apply invoice sub-filter for Completed
   if(nav.folderStatus==='completed'&&invFilter==='invoiced')items=items.filter(r=>isRecordInvoiced(r));
   if(nav.folderStatus==='completed'&&invFilter==='need')items=items.filter(r=>!isRecordInvoiced(r));
-  const f=q?items.filter(r=>[r.firstName,r.lastName,r.company,r.address,r.city,r.email].join(' ').toLowerCase().includes(q)):items;
+  const f=q?items.filter(r=>[r.firstName,r.lastName,r.company,r.address,r.city,r.email,r.phone,r.notes].join(' ').toLowerCase().includes(q)):items;
   if(!f.length){document.getElementById('listItems').innerHTML='<div class="empty"><div class="empty-icon">&#128194;</div><div class="empty-text">'+(invFilter!=='all'?'No records match this filter.':'No records here yet.')+'</div></div>';return}
   document.getElementById('listItems').innerHTML=f.map(r=>{
     const name=(r.firstName||'')+' '+(r.lastName||'');
@@ -1716,7 +1738,7 @@ function renderRecord(){
   renderEstimatesList(rec);renderActivityLog();renderQuickContactBtns();
 }
 function renderEstimatesList(rec){
-  if(!rec.estimates.length){document.getElementById('estimatesList').innerHTML='<div class="empty"><div class="empty-icon">&#9997;</div><div class="empty-text">No estimates yet. Create one to start quoting.</div></div>';return}
+  if(!rec.estimates.length){document.getElementById('estimatesList').innerHTML='<div class="empty"><div class="empty-icon">&#9997;</div><div class="empty-text">No estimates yet.</div><button class="btn btn-primary" onclick="newEstimate()" style="margin-top:10px">+ Create Estimate</button></div>';return}
   document.getElementById('estimatesList').innerHTML=rec.estimates.map(est=>{
     const ec=calcEstCosts(est);
     const areas=est.systems.map(s=>s.areaName||'Unnamed').join(', ');
@@ -1729,6 +1751,23 @@ function renderEstimatesList(rec){
     const qsBadge=rec.status!=='completed'?' <span style="font-size:10px;font-weight:600;'+qsCol[qs]+'">'+qsLab[qs].toUpperCase()+'</span>':'';
     return'<div class="sys-card'+(ec.sell>0?' has-product':'')+'" onclick="goEstimate(\''+est.id+'\')"><div><div class="sys-area">'+(est.name||'Estimate')+qsBadge+invStatus+'</div><div class="sys-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' \u00b7 '+ec.sqft.toLocaleString()+' sqft'+(areas?' \u00b7 '+areas:'')+'</div></div><div class="sys-right"><div class="sys-price">'+fmt(ec.totalWithTax)+'</div>'+(ec.cost>0?'<div class="sys-cost">Cost '+fmt(ec.cost)+'</div>':'')+invBtn+'</div></div>'
   }).join('');
+}
+function autoSaveRecord(){
+  const rec=getRecord();if(!rec)return;
+  rec.firstName=document.getElementById('recFirst').value.trim();
+  rec.lastName=document.getElementById('recLast').value.trim();
+  rec.company=document.getElementById('recCompany').value.trim();
+  rec.email=document.getElementById('recEmail').value.trim();
+  rec.phone=document.getElementById('recPhone').value.trim();
+  rec.phoneType=document.getElementById('recPhoneType').value;
+  rec.bestTimeToCall=document.getElementById('recBestTime').value.trim();
+  rec.address=document.getElementById('recAddress').value.trim();
+  rec.city=document.getElementById('recCity').value.trim();
+  rec.state=document.getElementById('recState').value.trim();
+  rec.zip=document.getElementById('recZip').value.trim();
+  rec.notes=document.getElementById('recNotes').value.trim();
+  rec.updatedAt=new Date().toISOString();
+  autoSave();
 }
 function saveRecord(){
   const rec=getRecord();if(!rec)return;
@@ -1753,7 +1792,7 @@ function changeStatus(s){const rec=getRecord();if(!rec)return;const label=STATUS
 }
 function toggleActive(){const rec=getRecord();if(!rec)return;rec.active=document.getElementById('recActive').checked;logActivity(rec.id,rec.active?'activated':'archived',rec.active?'Record activated':'Record archived');rec.updatedAt=new Date().toISOString();saveDB(db);nav.folderActive=rec.active;renderBreadcrumb();toast(rec.active?'Active':'Archived',rec.active?'Record is active.':'Moved to inactive.')}
 function newRecord(){const rec={id:uid(),status:'lead',active:true,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),firstName:'',lastName:'',company:'',email:'',phone:'',phoneType:'cell',bestTimeToCall:'',address:'',city:'',state:'',zip:'',notes:'',estimates:[],activityLog:[],projectStartDate:null,projectEndDate:null,projectNotes:''};db.records.unshift(rec);saveDB(db);goRecord(rec.id);toast('New Lead','Enter contact details.')}
-function confirmDeleteRecord(){openConfirm('Delete Record','Permanently delete this record and all estimates?',()=>{db.records=db.records.filter(r=>r.id!==nav.recordId);saveDB(db);goFolder(nav.folderStatus,nav.folderActive);toast('Deleted','Record removed.')})}
+function confirmDeleteRecord(){const rec=getRecord();if(!rec)return;const ec=rec.estimates.length;const ic=rec.estimates.reduce((s,e)=>s+(e.invoices?e.invoices.length:0),0);const msg='Permanently delete this record'+(ec?' with '+ec+' estimate'+(ec>1?'s':''):'')+(ic?' and '+ic+' invoice'+(ic>1?'s':''):'')+' ? You can also Archive it instead.';openConfirm('Delete Record',msg,()=>{db.records=db.records.filter(r=>r.id!==nav.recordId);saveDB(db);goFolder(nav.folderStatus,nav.folderActive);toast('Deleted','Record removed.')})}
 
 // ── Next Action Bar ─────────────────────────────────────────
 function renderNextAction(rec){
@@ -1845,7 +1884,7 @@ function renderEstimate(){
   if(ec.taxAmount>0){etbRight='<div class="est-total-amount">'+fmt(ec.totalWithTax)+'</div><div class="est-total-detail">Subtotal '+fmt(ec.sell)+' + Tax '+fmt(ec.taxAmount)+'</div><div class="est-total-detail">Cost '+fmt(ec.cost)+' \u00b7 Margin '+ec.margin.toFixed(1)+'%</div>'}
   else{etbRight='<div class="est-total-amount">'+fmt(ec.sell)+'</div><div class="est-total-detail">Cost '+fmt(ec.cost)+' \u00b7 Margin '+ec.margin.toFixed(1)+'%</div>'}
   document.getElementById('estTotalBar').innerHTML='<div><div class="est-total-left">Estimate Total</div><div class="est-total-detail">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' \u00b7 '+ec.sqft.toLocaleString()+' sqft</div></div><div style="text-align:right">'+etbRight+'</div>';
-  if(!est.systems.length){document.getElementById('systemsList').innerHTML='<div class="empty"><div class="empty-icon">&#9874;</div><div class="empty-text">Add an area to start building this estimate.</div></div>';return}
+  if(!est.systems.length){document.getElementById('systemsList').innerHTML='<div class="empty"><div class="empty-icon">&#9874;</div><div class="empty-text">No areas yet.</div><button class="btn btn-primary" onclick="newSystem()" style="margin-top:10px">+ Add Area</button></div>';return}
   document.getElementById('systemsList').innerHTML=est.systems.map((sys,i)=>{
     const sc=calcSysCosts(sys);
     const prod=getAllProducts().find(p=>p.id===sys.productId);
@@ -1853,7 +1892,7 @@ function renderEstimate(){
     return'<div class="sys-card'+(prod?' has-product':'')+'" onclick="goSystem(\''+sys.id+'\')"><div><div class="sys-area">'+(sys.areaName||'Area '+(i+1))+'</div><div class="sys-detail">'+d+'</div></div><div class="sys-right"><div class="sys-price">'+fmt(sc.sell)+'</div>'+(sc.cost>0?'<div class="sys-cost">Cost '+fmt(sc.cost)+'</div>':'')+'</div></div>'
   }).join('');
 }
-function updateEstName(){const est=getEstimate();if(est)est.name=document.getElementById('estNameInput').value.trim()}
+function updateEstName(){const est=getEstimate();if(est){est.name=document.getElementById('estNameInput').value.trim();autoSave()}}
 function newEstimate(){const rec=getRecord();if(!rec)return;saveRecord();const c=rec.estimates.length+1;const est={id:uid(),name:'Estimate #'+c,createdAt:new Date().toISOString(),systems:[],quoteStatus:'draft',quoteSentAt:null,quoteApprovedAt:null};rec.estimates.push(est);logActivity(rec.id,'estimate_created','Estimate \''+est.name+'\' created');rec.updatedAt=new Date().toISOString();if(rec.status==='lead'){rec.status='estimate';nav.folderStatus='estimate'}saveDB(db);goEstimate(est.id);toast('Created','Add areas to start quoting.')}
 function saveEstimate(){
   saveDB(db);
@@ -1911,7 +1950,7 @@ function selectTopcoat(id){const sys=getSystem();if(!sys)return;sys.topcoatId=id
 function calcSystem(sqm){
   const sys=getSystem();if(!sys)return;
   const l=parseFloat(document.getElementById('sysLength').value)||0;
-  const w=parseFloat(document.getElementById('sysWidth').value)||1;
+  const w=parseFloat(document.getElementById('sysWidth').value)||0;
   let sq=sqm?(parseFloat(document.getElementById('sysSqft').value)||0):(l*w);
   if(!sqm)document.getElementById('sysSqft').value=sq;
   const sr=parseFloat(document.getElementById('sysSellRate').value)||0;
@@ -1923,6 +1962,7 @@ function calcSystem(sqm){
   if(sc.taxAmount>0){statsHtml+='<div class="sx"><div class="sl">Tax ('+settings.taxRate+'%)</div><div class="sv">'+fmt(sc.taxAmount)+'</div></div><div class="sx hl"><div class="sl">Price + Tax</div><div class="sv" style="color:var(--accent)">'+fmt(sc.sellWithTax)+'</div></div>'}
   statsHtml+='<div class="sx"><div class="sl">Material Cost</div><div class="sv" style="color:var(--comp)">'+fmt(sc.cost)+'</div></div><div class="sx"><div class="sl">Gross Profit</div><div class="sv" style="color:var(--success)">'+fmt(sc.profit)+'</div></div><div class="sx"><div class="sl">Margin</div><div class="sv" style="color:'+(sc.margin>=50?'var(--success)':sc.margin>=30?'var(--accent)':'var(--comp)')+'">'+sc.margin.toFixed(1)+'%</div></div>';
   document.getElementById('sysStats').innerHTML=statsHtml;
+  autoSave();
 }
 function renderRepairList(sys){
   document.getElementById('repairList').innerHTML=getAllRepairs().map(r=>{
@@ -1985,8 +2025,22 @@ function updateAddon(id,field,val){
   renderAddonList(sys);calcSystem();
 }
 function saveSystem(){calcSystem();saveDB(db);renderBreadcrumb();toast('Saved','Area saved.')}
-function newSystem(){const est=getEstimate();if(!est)return;const sys={id:uid(),areaName:'',length:0,width:1,sqft:0,productId:null,sellRate:0,topcoatId:null,notes:'',taxable:true,repairs:{},addons:{}};est.systems.push(sys);if(nav.recordId)logActivity(nav.recordId,'area_added','Area added to \''+est.name+'\'');saveDB(db);goSystem(sys.id)}
+function newSystem(){const est=getEstimate();if(!est)return;const sys={id:uid(),areaName:'',length:0,width:0,sqft:0,productId:null,sellRate:0,topcoatId:null,notes:'',taxable:true,repairs:{},addons:{}};est.systems.push(sys);if(nav.recordId)logActivity(nav.recordId,'area_added','Area added to \''+est.name+'\'');saveDB(db);goSystem(sys.id)}
 function confirmDeleteSystem(){const est=getEstimate();if(!est)return;const aName=(getSystem()||{}).areaName||'Area';openConfirm('Remove Area','Remove this area from the estimate?',()=>{if(nav.recordId)logActivity(nav.recordId,'area_removed','Area \''+aName+'\' removed from \''+est.name+'\'');est.systems=est.systems.filter(s=>s.id!==nav.systemId);saveDB(db);goEstimate(nav.estimateId);toast('Removed','Area removed.')})}
+function duplicateSystem(){
+  const est=getEstimate();const sys=getSystem();if(!est||!sys)return;
+  const dup=JSON.parse(JSON.stringify(sys));dup.id=uid();dup.areaName=(sys.areaName||'Area')+' (Copy)';
+  est.systems.push(dup);if(nav.recordId)logActivity(nav.recordId,'area_duplicated','Area "'+sys.areaName+'" duplicated');
+  saveDB(db);goSystem(dup.id);toast('Duplicated','Area copied. Edit as needed.');
+}
+function duplicateEstimate(){
+  const rec=getRecord();const est=getEstimate();if(!rec||!est)return;
+  const dup=JSON.parse(JSON.stringify(est));dup.id=uid();dup.name=(est.name||'Estimate')+' (Copy)';dup.createdAt=new Date().toISOString();dup.quoteStatus='draft';dup.quoteSentAt=null;dup.quoteApprovedAt=null;
+  if(dup.invoices)dup.invoices=[];
+  dup.systems.forEach(s=>{s.id=uid()});
+  rec.estimates.push(dup);logActivity(rec.id,'estimate_duplicated','Estimate "'+est.name+'" duplicated');
+  rec.updatedAt=new Date().toISOString();saveDB(db);goEstimate(dup.id);toast('Duplicated','Estimate copied. Edit as needed.');
+}
 
 // ═══════════════════════════════════════════════════════════
 // MODALS / TOAST / IMPORT-EXPORT
@@ -2405,15 +2459,18 @@ function deleteCustomItem(idx){
 // ═══════════════════════════════════════════════════════════
 function emailProposal(){
   const rec=getRecord();const est=getEstimate();if(!rec||!est)return;
+  // Auto-generate PDF so user can attach it
+  generateProposal();
   const to=rec.email||'';
+  const rn=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'Client';
   const subj='Proposal from '+(settings.companyName||'The Concrete Protector')+' - '+(est.name||'Estimate');
   const ec=calcEstCosts(est);
-  const body='Hi '+(rec.firstName||'')+',\n\nWe\'ve prepared a proposal for '+(est.name||'your project')+'.\n\nEstimate Total: '+fmt(ec.totalWithTax)+'\n\nWe\'ll send the PDF separately. Please let us know if you have any questions!\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
-  window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body));
+  const body='Hi '+(rec.firstName||'')+',\n\nPlease find the attached proposal for '+(est.name||'your project')+'.\n\nEstimate Total: '+fmt(ec.totalWithTax)+'\n\nPlease let us know if you have any questions!\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
+  setTimeout(()=>{window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body))},300);
   logActivity(rec.id,'email_sent','Proposal email opened for '+(rec.email||'(no email)'));
   if(!est.quoteStatus||est.quoteStatus==='draft'){est.quoteStatus='sent';est.quoteSentAt=new Date().toISOString()}
   saveDB(db);
-  if(rec.status==='estimate')toast('Quote Sent','Move to Project when approved.');
+  toast('PDF Downloaded','Attach the downloaded PDF to your email.');
 }
 function textProposal(){
   const rec=getRecord();const est=getEstimate();if(!rec||!est)return;
@@ -2427,11 +2484,14 @@ function textProposal(){
 }
 function emailInvoice(){
   const inv=getInvoiceById(nav.invoiceId);const rec=getRecord();if(!inv||!rec)return;
+  // Auto-generate Invoice PDF so user can attach it
+  generateInvoicePDF();
   const to=rec.email||'';
   const subj='Invoice '+inv.number+' from '+(settings.companyName||'The Concrete Protector');
-  const body='Hi '+(rec.firstName||'')+',\n\nHere are the details for Invoice '+inv.number+':\n\nAmount: '+fmt(inv.total)+'\nDue Date: '+(inv.dueDate?new Date(inv.dueDate+'T12:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'N/A')+'\nBalance Due: '+fmt(inv.balance)+'\n\nPlease let us know if you have any questions.\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
-  window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body));
+  const body='Hi '+(rec.firstName||'')+',\n\nPlease find the attached Invoice '+inv.number+'.\n\nAmount: '+fmt(inv.total)+'\nDue Date: '+(inv.dueDate?new Date(inv.dueDate+'T12:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'N/A')+'\nBalance Due: '+fmt(inv.balance)+'\n\nPlease let us know if you have any questions.\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
+  setTimeout(()=>{window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body))},300);
   logActivity(rec.id,'email_sent','Invoice '+inv.number+' email opened for '+(rec.email||'(no email)'));saveDB(db);
+  toast('PDF Downloaded','Attach the downloaded PDF to your email.');
 }
 function textInvoice(){
   const inv=getInvoiceById(nav.invoiceId);const rec=getRecord();if(!inv||!rec)return;
@@ -2933,6 +2993,29 @@ function initSidebar(){
     document.querySelector('#sidebar .sb-toggle').innerHTML='&#9654;';
   }
 }
+
+// ── Keyboard Shortcuts ──────────────────────────────────────
+document.addEventListener('keydown',function(e){
+  // Escape: close modals/search
+  if(e.key==='Escape'){
+    closeConfirm();closeExport();closeImport();closePaymentModal();
+    const gs=document.getElementById('globalSearchResults');if(gs)gs.style.display='none';
+  }
+  // Cmd+S / Ctrl+S: save current screen
+  if((e.metaKey||e.ctrlKey)&&e.key==='s'){
+    e.preventDefault();
+    if(nav.screen==='system')saveSystem();
+    else if(nav.screen==='estimate')saveEstimate();
+    else if(nav.screen==='record')saveRecord();
+    else if(nav.screen==='settings')saveSettings();
+  }
+});
+// Close global search on click outside
+document.addEventListener('click',function(e){
+  const gs=document.getElementById('globalSearchResults');
+  const gi=document.getElementById('globalSearch');
+  if(gs&&gi&&!gs.contains(e.target)&&e.target!==gi)gs.style.display='none';
+});
 
 // ═══════════════════════════════════════════════════════════
 // INIT

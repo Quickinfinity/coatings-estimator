@@ -664,18 +664,133 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 .modal.xwide{max-width:900px;max-height:85vh;overflow-y:auto}
 
 /* ═══════════════════════════════════════════════════════
+   SIDEBAR
+   ═══════════════════════════════════════════════════════ */
+#sidebar{
+  position:fixed;top:0;left:0;bottom:0;
+  width:220px;background:var(--s1);
+  border-right:1px solid var(--b1);
+  z-index:150;display:flex;flex-direction:column;
+  transition:width .2s ease;overflow:hidden;
+}
+#sidebar.collapsed{width:56px}
+#sidebar .sb-header{
+  padding:14px 16px;display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--b1);min-height:57px;
+}
+#sidebar .sb-logo{
+  width:32px;height:32px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),#d97706);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;color:#000;
+}
+#sidebar .sb-title{white-space:nowrap;overflow:hidden;transition:opacity .2s}
+#sidebar.collapsed .sb-title{opacity:0;width:0}
+#sidebar .sb-title h2{font-size:13px;font-weight:700;line-height:1.3}
+#sidebar .sb-title .sub{font-size:10px;color:var(--t3)}
+#sidebar .sb-nav{flex:1;padding:8px 0;overflow-y:auto}
+#sidebar .sb-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;cursor:pointer;
+  color:var(--t3);font-size:13px;font-weight:500;
+  transition:all .15s;white-space:nowrap;
+  border-left:3px solid transparent;margin:1px 0;
+}
+#sidebar .sb-item:hover{color:var(--t1);background:var(--glass2)}
+#sidebar .sb-item.active{
+  color:var(--accent);background:var(--accent-glow2);
+  border-left-color:var(--accent);
+}
+#sidebar .sb-item .sb-icon{width:20px;text-align:center;flex-shrink:0;font-size:15px}
+#sidebar .sb-item .sb-label{overflow:hidden;transition:opacity .2s}
+#sidebar.collapsed .sb-item .sb-label{opacity:0;width:0}
+#sidebar .sb-divider{
+  height:1px;padding:0!important;margin:8px 16px!important;
+  background:var(--b1);border:none;cursor:default!important;
+}
+#sidebar .sb-divider:hover{background:var(--b1)!important;color:var(--t3)!important}
+#sidebar .sb-footer{padding:8px;border-top:1px solid var(--b1)}
+#sidebar .sb-toggle{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;padding:8px;border:none;
+  background:transparent;color:var(--t4);
+  cursor:pointer;font-size:16px;border-radius:var(--r-sm);
+  transition:all .15s;font-family:inherit;
+}
+#sidebar .sb-toggle:hover{background:var(--glass2);color:var(--t2)}
+/* Sidebar layout offset */
+.hdr,.breadcrumb,.mc{margin-left:220px;transition:margin-left .2s ease}
+body.sb-collapsed .hdr,body.sb-collapsed .breadcrumb,body.sb-collapsed .mc{margin-left:56px}
+.hamburger{
+  display:none;background:none;border:none;color:var(--t2);
+  font-size:20px;cursor:pointer;padding:4px 8px;margin-right:4px;
+  border-radius:var(--r-sm);transition:all .15s;font-family:inherit;
+}
+.hamburger:hover{background:var(--glass2);color:var(--t1)}
+.sb-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
+  z-index:140;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HOME — WORKFLOW CARDS (Jobber-style)
+   ═══════════════════════════════════════════════════════ */
+.home-greeting{margin-bottom:4px}
+.wf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.wf-card{
+  background:var(--s2);border:1px solid var(--b1);
+  border-radius:var(--r-lg);padding:20px;
+  cursor:pointer;transition:all .2s;
+  position:relative;overflow:hidden;
+}
+.wf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.wf-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--b2)}
+.wf-card .wf-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:32px;font-weight:700;letter-spacing:-1px;margin-bottom:2px;
+}
+.wf-card .wf-label{font-size:13px;font-weight:600;margin-bottom:10px}
+.wf-card .wf-links{display:flex;flex-direction:column;gap:4px}
+.wf-card .wf-link{
+  font-size:12px;color:var(--t3);cursor:pointer;
+  transition:color .15s;display:flex;justify-content:space-between;
+}
+.wf-card .wf-link:hover{color:var(--t1)}
+.wf-card .wf-link .wf-val{font-family:'JetBrains Mono',monospace;font-weight:500}
+.wf-card.lead::before{background:var(--lead)}
+.wf-card.lead .wf-num,.wf-card.lead .wf-label{color:var(--lead)}
+.wf-card.est::before{background:var(--est)}
+.wf-card.est .wf-num,.wf-card.est .wf-label{color:var(--est)}
+.wf-card.proj::before{background:var(--proj)}
+.wf-card.proj .wf-num,.wf-card.proj .wf-label{color:var(--proj)}
+.wf-card.comp::before{background:var(--comp)}
+.wf-card.comp .wf-num,.wf-card.comp .wf-label{color:var(--comp)}
+.perf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.home-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* ═══════════════════════════════════════════════════════
    PRINT
    ═══════════════════════════════════════════════════════ */
 @media print{
-  .hdr,.breadcrumb,.btn-row,.hdr-right,.tab-bar,.search-bar,#newLeadBtn{display:none!important}
+  .hdr,.breadcrumb,.btn-row,.hdr-right,.tab-bar,.search-bar,#newLeadBtn,#sidebar,.sb-overlay{display:none!important}
   body{background:#fff;color:#000}
-  .mc{padding:0}
+  .mc{padding:0;margin-left:0!important}
   .cd{border-color:#ddd;page-break-inside:avoid}
 }
 
 /* ═══════════════════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════════════════ */
+@media(max-width:900px){
+  #sidebar{display:none}
+  #sidebar.mobile-open{display:flex;width:220px;z-index:200}
+  .sb-overlay.active{display:block}
+  .hdr,.breadcrumb,.mc{margin-left:0!important}
+  .hamburger{display:block}
+  .wf-grid{grid-template-columns:1fr 1fr}
+  .home-bottom{grid-template-columns:1fr}
+  .perf-grid{grid-template-columns:repeat(3,1fr)}
+}
 @media(max-width:800px){
   .folder-grid{grid-template-columns:1fr 1fr}
   .g2,.g3,.g4{grid-template-columns:1fr}
@@ -684,7 +799,9 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
   .breadcrumb{padding:10px 16px 0}
 }
 @media(max-width:500px){
+  .wf-grid{grid-template-columns:1fr}
   .folder-grid{grid-template-columns:1fr}
+  .perf-grid{grid-template-columns:1fr}
   .est-total{flex-direction:column;text-align:center}
   .hi{height:auto;padding:12px 0}
 }
@@ -692,9 +809,50 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 </head>
 <body>
 
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo">CE</div>
+    <div class="sb-title">
+      <h2>Coatings Estimator</h2>
+      <div class="sub">The Concrete Protector</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-item active" data-screen="home" onclick="goHome()">
+      <span class="sb-icon">&#9776;</span><span class="sb-label">Home</span>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-item" data-screen="lead" onclick="goFolder('lead',true)">
+      <span class="sb-icon">&#9993;</span><span class="sb-label">Leads</span>
+    </div>
+    <div class="sb-item" data-screen="estimate" onclick="goFolder('estimate',true)">
+      <span class="sb-icon">&#9997;</span><span class="sb-label">Estimates</span>
+    </div>
+    <div class="sb-item" data-screen="project" onclick="goFolder('project',true)">
+      <span class="sb-icon">&#9874;</span><span class="sb-label">Projects</span>
+    </div>
+    <div class="sb-item" data-screen="completed" onclick="goFolder('completed',true)">
+      <span class="sb-icon">&#10003;</span><span class="sb-label">Completed</span>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-item" data-screen="reporting" onclick="goReporting()">
+      <span class="sb-icon">&#128202;</span><span class="sb-label">Reports</span>
+    </div>
+    <div class="sb-item" data-screen="settings" onclick="goSettings()">
+      <span class="sb-icon">&#9881;</span><span class="sb-label">Settings</span>
+    </div>
+  </div>
+  <div class="sb-footer">
+    <button class="sb-toggle" onclick="toggleSidebar()" title="Collapse sidebar">&#9664;</button>
+  </div>
+</nav>
+<div class="sb-overlay" id="sbOverlay" onclick="closeMobileSidebar()"></div>
+
 <!-- HEADER -->
 <div class="hdr"><div class="hi">
   <div class="hdr-left" onclick="goHome()">
+    <button class="hamburger" onclick="event.stopPropagation();toggleMobileSidebar()">&#9776;</button>
     <div class="hdr-logo">CE</div>
     <div>
       <h1>Coatings Estimator</h1>
@@ -703,8 +861,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
   </div>
   <div class="hdr-right">
     <button class="hdr-btn" onclick="goReporting()">Reports</button>
-    <button class="hdr-btn" onclick="openExport()">Export</button>
-    <button class="hdr-btn" onclick="openImport()">Import</button>
+    <button class="hdr-btn primary" onclick="newRecordFromHeader()">+ New Lead</button>
   </div>
 </div></div>
 
@@ -714,11 +871,26 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
 
 <!-- HOME -->
 <div class="screen ac" id="scr-home">
-  <div class="sh"><h2>Pipeline</h2><p>Your jobs at a glance. Click any folder to view records.</p></div>
-  <div class="pipeline-summary" id="pipelineSummary"></div>
-  <div class="folder-grid" id="activeFolders"></div>
-  <div class="inactive-label">Archived</div>
-  <div class="folder-grid" id="inactiveFolders"></div>
+  <div class="home-greeting" id="homeGreeting"></div>
+  <div class="wf-grid" id="workflowCards"></div>
+  <div class="home-bottom">
+    <div class="cd">
+      <div class="ct"><span class="ic ib">&#9673;</span> Recent Activity</div>
+      <div id="recentActivity"></div>
+    </div>
+    <div>
+      <div class="cd">
+        <div class="ct"><span class="ic io">&#128200;</span> Business Performance</div>
+        <div class="perf-grid" id="perfCards"></div>
+      </div>
+      <div style="margin-top:10px;padding-left:2px">
+        <span style="font-size:11px;color:var(--t4);cursor:pointer" onclick="toggleArchived()">&#9660; View archived records</span>
+        <div id="archivedSection" style="display:none;margin-top:10px">
+          <div class="folder-grid" style="grid-template-columns:repeat(4,1fr)" id="inactiveFolders"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- LIST -->
@@ -880,6 +1052,46 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg)
   <div class="cd"><div class="ct"><span class="ic io">&#9733;</span> Top Systems</div><div id="rptTopSystems"></div></div>
   <div class="cd"><div class="ct"><span class="ic ig">&#9650;</span> Pipeline Breakdown</div><div id="rptPipelineBreakdown"></div></div>
   <div class="cd"><div class="ct"><span class="ic ib">&#9673;</span> Recent Activity</div><div id="rptRecent"></div></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="screen" id="scr-settings">
+  <div class="sh"><h2>Settings</h2><p>Company info, defaults, and data management.</p></div>
+  <div class="cd">
+    <div class="ct"><span class="ic io">&#127970;</span> Company Information</div>
+    <div class="g2">
+      <div class="fg"><label>Company Name</label><input type="text" id="setCompanyName" placeholder="Your company name"></div>
+      <div class="fg"><label>Contact Name</label><input type="text" id="setContactName" placeholder="Your name"></div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label>Phone</label><input type="tel" id="setPhone" placeholder="(555) 123-4567"></div>
+      <div class="fg"><label>Email</label><input type="email" id="setEmail" placeholder="email@company.com"></div>
+    </div>
+    <div class="fg"><label>Address</label><input type="text" id="setAddress" placeholder="Street address"></div>
+    <div class="g3">
+      <div class="fg"><label>City</label><input type="text" id="setCity" placeholder="City"></div>
+      <div class="fg"><label>State</label><input type="text" id="setState" placeholder="State"></div>
+      <div class="fg"><label>Zip</label><input type="text" id="setZip" placeholder="Zip code"></div>
+    </div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ior">&#9998;</span> Proposal Defaults</div>
+    <div class="fg"><label>Company Tagline</label><input type="text" id="setTagline" placeholder="e.g. Quality Coatings, Done Right"></div>
+    <div class="fg"><label>Default Terms & Conditions</label><textarea id="setTerms" rows="5" placeholder="Terms will appear on proposals and contracts..."></textarea></div>
+    <div class="fg"><label>Tax Rate (%)</label><input type="number" id="setTaxRate" value="0" min="0" step="0.1" style="max-width:120px"></div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ig">&#128202;</span> Data Management</div>
+    <div id="settingsStats" style="margin-bottom:16px"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="doExport()">Export Data (JSON)</button>
+      <button class="btn btn-ghost" onclick="openImport()">Import Data</button>
+      <button class="btn btn-danger" onclick="confirmClearAll()">Clear All Data</button>
+    </div>
+  </div>
+  <div class="btn-row" style="margin-top:16px">
+    <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+  </div>
 </div>
 
 </div>
@@ -1050,16 +1262,25 @@ let db=loadDB();
 let nav={screen:'home',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null};
 let seriesFilter='All';
 
+// Settings persistence
+const SETTINGS_KEY='ce_settings';
+const SETTINGS_DEFAULTS={companyName:'The Concrete Protector',contactName:'',phone:'',email:'',address:'',city:'',state:'',zip:'',tagline:'Decorative Concrete Coatings',terms:'This proposal is valid for 30 days from the date shown. A 50% deposit is required to schedule the project. Balance due upon completion. All work carries a manufacturer warranty on materials used. The Concrete Protector guarantees workmanship for a period of one (1) year from date of installation. Customer is responsible for proper maintenance as outlined in care instructions provided at completion.',taxRate:0};
+function loadSettings(){try{return{...SETTINGS_DEFAULTS,...JSON.parse(localStorage.getItem(SETTINGS_KEY))}}catch{return{...SETTINGS_DEFAULTS}}}
+function saveSettingsData(s){localStorage.setItem(SETTINGS_KEY,JSON.stringify(s))}
+let settings=loadSettings();
+
 // ═══════════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('ac'));document.getElementById('scr-'+id).classList.add('ac');window.scrollTo({top:0,behavior:'smooth'})}
-function goHome(){nav={screen:'home',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null};renderBreadcrumb();renderHome();showScreen('home')}
-function goFolder(s,a){nav.screen='list';nav.folderStatus=s;nav.folderActive=a;nav.recordId=null;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderList();showScreen('list')}
-function goRecord(id){nav.screen='record';nav.recordId=id;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderRecord();showScreen('record')}
-function goEstimate(id){nav.screen='estimate';nav.estimateId=id;nav.systemId=null;renderBreadcrumb();renderEstimate();showScreen('estimate')}
-function goSystem(id){nav.screen='system';nav.systemId=id;renderBreadcrumb();renderSystem();showScreen('system')}
-function goReporting(){nav={screen:'reporting',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null};renderBreadcrumb();renderReporting();showScreen('reporting')}
+function goHome(){nav={screen:'home',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null};renderBreadcrumb();renderHome();showScreen('home');updateSidebarActive();closeMobileSidebar()}
+function goFolder(s,a){nav.screen='list';nav.folderStatus=s;nav.folderActive=a;nav.recordId=null;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderList();showScreen('list');updateSidebarActive();closeMobileSidebar()}
+function goRecord(id){nav.screen='record';nav.recordId=id;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderRecord();showScreen('record');updateSidebarActive()}
+function goEstimate(id){nav.screen='estimate';nav.estimateId=id;nav.systemId=null;renderBreadcrumb();renderEstimate();showScreen('estimate');updateSidebarActive()}
+function goSystem(id){nav.screen='system';nav.systemId=id;renderBreadcrumb();renderSystem();showScreen('system');updateSidebarActive()}
+function goReporting(){nav={screen:'reporting',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null};renderBreadcrumb();renderReporting();showScreen('reporting');updateSidebarActive()}
+function goSettings(){nav={screen:'settings',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null};renderBreadcrumb();renderSettings();showScreen('settings');updateSidebarActive()}
+function newRecordFromHeader(){nav.folderStatus='lead';nav.folderActive=true;newRecord()}
 let estTab='areas';
 function switchEstTab(tab){
   estTab=tab;
@@ -1080,6 +1301,7 @@ function renderBreadcrumb(){
   if(nav.estimateId){const r=db.records.find(r=>r.id===nav.recordId);const e=r?r.estimates.find(e=>e.id===nav.estimateId):null;if(e){p.push('<span class="sep">&#8250;</span>','<span onclick="goEstimate(\''+e.id+'\')">'+(e.name||'Estimate')+'</span>')}}
   if(nav.systemId){const r=db.records.find(r=>r.id===nav.recordId);const e=r?r.estimates.find(e=>e.id===nav.estimateId):null;const s=e?e.systems.find(s=>s.id===nav.systemId):null;if(s)p.push('<span class="sep">&#8250;</span>','<span class="current">'+(s.areaName||'New Area')+'</span>')}
   if(nav.screen==='reporting')p.push('<span class="sep">&#8250;</span>','<span class="current">Reports</span>');
+  if(nav.screen==='settings')p.push('<span class="sep">&#8250;</span>','<span class="current">Settings</span>');
   el.innerHTML=p.join('');
 }
 
@@ -1114,15 +1336,46 @@ function calcRecCosts(rec){
 // HOME
 // ═══════════════════════════════════════════════════════════
 function renderHome(){
-  const c={};const vals={};STATUSES.forEach(s=>{c[s.id]={active:0,inactive:0};vals[s.id]=0});
+  // Greeting
+  const now=new Date();const hour=now.getHours();
+  const greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+  const dateStr=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  document.getElementById('homeGreeting').innerHTML='<div style="font-size:13px;color:var(--t3);margin-bottom:4px">'+dateStr+'</div><h2 style="font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:20px">'+greeting+'</h2>';
+  // Counts and values
+  const c={};const vals={};
+  STATUSES.forEach(s=>{c[s.id]={active:0,inactive:0};vals[s.id]=0});
   db.records.forEach(r=>{if(c[r.status]){c[r.status][r.active?'active':'inactive']++;if(r.active)vals[r.status]+=calcRecCosts(r).sell}});
-  const totalPipeline=Object.values(vals).reduce((s,v)=>s+v,0);
-  const totalRecords=db.records.filter(r=>r.active).length;
-  document.getElementById('pipelineSummary').innerHTML=
-    '<div class="ps-card"><div class="ps-label">Total Pipeline</div><div class="ps-value">'+fmt(totalPipeline)+'</div><div class="ps-sub">'+totalRecords+' active record'+(totalRecords!==1?'s':'')+'</div></div>'+
-    STATUSES.filter(s=>vals[s.id]>0).map(s=>'<div class="ps-card '+s.color+'"><div class="ps-label">'+s.label+'s</div><div class="ps-value">'+fmt(vals[s.id])+'</div><div class="ps-sub">'+c[s.id].active+' record'+(c[s.id].active!==1?'s':'')+'</div></div>').join('');
-  document.getElementById('activeFolders').innerHTML=STATUSES.map(s=>'<div class="folder '+s.color+'" onclick="goFolder(\''+s.id+'\',true)"><div class="f-glow"></div><div class="f-icon">'+FOLDER_ICONS[s.id]+'</div><div class="f-count">'+c[s.id].active+'</div><div class="f-label">'+s.label+'s</div><div class="f-sub">active records</div></div>').join('');
-  document.getElementById('inactiveFolders').innerHTML=STATUSES.map(s=>'<div class="folder '+s.color+' inactive" onclick="goFolder(\''+s.id+'\',false)"><div class="f-icon">'+FOLDER_ICONS[s.id]+'</div><div class="f-count">'+c[s.id].inactive+'</div><div class="f-label">Inactive '+s.label+'s</div></div>').join('');
+  // Workflow cards
+  document.getElementById('workflowCards').innerHTML=
+    '<div class="wf-card lead" onclick="goFolder(\'lead\',true)"><div class="wf-num">'+c.lead.active+'</div><div class="wf-label">New Leads</div><div class="wf-links"><div class="wf-link" onclick="event.stopPropagation();goFolder(\'lead\',true)"><span>Active</span><span class="wf-val">'+c.lead.active+'</span></div><div class="wf-link" onclick="event.stopPropagation();goFolder(\'lead\',false)"><span>Archived</span><span class="wf-val">'+c.lead.inactive+'</span></div></div></div>'+
+    '<div class="wf-card est" onclick="goFolder(\'estimate\',true)"><div class="wf-num">'+c.estimate.active+'</div><div class="wf-label">Estimates</div><div class="wf-links"><div class="wf-link" onclick="event.stopPropagation();goFolder(\'estimate\',true)"><span>Active</span><span class="wf-val">'+c.estimate.active+'</span></div><div class="wf-link"><span>Pipeline</span><span class="wf-val">'+fmt(vals.estimate)+'</span></div></div></div>'+
+    '<div class="wf-card proj" onclick="goFolder(\'project\',true)"><div class="wf-num">'+c.project.active+'</div><div class="wf-label">Projects</div><div class="wf-links"><div class="wf-link" onclick="event.stopPropagation();goFolder(\'project\',true)"><span>Active</span><span class="wf-val">'+c.project.active+'</span></div><div class="wf-link"><span>Value</span><span class="wf-val">'+fmt(vals.project)+'</span></div></div></div>'+
+    '<div class="wf-card comp" onclick="goFolder(\'completed\',true)"><div class="wf-num">'+c.completed.active+'</div><div class="wf-label">Completed</div><div class="wf-links"><div class="wf-link"><span>Revenue</span><span class="wf-val">'+fmt(vals.completed)+'</span></div><div class="wf-link"><span>Total</span><span class="wf-val">'+(c.completed.active+c.completed.inactive)+'</span></div></div></div>';
+  // Recent Activity
+  const recent=db.records.slice().sort((a,b)=>new Date(b.updatedAt||b.createdAt)-new Date(a.updatedAt||a.createdAt)).slice(0,6);
+  if(recent.length){
+    document.getElementById('recentActivity').innerHTML=recent.map(r=>{
+      const name=((r.firstName||'')+' '+(r.lastName||'')).trim()||'Unnamed';
+      const ago=timeAgo(new Date(r.updatedAt||r.createdAt));
+      return'<div class="list-item" onclick="goFolder(\''+r.status+'\','+r.active+');setTimeout(()=>goRecord(\''+r.id+'\'),50)" style="margin-bottom:4px;padding:10px 14px"><div class="li-left"><div class="li-avatar '+r.status+'" style="width:32px;height:32px;font-size:11px;border-radius:8px">'+((r.firstName||'?')[0]+(r.lastName||'?')[0]).toUpperCase()+'</div><div><div class="li-name" style="font-size:13px">'+name+'</div><div class="li-meta">'+ago+'</div></div></div><div class="li-right"><div class="li-badge '+r.status+'">'+r.status+'</div></div></div>'
+    }).join('');
+  }else{document.getElementById('recentActivity').innerHTML='<div class="empty"><div class="empty-text">No activity yet. Create your first lead!</div></div>'}
+  // Business Performance
+  const activeRecs=db.records.filter(r=>r.active);
+  const totalPipeline=activeRecs.reduce((s,r)=>s+calcRecCosts(r).sell,0);
+  const completedRecs=activeRecs.filter(r=>r.status==='completed');
+  const totalRevenue=completedRecs.reduce((s,r)=>s+calcRecCosts(r).sell,0);
+  const avgJob=completedRecs.length>0?totalRevenue/completedRecs.length:0;
+  document.getElementById('perfCards').innerHTML=
+    '<div class="sx hl"><div class="sl">Active Pipeline</div><div class="sv">'+fmt(totalPipeline)+'</div></div>'+
+    '<div class="sx"><div class="sl">Revenue</div><div class="sv" style="color:var(--success)">'+fmt(totalRevenue)+'</div></div>'+
+    '<div class="sx"><div class="sl">Avg Job Size</div><div class="sv">'+fmt(avgJob)+'</div></div>';
+  // Archived folders (hidden by default)
+  document.getElementById('inactiveFolders').innerHTML=STATUSES.map(s=>'<div class="folder '+s.color+' inactive" onclick="goFolder(\''+s.id+'\',false)" style="padding:16px"><div class="f-icon" style="margin-bottom:8px;width:32px;height:32px;font-size:14px">'+FOLDER_ICONS[s.id]+'</div><div class="f-count" style="font-size:20px">'+c[s.id].inactive+'</div><div class="f-label" style="font-size:11px">Inactive '+s.label+'s</div></div>').join('');
+}
+function toggleArchived(){
+  const el=document.getElementById('archivedSection');
+  el.style.display=el.style.display==='none'?'block':'none';
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1407,11 +1660,13 @@ function generateProposal(){
   const ec=calcEstCosts(est);
   const today=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
   // Header bar
+  const compName=settings.companyName||'The Concrete Protector';
+  const compTag=settings.tagline||'Decorative Concrete Coatings Proposal';
   doc.setFillColor(245,158,11);doc.rect(0,0,pw,32,'F');
   doc.setTextColor(0);doc.setFontSize(20);doc.setFont('helvetica','bold');
-  doc.text('The Concrete Protector',14,16);
+  doc.text(compName,14,16);
   doc.setFontSize(10);doc.setFont('helvetica','normal');
-  doc.text('Decorative Concrete Coatings Proposal',14,24);
+  doc.text(compTag,14,24);
   doc.setFontSize(9);doc.text(today,pw-14,16,{align:'right'});
   doc.text((est.name||'Estimate'),pw-14,24,{align:'right'});
   // Client info
@@ -1455,7 +1710,7 @@ function generateProposal(){
   // Terms
   y+=20;doc.setTextColor(80);doc.setFontSize(9);doc.setFont('helvetica','bold');
   doc.text('Terms & Conditions',14,y);y+=6;doc.setFont('helvetica','normal');doc.setFontSize(8);
-  const terms=document.getElementById('contractTerms')?document.getElementById('contractTerms').value:'Proposal valid for 30 days. 50% deposit required to schedule.';
+  const terms=document.getElementById('contractTerms')?document.getElementById('contractTerms').value:(settings.terms||'Proposal valid for 30 days. 50% deposit required to schedule.');
   const tlines=doc.splitTextToSize(terms,pw-28);
   tlines.forEach(l=>{if(y>280){doc.addPage();y=20}doc.text(l,14,y);y+=4});
   // Signature lines
@@ -1465,7 +1720,7 @@ function generateProposal(){
   y+=5;doc.setFontSize(8);doc.text('Contractor Signature / Date',14,y);doc.text('Customer Signature / Date',110,y);
   // Footer
   y+=12;doc.setFontSize(7);doc.setTextColor(160);
-  doc.text('Generated by Coatings Estimator \u2014 The Concrete Protector \u2014 theconcreteprotector.com',pw/2,y,{align:'center'});
+  doc.text('Generated by Coatings Estimator \u2014 '+(settings.companyName||'The Concrete Protector'),pw/2,y,{align:'center'});
   const fn='TCP-Proposal-'+rn.replace(/\s+/g,'-')+'-'+new Date().toISOString().slice(0,10)+'.pdf';
   doc.save(fn);toast('Proposal Saved',fn);
 }
@@ -1512,7 +1767,7 @@ function generateContract(){
   doc.setTextColor(245,158,11);doc.setFontSize(18);doc.setFont('helvetica','bold');
   doc.text('SERVICE CONTRACT',14,14);
   doc.setFontSize(10);doc.setTextColor(200,200,200);doc.setFont('helvetica','normal');
-  doc.text('The Concrete Protector',14,22);doc.text(today,pw-14,14,{align:'right'});
+  doc.text(settings.companyName||'The Concrete Protector',14,22);doc.text(today,pw-14,14,{align:'right'});
   // Parties
   let y=40;doc.setTextColor(30);doc.setFontSize(11);doc.setFont('helvetica','bold');
   doc.text('Client:',14,y);doc.setFont('helvetica','normal');doc.text(rn+(rec.company?' \u2014 '+rec.company:''),50,y);
@@ -1608,9 +1863,88 @@ function timeAgo(d){
 }
 
 // ═══════════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════════
+function renderSettings(){
+  const s=settings;
+  document.getElementById('setCompanyName').value=s.companyName||'';
+  document.getElementById('setContactName').value=s.contactName||'';
+  document.getElementById('setPhone').value=s.phone||'';
+  document.getElementById('setEmail').value=s.email||'';
+  document.getElementById('setAddress').value=s.address||'';
+  document.getElementById('setCity').value=s.city||'';
+  document.getElementById('setState').value=s.state||'';
+  document.getElementById('setZip').value=s.zip||'';
+  document.getElementById('setTagline').value=s.tagline||'';
+  document.getElementById('setTerms').value=s.terms||'';
+  document.getElementById('setTaxRate').value=s.taxRate||0;
+  const totalRecs=db.records.length;
+  const totalEsts=db.records.reduce((sum,r)=>sum+r.estimates.length,0);
+  const totalSqft=db.records.reduce((sum,r)=>sum+r.estimates.reduce((s2,e)=>s2+e.systems.reduce((s3,sys)=>s3+(sys.sqft||0),0),0),0);
+  document.getElementById('settingsStats').innerHTML=
+    '<div class="sg"><div class="sx"><div class="sl">Records</div><div class="sv">'+totalRecs+'</div></div>'+
+    '<div class="sx"><div class="sl">Estimates</div><div class="sv">'+totalEsts+'</div></div>'+
+    '<div class="sx"><div class="sl">Total Sqft</div><div class="sv">'+totalSqft.toLocaleString()+'</div></div></div>';
+}
+function saveSettings(){
+  settings.companyName=document.getElementById('setCompanyName').value.trim();
+  settings.contactName=document.getElementById('setContactName').value.trim();
+  settings.phone=document.getElementById('setPhone').value.trim();
+  settings.email=document.getElementById('setEmail').value.trim();
+  settings.address=document.getElementById('setAddress').value.trim();
+  settings.city=document.getElementById('setCity').value.trim();
+  settings.state=document.getElementById('setState').value.trim();
+  settings.zip=document.getElementById('setZip').value.trim();
+  settings.tagline=document.getElementById('setTagline').value.trim();
+  settings.terms=document.getElementById('setTerms').value.trim();
+  settings.taxRate=parseFloat(document.getElementById('setTaxRate').value)||0;
+  saveSettingsData(settings);toast('Saved','Settings updated.');
+}
+function confirmClearAll(){openConfirm('Clear All Data','This will permanently delete ALL records, estimates, and settings. This cannot be undone.',()=>{db={records:[]};saveDB(db);settings={...SETTINGS_DEFAULTS};saveSettingsData(settings);goHome();toast('Cleared','All data removed.')})}
+
+// ═══════════════════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════════════════
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  sb.classList.toggle('collapsed');
+  document.body.classList.toggle('sb-collapsed');
+  const btn=sb.querySelector('.sb-toggle');
+  btn.innerHTML=sb.classList.contains('collapsed')?'&#9654;':'&#9664;';
+  localStorage.setItem('ce_sidebar_collapsed',sb.classList.contains('collapsed'));
+}
+function updateSidebarActive(){
+  document.querySelectorAll('#sidebar .sb-item').forEach(el=>el.classList.remove('active'));
+  let screen=nav.screen;
+  if(screen==='list'||screen==='record'||screen==='estimate'||screen==='system'){
+    const item=document.querySelector('#sidebar .sb-item[data-screen="'+nav.folderStatus+'"]');
+    if(item)item.classList.add('active');
+  }else{
+    const item=document.querySelector('#sidebar .sb-item[data-screen="'+screen+'"]');
+    if(item)item.classList.add('active');
+  }
+}
+function toggleMobileSidebar(){
+  const sb=document.getElementById('sidebar');
+  sb.classList.toggle('mobile-open');
+  document.getElementById('sbOverlay').classList.toggle('active');
+}
+function closeMobileSidebar(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sbOverlay').classList.remove('active');
+}
+function initSidebar(){
+  if(localStorage.getItem('ce_sidebar_collapsed')==='true'){
+    document.getElementById('sidebar').classList.add('collapsed');
+    document.body.classList.add('sb-collapsed');
+    document.querySelector('#sidebar .sb-toggle').innerHTML='&#9654;';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
-renderHome();renderBreadcrumb();
+initSidebar();renderHome();renderBreadcrumb();updateSidebarActive();
 </script>
 </body>
 </html>

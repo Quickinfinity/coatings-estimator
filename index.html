@@ -6,6 +6,7 @@
 <title>Coatings Estimator — The Concrete Protector</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22Coatings%20Estimator%22%2C%22short_name%22%3A%22CE%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%2316161a%22%2C%22theme_color%22%3A%22%232658ad%22%7D">
 <meta name="theme-color" content="#2658ad">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1186,6 +1187,34 @@ body.sb-collapsed .hdr,body.sb-collapsed .breadcrumb,body.sb-collapsed .mc{margi
     <button class="btn btn-primary" onclick="addCustomItem()" style="margin-top:10px;font-size:12px;padding:6px 16px">+ Add Item</button>
   </div>
   <div class="cd">
+    <div class="ct"><span class="ic io">&#9993;</span> Email Integration (EmailJS)</div>
+    <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Send proposals and invoices with PDF attachments directly from the app. Free: 200 emails/month.</p>
+    <div id="emailjsStatus" style="margin-bottom:12px"></div>
+    <div class="fg"><label>Public Key</label><input type="text" id="setEmailjsPublicKey" placeholder="e.g. abc123XYZ"></div>
+    <div class="g2">
+      <div class="fg"><label>Service ID</label><input type="text" id="setEmailjsServiceId" placeholder="e.g. service_xxxxx"></div>
+      <div class="fg"><label>Template ID</label><input type="text" id="setEmailjsTemplateId" placeholder="e.g. template_xxxxx"></div>
+    </div>
+    <details style="margin-top:10px;font-size:12px;color:var(--t3)">
+      <summary style="cursor:pointer;font-weight:600;color:var(--t2)">Setup Instructions</summary>
+      <ol style="padding-left:18px;margin-top:8px;line-height:1.8">
+        <li>Go to <strong>emailjs.com</strong> and create a free account</li>
+        <li>Add an <strong>Email Service</strong> (Gmail, Outlook, or SMTP)</li>
+        <li>Create a <strong>Template</strong> with these variables:<br>
+          <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{to_email}}</code>
+          <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{to_name}}</code>
+          <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{from_name}}</code>
+          <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{reply_to}}</code>
+          <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{subject}}</code>
+          <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{message}}</code>
+        </li>
+        <li>In Template Settings &gt; Attachments, add a <strong>Dynamic Attachment</strong> with variable name <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">attachment</code></li>
+        <li>Copy your <strong>Public Key</strong> (Account &gt; API Keys), <strong>Service ID</strong>, and <strong>Template ID</strong> into the fields above</li>
+      </ol>
+    </details>
+    <button class="btn btn-ghost" onclick="testEmailJS()" style="margin-top:10px;font-size:12px;padding:6px 16px">Test Connection</button>
+  </div>
+  <div class="cd">
     <div class="ct"><span class="ic ig">&#128202;</span> Data Management</div>
     <div id="settingsStats" style="margin-bottom:16px"></div>
     <div class="btn-row">
@@ -1456,7 +1485,7 @@ let nav={screen:'home',folderStatus:null,folderActive:true,recordId:null,estimat
 let seriesFilter='All';
 
 // Settings persistence
-const SETTINGS_DEFAULTS={companyName:'The Concrete Protector',contactName:'',phone:'',email:'',address:'',city:'',state:'',zip:'',tagline:'Decorative Concrete Coatings',terms:'This proposal is valid for 30 days from the date shown. A 50% deposit is required to schedule the project. Balance due upon completion. All work carries a manufacturer warranty on materials used. The Concrete Protector guarantees workmanship for a period of one (1) year from date of installation. Customer is responsible for proper maintenance as outlined in care instructions provided at completion.',taxRate:0,paymentTerms:'net30',customProducts:[],customTopcoats:[],customRepairs:[],customAddons:[]};
+const SETTINGS_DEFAULTS={companyName:'The Concrete Protector',contactName:'',phone:'',email:'',address:'',city:'',state:'',zip:'',tagline:'Decorative Concrete Coatings',terms:'This proposal is valid for 30 days from the date shown. A 50% deposit is required to schedule the project. Balance due upon completion. All work carries a manufacturer warranty on materials used. The Concrete Protector guarantees workmanship for a period of one (1) year from date of installation. Customer is responsible for proper maintenance as outlined in care instructions provided at completion.',taxRate:0,paymentTerms:'net30',customProducts:[],customTopcoats:[],customRepairs:[],customAddons:[],emailjsPublicKey:'',emailjsServiceId:'',emailjsTemplateId:''};
 function loadSettings(){try{return{...SETTINGS_DEFAULTS,...JSON.parse(localStorage.getItem(getSettingsKey()))}}catch{return{...SETTINGS_DEFAULTS}}}
 function saveSettingsData(s){localStorage.setItem(getSettingsKey(),JSON.stringify(s))}
 let settings=loadSettings();
@@ -2103,10 +2132,10 @@ function renderOrderList(){
 // ═══════════════════════════════════════════════════════════
 // PDF PROPOSAL (Phase 3)
 // ═══════════════════════════════════════════════════════════
-function generateProposal(){
+function generateProposal(returnBase64){
   const rec=getRecord();const est=getEstimate();
-  if(!rec||!est){toast('Error','No estimate to generate.');return}
-  if(typeof window.jspdf==='undefined'){toast('Error','PDF library not loaded. Check internet connection.');return}
+  if(!rec||!est){toast('Error','No estimate to generate.');return null}
+  if(typeof window.jspdf==='undefined'){toast('Error','PDF library not loaded. Check internet connection.');return null}
   const{jsPDF}=window.jspdf;
   const doc=new jsPDF();
   const pw=doc.internal.pageSize.getWidth();
@@ -2182,6 +2211,7 @@ function generateProposal(){
   y+=12;doc.setFontSize(7);doc.setTextColor(160);
   doc.text('Generated by Coatings Estimator \u2014 '+(settings.companyName||'The Concrete Protector'),pw/2,y,{align:'center'});
   const fn='TCP-Proposal-'+rn.replace(/\s+/g,'-')+'-'+new Date().toISOString().slice(0,10)+'.pdf';
+  if(returnBase64){return{base64:doc.output('datauristring').split(',')[1],filename:fn}}
   doc.save(fn);if(nav.recordId)logActivity(nav.recordId,'proposal_generated','Proposal PDF generated for \''+est.name+'\'');
   if(!est.quoteStatus||est.quoteStatus==='draft'){est.quoteStatus='sent';est.quoteSentAt=new Date().toISOString()}
   saveDB(db);toast('Proposal Saved',fn);
@@ -2375,6 +2405,10 @@ function renderSettings(){
   document.getElementById('setTerms').value=s.terms||'';
   document.getElementById('setTaxRate').value=s.taxRate||0;
   document.getElementById('setPaymentTerms').value=s.paymentTerms||'net30';
+  document.getElementById('setEmailjsPublicKey').value=s.emailjsPublicKey||'';
+  document.getElementById('setEmailjsServiceId').value=s.emailjsServiceId||'';
+  document.getElementById('setEmailjsTemplateId').value=s.emailjsTemplateId||'';
+  renderEmailjsStatus();
   const totalRecs=db.records.length;
   const totalEsts=db.records.reduce((sum,r)=>sum+r.estimates.length,0);
   const totalSqft=db.records.reduce((sum,r)=>sum+r.estimates.reduce((s2,e)=>s2+e.systems.reduce((s3,sys)=>s3+(sys.sqft||0),0),0),0);
@@ -2397,9 +2431,39 @@ function saveSettings(){
   settings.terms=document.getElementById('setTerms').value.trim();
   settings.taxRate=parseFloat(document.getElementById('setTaxRate').value)||0;
   settings.paymentTerms=document.getElementById('setPaymentTerms').value;
+  settings.emailjsPublicKey=document.getElementById('setEmailjsPublicKey').value.trim();
+  settings.emailjsServiceId=document.getElementById('setEmailjsServiceId').value.trim();
+  settings.emailjsTemplateId=document.getElementById('setEmailjsTemplateId').value.trim();
+  if(settings.emailjsPublicKey&&typeof emailjs!=='undefined'){emailjs.init(settings.emailjsPublicKey)}
   saveSettingsData(settings);toast('Saved','Settings updated.');
 }
 function confirmClearAll(){openConfirm('Clear All Data','This will permanently delete ALL records, estimates, and settings. This cannot be undone.',()=>{db={records:[]};saveDB(db);settings={...SETTINGS_DEFAULTS};saveSettingsData(settings);goHome();toast('Cleared','All data removed.')})}
+
+// ── EmailJS Integration ──────────────────────────────────────
+function isEmailJSReady(){return typeof emailjs!=='undefined'&&settings.emailjsPublicKey&&settings.emailjsServiceId&&settings.emailjsTemplateId}
+function initEmailJS(){if(settings.emailjsPublicKey&&typeof emailjs!=='undefined'){try{emailjs.init(settings.emailjsPublicKey)}catch(e){}}}
+function renderEmailjsStatus(){
+  const el=document.getElementById('emailjsStatus');if(!el)return;
+  if(isEmailJSReady()){
+    el.innerHTML='<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:8px;font-size:12px;color:#22c55e"><span style="font-size:16px">&#10003;</span> EmailJS connected &mdash; emails will send with PDF attachments automatically.</div>';
+  }else if(settings.emailjsPublicKey||settings.emailjsServiceId||settings.emailjsTemplateId){
+    el.innerHTML='<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);border-radius:8px;font-size:12px;color:#fbbf24"><span style="font-size:16px">&#9888;</span> Incomplete &mdash; fill in all three fields (Public Key, Service ID, Template ID).</div>';
+  }else{
+    el.innerHTML='<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(127,127,140,0.1);border:1px solid rgba(127,127,140,0.2);border-radius:8px;font-size:12px;color:var(--t3)"><span style="font-size:16px">&#9993;</span> Not configured &mdash; emails will use your default mail app (no auto-attach).</div>';
+  }
+}
+function testEmailJS(){
+  if(!isEmailJSReady()){toast('Incomplete','Fill in all EmailJS fields and save first.');return}
+  const testEmail=settings.email||prompt('Enter your email to send a test:');
+  if(!testEmail)return;
+  toast('Sending...','Sending test email to '+testEmail);
+  emailjs.send(settings.emailjsServiceId,settings.emailjsTemplateId,{
+    to_email:testEmail,to_name:settings.contactName||'Test',from_name:settings.companyName||'Coatings Estimator',
+    reply_to:settings.email||'',subject:'Coatings Estimator - Test Email',
+    message:'This is a test email from Coatings Estimator. If you received this, EmailJS is working correctly!'
+  }).then(function(){toast('Test Passed','Check your inbox at '+testEmail)},
+    function(err){toast('Test Failed',(err&&err.text)||'Check your EmailJS settings.')});
+}
 
 // ── Custom Products & Services ──────────────────────────────
 let customCat='products';
@@ -2459,18 +2523,37 @@ function deleteCustomItem(idx){
 // ═══════════════════════════════════════════════════════════
 function emailProposal(){
   const rec=getRecord();const est=getEstimate();if(!rec||!est)return;
-  // Auto-generate PDF so user can attach it
-  generateProposal();
   const to=rec.email||'';
   const rn=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'Client';
   const subj='Proposal from '+(settings.companyName||'The Concrete Protector')+' - '+(est.name||'Estimate');
   const ec=calcEstCosts(est);
-  const body='Hi '+(rec.firstName||'')+',\n\nPlease find the attached proposal for '+(est.name||'your project')+'.\n\nEstimate Total: '+fmt(ec.totalWithTax)+'\n\nPlease let us know if you have any questions!\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
-  setTimeout(()=>{window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body))},300);
-  logActivity(rec.id,'email_sent','Proposal email opened for '+(rec.email||'(no email)'));
-  if(!est.quoteStatus||est.quoteStatus==='draft'){est.quoteStatus='sent';est.quoteSentAt=new Date().toISOString()}
-  saveDB(db);
-  toast('PDF Downloaded','Attach the downloaded PDF to your email.');
+  const body='Hi '+(rec.firstName||'')+',\n\nHere is our proposal for '+(est.name||'your project')+'.\n\nEstimate Total: '+fmt(ec.totalWithTax)+'\n\nPlease let us know if you have any questions!\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
+  // EmailJS: send with PDF attachment
+  if(isEmailJSReady()){
+    if(!to){toast('No Email','Add an email address to this record first.');return}
+    const pdf=generateProposal(true);
+    if(!pdf)return;
+    toast('Sending...','Emailing proposal to '+to);
+    emailjs.send(settings.emailjsServiceId,settings.emailjsTemplateId,{
+      to_email:to,to_name:rn,from_name:settings.contactName||settings.companyName||'The Concrete Protector',
+      reply_to:settings.email||'',subject:subj,message:body,
+      attachment:pdf.base64,attachment_name:pdf.filename
+    }).then(function(){
+      toast('Email Sent','Proposal sent to '+to+' with PDF.');
+      logActivity(rec.id,'email_sent','Proposal emailed to '+to+' via EmailJS');
+      if(!est.quoteStatus||est.quoteStatus==='draft'){est.quoteStatus='sent';est.quoteSentAt=new Date().toISOString()}
+      saveDB(db);if(nav.screen==='estimate')renderEstimate();if(nav.screen==='record')renderRecord();
+    },function(err){
+      toast('Email Failed',(err&&err.text)||'Could not send. Check EmailJS settings.');
+    });
+  }else{
+    // Fallback: download PDF + mailto
+    generateProposal();
+    setTimeout(function(){window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body))},300);
+    logActivity(rec.id,'email_sent','Proposal email opened for '+(to||'(no email)'));
+    if(!est.quoteStatus||est.quoteStatus==='draft'){est.quoteStatus='sent';est.quoteSentAt=new Date().toISOString()}
+    saveDB(db);toast('PDF Downloaded','Attach the downloaded PDF to your email.');
+  }
 }
 function textProposal(){
   const rec=getRecord();const est=getEstimate();if(!rec||!est)return;
@@ -2484,14 +2567,31 @@ function textProposal(){
 }
 function emailInvoice(){
   const inv=getInvoiceById(nav.invoiceId);const rec=getRecord();if(!inv||!rec)return;
-  // Auto-generate Invoice PDF so user can attach it
-  generateInvoicePDF();
   const to=rec.email||'';
+  const rn=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'Client';
   const subj='Invoice '+inv.number+' from '+(settings.companyName||'The Concrete Protector');
-  const body='Hi '+(rec.firstName||'')+',\n\nPlease find the attached Invoice '+inv.number+'.\n\nAmount: '+fmt(inv.total)+'\nDue Date: '+(inv.dueDate?new Date(inv.dueDate+'T12:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'N/A')+'\nBalance Due: '+fmt(inv.balance)+'\n\nPlease let us know if you have any questions.\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
-  setTimeout(()=>{window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body))},300);
-  logActivity(rec.id,'email_sent','Invoice '+inv.number+' email opened for '+(rec.email||'(no email)'));saveDB(db);
-  toast('PDF Downloaded','Attach the downloaded PDF to your email.');
+  const body='Hi '+(rec.firstName||'')+',\n\nHere are the details for Invoice '+inv.number+'.\n\nAmount: '+fmt(inv.total)+'\nDue Date: '+(inv.dueDate?new Date(inv.dueDate+'T12:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'N/A')+'\nBalance Due: '+fmt(inv.balance)+'\n\nPlease let us know if you have any questions.\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
+  if(isEmailJSReady()){
+    if(!to){toast('No Email','Add an email address to this record first.');return}
+    const pdf=generateInvoicePDF(true);
+    if(!pdf)return;
+    toast('Sending...','Emailing invoice to '+to);
+    emailjs.send(settings.emailjsServiceId,settings.emailjsTemplateId,{
+      to_email:to,to_name:rn,from_name:settings.contactName||settings.companyName||'The Concrete Protector',
+      reply_to:settings.email||'',subject:subj,message:body,
+      attachment:pdf.base64,attachment_name:pdf.filename
+    }).then(function(){
+      toast('Email Sent','Invoice sent to '+to+' with PDF.');
+      logActivity(rec.id,'email_sent','Invoice '+inv.number+' emailed to '+to+' via EmailJS');saveDB(db);
+    },function(err){
+      toast('Email Failed',(err&&err.text)||'Could not send. Check EmailJS settings.');
+    });
+  }else{
+    generateInvoicePDF();
+    setTimeout(function(){window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body))},300);
+    logActivity(rec.id,'email_sent','Invoice '+inv.number+' email opened for '+(to||'(no email)'));saveDB(db);
+    toast('PDF Downloaded','Attach the downloaded PDF to your email.');
+  }
 }
 function textInvoice(){
   const inv=getInvoiceById(nav.invoiceId);const rec=getRecord();if(!inv||!rec)return;
@@ -2756,10 +2856,10 @@ function checkOverdueInvoices(){
   const now=new Date().toISOString().slice(0,10);
   db.records.forEach(r=>r.estimates.forEach(e=>{if(e.invoices)e.invoices.forEach(inv=>{if(inv.status==='sent'&&inv.dueDate&&inv.dueDate<now)inv.status='overdue'})}));
 }
-function generateInvoicePDF(){
+function generateInvoicePDF(returnBase64){
   const inv=getInvoiceById(nav.invoiceId);const rec=getRecord();const est=getEstimate();
-  if(!inv||!rec){toast('Error','Invoice not found.');return}
-  if(typeof window.jspdf==='undefined'){toast('Error','PDF library not loaded.');return}
+  if(!inv||!rec){toast('Error','Invoice not found.');return null}
+  if(typeof window.jspdf==='undefined'){toast('Error','PDF library not loaded.');return null}
   const{jsPDF}=window.jspdf;const doc=new jsPDF();
   const pw=doc.internal.pageSize.getWidth();
   const rn=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'Client';
@@ -2832,6 +2932,7 @@ function generateInvoicePDF(){
   doc.setFontSize(7);doc.setTextColor(160);
   doc.text('Generated by Coatings Estimator \u2014 '+(settings.companyName||'The Concrete Protector'),pw/2,y,{align:'center'});
   const fn='Invoice-'+inv.number+'-'+rn.replace(/\s+/g,'-')+'.pdf';
+  if(returnBase64){return{base64:doc.output('datauristring').split(',')[1],filename:fn}}
   doc.save(fn);if(nav.recordId)logActivity(nav.recordId,'invoice_pdf','Invoice '+inv.number+' PDF generated');saveDB(db);toast('Invoice PDF',fn);
 }
 function goAllInvoices(){
@@ -2914,7 +3015,7 @@ function switchProfile(pid){
     if(entered!==p.pin){toast('Denied','Incorrect PIN.');return}
   }
   setActiveProfileId(pid);
-  db=loadDB();settings=loadSettings();
+  db=loadDB();settings=loadSettings();initEmailJS();
   showAppChrome();updateProfileBadge();goHome();toast('Switched','Loaded '+p.name+'\'s workspace.');
 }
 function renderProfileCards(){
@@ -2949,7 +3050,7 @@ function deleteProfile(pid){
     saveProfiles(remaining);
     if(getActiveProfileId()===pid){
       setActiveProfileId(remaining[0].id);
-      db=loadDB();settings=loadSettings();
+      db=loadDB();settings=loadSettings();initEmailJS();
     }
     updateProfileBadge();goProfileSelect();toast('Deleted','Profile removed.');
   });
@@ -3020,7 +3121,7 @@ document.addEventListener('click',function(e){
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
-initSidebar();
+initSidebar();initEmailJS();
 if(getProfiles().length===0){
   goProfileSetup();
 }else{

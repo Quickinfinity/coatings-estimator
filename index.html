@@ -1175,6 +1175,13 @@ body.sb-collapsed .hdr,body.sb-collapsed .breadcrumb,body.sb-collapsed .mc{margi
     </div>
   </div>
   <div class="cd">
+    <div class="ct"><span class="ic io">&#9881;</span> Custom Products & Services</div>
+    <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Add your own coating systems, topcoats, repairs, and add-ons. Built-in TCP products are always available.</p>
+    <div class="tab-row" id="customCatTabs"></div>
+    <div id="customItemsList" style="margin-top:12px"></div>
+    <button class="btn btn-primary" onclick="addCustomItem()" style="margin-top:10px;font-size:12px;padding:6px 16px">+ Add Item</button>
+  </div>
+  <div class="cd">
     <div class="ct"><span class="ic ig">&#128202;</span> Data Management</div>
     <div id="settingsStats" style="margin-bottom:16px"></div>
     <div class="btn-row">
@@ -1387,6 +1394,12 @@ const INGREDIENTS={
   // ── I-Series: Poly-Hard Quartz PP-90 (i503) ──
   'i503':[{name:'PolyHard',sku:'IC-3018',coverage:60,unit:'kit',costPer:113.88},{name:'Decorative Quartz',sku:'CQ-BLD',coverage:2,unit:'lb',costPer:0.60},{name:'Perfect Poly 90',sku:'UT-4515',coverage:150,unit:'gal',costPer:129.39}],
 };
+// ── Merged getters (built-in + custom) ───────────────────
+function getAllProducts(){return[...PRODUCTS,...(settings&&settings.customProducts||[])]}
+function getAllTopcoats(){return[...TOPCOATS,...(settings&&settings.customTopcoats||[])]}
+function getAllRepairs(){return[...REPAIRS,...(settings&&settings.customRepairs||[])]}
+function getAllAddons(){return[...ADDONS,...(settings&&settings.customAddons||[])]}
+
 const STATUSES=[{id:'lead',label:'Lead',color:'lead'},{id:'estimate',label:'Estimate',color:'est'},{id:'project',label:'Project',color:'proj'},{id:'completed',label:'Completed',color:'comp'}];
 const FOLDER_ICONS={lead:'&#9993;',estimate:'&#9997;',project:'&#9874;',completed:'&#10003;'};
 
@@ -1435,7 +1448,7 @@ let nav={screen:'home',folderStatus:null,folderActive:true,recordId:null,estimat
 let seriesFilter='All';
 
 // Settings persistence
-const SETTINGS_DEFAULTS={companyName:'The Concrete Protector',contactName:'',phone:'',email:'',address:'',city:'',state:'',zip:'',tagline:'Decorative Concrete Coatings',terms:'This proposal is valid for 30 days from the date shown. A 50% deposit is required to schedule the project. Balance due upon completion. All work carries a manufacturer warranty on materials used. The Concrete Protector guarantees workmanship for a period of one (1) year from date of installation. Customer is responsible for proper maintenance as outlined in care instructions provided at completion.',taxRate:0,paymentTerms:'net30'};
+const SETTINGS_DEFAULTS={companyName:'The Concrete Protector',contactName:'',phone:'',email:'',address:'',city:'',state:'',zip:'',tagline:'Decorative Concrete Coatings',terms:'This proposal is valid for 30 days from the date shown. A 50% deposit is required to schedule the project. Balance due upon completion. All work carries a manufacturer warranty on materials used. The Concrete Protector guarantees workmanship for a period of one (1) year from date of installation. Customer is responsible for proper maintenance as outlined in care instructions provided at completion.',taxRate:0,paymentTerms:'net30',customProducts:[],customTopcoats:[],customRepairs:[],customAddons:[]};
 function loadSettings(){try{return{...SETTINGS_DEFAULTS,...JSON.parse(localStorage.getItem(getSettingsKey()))}}catch{return{...SETTINGS_DEFAULTS}}}
 function saveSettingsData(s){localStorage.setItem(getSettingsKey(),JSON.stringify(s))}
 let settings=loadSettings();
@@ -1487,14 +1500,14 @@ function renderBreadcrumb(){
 function calcSysCosts(sys){
   const sqft=sys.sqft||0;
   const sr=sys.sellRate||0;
-  const prod=PRODUCTS.find(p=>p.id===sys.productId);
-  const tc=TOPCOATS.find(t=>t.id===sys.topcoatId);
+  const prod=getAllProducts().find(p=>p.id===sys.productId);
+  const tc=getAllTopcoats().find(t=>t.id===sys.topcoatId);
   let sellTotal=sqft*sr;
   let costTotal=(prod?prod.cost*sqft:0)+(tc?tc.cost*sqft:0);
   // Repairs
-  if(sys.repairs){Object.entries(sys.repairs).forEach(([id,r])=>{if(r.on){const def=REPAIRS.find(x=>x.id===id);if(def){const qty=r.qty||0;costTotal+=def.cost*qty;sellTotal+=((r.sell||0)*qty)}}})}
+  if(sys.repairs){Object.entries(sys.repairs).forEach(([id,r])=>{if(r.on){const def=getAllRepairs().find(x=>x.id===id);if(def){const qty=r.qty||0;costTotal+=def.cost*qty;sellTotal+=((r.sell||0)*qty)}}})}
   // Add-ons
-  if(sys.addons){Object.entries(sys.addons).forEach(([id,a])=>{if(a.on){const def=ADDONS.find(x=>x.id===id);if(def){const qty=a.qty||0;costTotal+=def.cost*qty;sellTotal+=((a.sell||0)*qty)}}})}
+  if(sys.addons){Object.entries(sys.addons).forEach(([id,a])=>{if(a.on){const def=getAllAddons().find(x=>x.id===id);if(def){const qty=a.qty||0;costTotal+=def.cost*qty;sellTotal+=((a.sell||0)*qty)}}})}
   const taxRate=settings.taxRate||0;
   const taxable=sys.taxable!==false;
   const taxAmount=(taxable&&taxRate>0)?(sellTotal*taxRate/100):0;
@@ -1618,7 +1631,7 @@ function quickInvoiceRecord(recId){
   // Create the invoice automatically
   if(!est.invoices)est.invoices=[];
   const ec=calcEstCosts(est);
-  const items=est.systems.map(sys=>{const sc=calcSysCosts(sys);const prod=PRODUCTS.find(p=>p.id===sys.productId);return{description:(sys.areaName||'Area')+' \u2014 '+(prod?prod.name:'Custom')+' ('+sys.sqft+' sqft)',qty:1,unit:'ea',rate:sc.sell,amount:sc.sell,taxable:sys.taxable!==false}});
+  const items=est.systems.map(sys=>{const sc=calcSysCosts(sys);const prod=getAllProducts().find(p=>p.id===sys.productId);return{description:(sys.areaName||'Area')+' \u2014 '+(prod?prod.name:'Custom')+' ('+sys.sqft+' sqft)',qty:1,unit:'ea',rate:sc.sell,amount:sc.sell,taxable:sys.taxable!==false}});
   const termDays={due_on_receipt:0,net15:15,net30:30,net60:60};
   const due=new Date();due.setDate(due.getDate()+(termDays[settings.paymentTerms]||30));
   const inv={id:uid(),number:getNextInvoiceNumber(),createdAt:new Date().toISOString(),dueDate:due.toISOString().slice(0,10),status:'draft',type:'standard',lineItems:items,subtotal:ec.sell,taxRate:settings.taxRate||0,taxAmount:ec.taxAmount,total:ec.sell+ec.taxAmount,depositPercent:null,discountType:'none',discountValue:0,discountAmount:0,payments:[],amountPaid:0,balance:ec.sell+ec.taxAmount,notes:'',sentAt:null};
@@ -1835,7 +1848,7 @@ function renderEstimate(){
   if(!est.systems.length){document.getElementById('systemsList').innerHTML='<div class="empty"><div class="empty-icon">&#9874;</div><div class="empty-text">Add an area to start building this estimate.</div></div>';return}
   document.getElementById('systemsList').innerHTML=est.systems.map((sys,i)=>{
     const sc=calcSysCosts(sys);
-    const prod=PRODUCTS.find(p=>p.id===sys.productId);
+    const prod=getAllProducts().find(p=>p.id===sys.productId);
     const d=[sys.sqft?sys.sqft.toLocaleString()+' sqft':'',prod?prod.name:'No system',sys.sellRate?'$'+sys.sellRate.toFixed(2)+'/sqft':''].filter(Boolean).join(' \u00b7 ');
     return'<div class="sys-card'+(prod?' has-product':'')+'" onclick="goSystem(\''+sys.id+'\')"><div><div class="sys-area">'+(sys.areaName||'Area '+(i+1))+'</div><div class="sys-detail">'+d+'</div></div><div class="sys-right"><div class="sys-price">'+fmt(sc.sell)+'</div>'+(sc.cost>0?'<div class="sys-cost">Cost '+fmt(sc.cost)+'</div>':'')+'</div></div>'
   }).join('');
@@ -1884,16 +1897,16 @@ function renderSystem(){
   document.getElementById('sysTaxable').checked=sys.taxable!==false;
   seriesFilter='All';renderSeriesFilter();renderProductList(sys);renderTopcoatList(sys);renderRepairList(sys);renderAddonList(sys);calcSystem();
 }
-function renderSeriesFilter(){const s=['All','C-Series','M-Series','G-Series','E-Series','I-Series'];document.getElementById('seriesFilter').innerHTML=s.map(x=>'<button class="sf-btn'+(x===seriesFilter?' ac':'')+'" onclick="setSeriesFilter(\''+x+'\')">'+x+'</button>').join('')}
+function renderSeriesFilter(){const s=['All','C-Series','M-Series','G-Series','E-Series','I-Series'];if(settings.customProducts&&settings.customProducts.length)s.push('Custom');document.getElementById('seriesFilter').innerHTML=s.map(x=>'<button class="sf-btn'+(x===seriesFilter?' ac':'')+'" onclick="setSeriesFilter(\''+x+'\')">'+x+'</button>').join('')}
 function setSeriesFilter(s){seriesFilter=s;renderSeriesFilter();const sys=getSystem();if(sys)renderProductList(sys)}
 function renderProductList(sys){
-  const ps=seriesFilter==='All'?PRODUCTS:PRODUCTS.filter(p=>p.series===seriesFilter);
+  const ps=seriesFilter==='All'?getAllProducts():getAllProducts().filter(p=>p.series===seriesFilter);
   document.getElementById('prodList').innerHTML=ps.map(p=>{const sel=sys.productId===p.id;return'<div class="prod-option'+(sel?' sel':'')+'" onclick="selectProduct(\''+p.id+'\')"><div><div class="prod-name">'+p.name+'</div><div class="prod-sku">'+p.sku+' \u00b7 '+p.cat+'</div></div><div class="prod-prices"><div class="cost">'+fmt(p.cost)+'/sf</div><div class="sell">Sell '+fmt(p.low)+'\u2013'+fmt(p.mid)+'</div></div></div>'}).join('');
 }
 function renderTopcoatList(sys){
-  document.getElementById('tcList').innerHTML=TOPCOATS.map(t=>{const sel=(sys.topcoatId||'tc-none')===t.id;return'<div class="prod-option'+(sel?' sel':'')+'" onclick="selectTopcoat(\''+t.id+'\')"><div><div class="prod-name">'+t.name+'</div>'+(t.desc?'<div class="prod-sku">'+t.desc+'</div>':'')+'</div><div class="prod-prices"><div class="cost">'+(t.cost>0?fmt(t.cost)+'/sf':'\u2014')+'</div></div></div>'}).join('');
+  document.getElementById('tcList').innerHTML=getAllTopcoats().map(t=>{const sel=(sys.topcoatId||'tc-none')===t.id;return'<div class="prod-option'+(sel?' sel':'')+'" onclick="selectTopcoat(\''+t.id+'\')"><div><div class="prod-name">'+t.name+'</div>'+(t.desc?'<div class="prod-sku">'+t.desc+'</div>':'')+'</div><div class="prod-prices"><div class="cost">'+(t.cost>0?fmt(t.cost)+'/sf':'\u2014')+'</div></div></div>'}).join('');
 }
-function selectProduct(id){const sys=getSystem();if(!sys)return;sys.productId=id;const p=PRODUCTS.find(p=>p.id===id);if(p&&!sys.sellRate){sys.sellRate=p.low;document.getElementById('sysSellRate').value=p.low.toFixed(2)}renderProductList(sys);calcSystem()}
+function selectProduct(id){const sys=getSystem();if(!sys)return;sys.productId=id;const p=getAllProducts().find(p=>p.id===id);if(p&&!sys.sellRate){sys.sellRate=p.low;document.getElementById('sysSellRate').value=p.low.toFixed(2)}renderProductList(sys);calcSystem()}
 function selectTopcoat(id){const sys=getSystem();if(!sys)return;sys.topcoatId=id==='tc-none'?null:id;renderTopcoatList(sys);calcSystem()}
 function calcSystem(sqm){
   const sys=getSystem();if(!sys)return;
@@ -1912,7 +1925,7 @@ function calcSystem(sqm){
   document.getElementById('sysStats').innerHTML=statsHtml;
 }
 function renderRepairList(sys){
-  document.getElementById('repairList').innerHTML=REPAIRS.map(r=>{
+  document.getElementById('repairList').innerHTML=getAllRepairs().map(r=>{
     const d=sys.repairs[r.id]||{on:false,qty:0,sell:0};
     return'<div class="ra-row'+(d.on?' on':'')+'">'+
       '<div class="ra-toggle"><input type="checkbox"'+(d.on?' checked':'')+' onchange="toggleRepair(\''+r.id+'\',this.checked)"></div>'+
@@ -1940,7 +1953,7 @@ function updateRepair(id,field,val){
   renderRepairList(sys);calcSystem();
 }
 function renderAddonList(sys){
-  document.getElementById('addonList').innerHTML=ADDONS.map(a=>{
+  document.getElementById('addonList').innerHTML=getAllAddons().map(a=>{
     const d=sys.addons[a.id]||{on:false,qty:0,sell:a.low};
     return'<div class="ra-row'+(d.on?' on':'')+'">'+
       '<div class="ra-toggle"><input type="checkbox"'+(d.on?' checked':'')+' onchange="toggleAddon(\''+a.id+'\',this.checked)"></div>'+
@@ -1957,7 +1970,7 @@ function renderAddonList(sys){
 }
 function toggleAddon(id,on){
   const sys=getSystem();if(!sys)return;
-  const def=ADDONS.find(a=>a.id===id);
+  const def=getAllAddons().find(a=>a.id===id);
   if(!sys.addons[id])sys.addons[id]={on:false,qty:0,sell:def?def.low:0};
   sys.addons[id].on=on;
   // Auto-fill qty with sqft for sqft-based add-ons
@@ -1966,7 +1979,7 @@ function toggleAddon(id,on){
 }
 function updateAddon(id,field,val){
   const sys=getSystem();if(!sys)return;
-  const def=ADDONS.find(a=>a.id===id);
+  const def=getAllAddons().find(a=>a.id===id);
   if(!sys.addons[id])sys.addons[id]={on:true,qty:0,sell:def?def.low:0};
   sys.addons[id][field]=parseFloat(val)||0;
   renderAddonList(sys);calcSystem();
@@ -2002,12 +2015,12 @@ function getSystemIngredients(sys){
     items.push({name:ing.name,sku:ing.sku,qty:unitsNeeded,unit:ing.unit,costPer:ing.costPer,totalCost:unitsNeeded*ing.costPer,source:'system',area:sys.areaName||'Unnamed'});
   })}
   // Top coat (uses real coverage rates from YEILD tab)
-  const tc=TOPCOATS.find(t=>t.id===sys.topcoatId);
+  const tc=getAllTopcoats().find(t=>t.id===sys.topcoatId);
   if(tc&&tc.cost>0){const tcCov=tc.coverage||200;const tcQty=Math.ceil(sqft/tcCov);const tcUnit=tc.unitPrice||0;items.push({name:tc.name,sku:tc.sku||'',qty:tcQty,unit:'gal',costPer:tcUnit,totalCost:tcQty*tcUnit,source:'topcoat',area:sys.areaName||'Unnamed'})}
   // Repairs
-  if(sys.repairs){Object.entries(sys.repairs).forEach(([id,r])=>{if(r.on&&r.qty>0){const def=REPAIRS.find(x=>x.id===id);if(def)items.push({name:def.name,sku:def.sku,qty:r.qty,unit:def.unit,costPer:def.cost,totalCost:def.cost*r.qty,source:'repair',area:sys.areaName||'Unnamed'})}})}
+  if(sys.repairs){Object.entries(sys.repairs).forEach(([id,r])=>{if(r.on&&r.qty>0){const def=getAllRepairs().find(x=>x.id===id);if(def)items.push({name:def.name,sku:def.sku,qty:r.qty,unit:def.unit,costPer:def.cost,totalCost:def.cost*r.qty,source:'repair',area:sys.areaName||'Unnamed'})}})}
   // Add-ons
-  if(sys.addons){Object.entries(sys.addons).forEach(([id,a])=>{if(a.on&&a.qty>0){const def=ADDONS.find(x=>x.id===id);if(def)items.push({name:def.name,sku:def.sku,qty:a.qty,unit:def.unit,costPer:def.cost,totalCost:def.cost*a.qty,source:'addon',area:sys.areaName||'Unnamed'})}})}
+  if(sys.addons){Object.entries(sys.addons).forEach(([id,a])=>{if(a.on&&a.qty>0){const def=getAllAddons().find(x=>x.id===id);if(def)items.push({name:def.name,sku:def.sku,qty:a.qty,unit:def.unit,costPer:def.cost,totalCost:def.cost*a.qty,source:'addon',area:sys.areaName||'Unnamed'})}})}
   return items;
 }
 function renderOrderList(){
@@ -2074,7 +2087,7 @@ function generateProposal(){
   y+=12;doc.setFont('helvetica','normal');doc.setTextColor(30);
   est.systems.forEach((sys,i)=>{
     if(y>260){doc.addPage();y=20}
-    const prod=PRODUCTS.find(p=>p.id===sys.productId);
+    const prod=getAllProducts().find(p=>p.id===sys.productId);
     const sc=calcSysCosts(sys);
     doc.setFontSize(10);
     doc.text(sys.areaName||'Area '+(i+1),16,y);
@@ -2085,8 +2098,8 @@ function generateProposal(){
     y+=7;
     // Line items for repairs/addons
     const extras=[];
-    if(sys.repairs){Object.entries(sys.repairs).forEach(([id,r])=>{if(r.on&&r.qty>0){const def=REPAIRS.find(x=>x.id===id);if(def)extras.push('  '+def.name+': '+r.qty+' '+def.unit+' @ $'+(r.sell||0).toFixed(2))}})}
-    if(sys.addons){Object.entries(sys.addons).forEach(([id,a])=>{if(a.on&&a.qty>0){const def=ADDONS.find(x=>x.id===id);if(def)extras.push('  '+def.name+': '+a.qty+' '+def.unit+' @ $'+(a.sell||0).toFixed(2))}})}
+    if(sys.repairs){Object.entries(sys.repairs).forEach(([id,r])=>{if(r.on&&r.qty>0){const def=getAllRepairs().find(x=>x.id===id);if(def)extras.push('  '+def.name+': '+r.qty+' '+def.unit+' @ $'+(r.sell||0).toFixed(2))}})}
+    if(sys.addons){Object.entries(sys.addons).forEach(([id,a])=>{if(a.on&&a.qty>0){const def=getAllAddons().find(x=>x.id===id);if(def)extras.push('  '+def.name+': '+a.qty+' '+def.unit+' @ $'+(a.sell||0).toFixed(2))}})}
     if(extras.length){doc.setFontSize(8);doc.setTextColor(120);extras.forEach(ex=>{doc.text(ex,18,y);y+=5});doc.setTextColor(30)}
     doc.setDrawColor(230);doc.line(14,y-2,pw-14,y-2);y+=3;
   });
@@ -2175,7 +2188,7 @@ function generateContract(){
   doc.text('Sqft',130,y+2,{align:'right'});doc.text('Price',pw-16,y+2,{align:'right'});y+=10;
   doc.setFont('helvetica','normal');doc.setTextColor(30);
   est.systems.forEach((sys,i)=>{
-    const prod=PRODUCTS.find(p=>p.id===sys.productId);const sc=calcSysCosts(sys);
+    const prod=getAllProducts().find(p=>p.id===sys.productId);const sc=calcSysCosts(sys);
     doc.text(sys.areaName||'Area '+(i+1),16,y);doc.text(prod?prod.name:'\u2014',70,y);
     doc.text((sys.sqft||0).toLocaleString(),130,y,{align:'right'});
     doc.setFont('helvetica','bold');doc.text(fmt(sc.sell),pw-16,y,{align:'right'});doc.setFont('helvetica','normal');y+=7
@@ -2232,7 +2245,7 @@ function renderReporting(){
     '<div class="rpt-card"><div class="rl">Total Sqft Quoted</div><div class="rv">'+totalSqft.toLocaleString()+'</div><div class="rs">across all estimates</div></div>';
   // Top systems
   const sysCounts={};
-  db.records.forEach(r=>r.estimates.forEach(e=>e.systems.forEach(s=>{if(s.productId){const p=PRODUCTS.find(p=>p.id===s.productId);if(p){if(!sysCounts[p.name])sysCounts[p.name]={count:0,sqft:0,revenue:0};sysCounts[p.name].count++;sysCounts[p.name].sqft+=s.sqft||0;sysCounts[p.name].revenue+=(s.sqft||0)*(s.sellRate||0)}}})));
+  db.records.forEach(r=>r.estimates.forEach(e=>e.systems.forEach(s=>{if(s.productId){const p=getAllProducts().find(p=>p.id===s.productId);if(p){if(!sysCounts[p.name])sysCounts[p.name]={count:0,sqft:0,revenue:0};sysCounts[p.name].count++;sysCounts[p.name].sqft+=s.sqft||0;sysCounts[p.name].revenue+=(s.sqft||0)*(s.sellRate||0)}}})));
   const topSys=Object.entries(sysCounts).sort((a,b)=>b[1].count-a[1].count).slice(0,8);
   const maxCount=topSys.length?topSys[0][1].count:1;
   if(topSys.length){
@@ -2315,6 +2328,7 @@ function renderSettings(){
     '<div class="sg"><div class="sx"><div class="sl">Records</div><div class="sv">'+totalRecs+'</div></div>'+
     '<div class="sx"><div class="sl">Estimates</div><div class="sv">'+totalEsts+'</div></div>'+
     '<div class="sx"><div class="sl">Total Sqft</div><div class="sv">'+totalSqft.toLocaleString()+'</div></div></div>';
+  renderCustomCatTabs();renderCustomItems();
 }
 function saveSettings(){
   settings.companyName=document.getElementById('setCompanyName').value.trim();
@@ -2333,6 +2347,59 @@ function saveSettings(){
 }
 function confirmClearAll(){openConfirm('Clear All Data','This will permanently delete ALL records, estimates, and settings. This cannot be undone.',()=>{db={records:[]};saveDB(db);settings={...SETTINGS_DEFAULTS};saveSettingsData(settings);goHome();toast('Cleared','All data removed.')})}
 
+// ── Custom Products & Services ──────────────────────────────
+let customCat='products';
+const CUSTOM_CATS=[
+  {id:'products',label:'Products',key:'customProducts'},
+  {id:'topcoats',label:'Topcoats',key:'customTopcoats'},
+  {id:'repairs',label:'Repairs',key:'customRepairs'},
+  {id:'addons',label:'Add-ons',key:'customAddons'}
+];
+function renderCustomCatTabs(){
+  document.getElementById('customCatTabs').innerHTML=CUSTOM_CATS.map(c=>
+    '<button class="tab-btn'+(customCat===c.id?' ac':'')+'" onclick="customCat=\''+c.id+'\';renderCustomCatTabs();renderCustomItems()">'+c.label+' ('+(settings[c.key]||[]).length+')</button>'
+  ).join('');
+}
+function renderCustomItems(){
+  const cat=CUSTOM_CATS.find(c=>c.id===customCat);if(!cat)return;
+  const items=settings[cat.key]||[];
+  if(!items.length){document.getElementById('customItemsList').innerHTML='<div style="font-size:12px;color:var(--t4);padding:8px 0">No custom '+cat.label.toLowerCase()+' yet.</div>';return}
+  document.getElementById('customItemsList').innerHTML=items.map((item,i)=>{
+    const isProduct=customCat==='products';const isTopcoat=customCat==='topcoats';const isRepair=customCat==='repairs';
+    let fields='<div class="g2"><div class="fg"><label>Name</label><input type="text" value="'+esc(item.name)+'" onchange="updateCustomItem('+i+',\'name\',this.value)"></div><div class="fg"><label>SKU</label><input type="text" value="'+esc(item.sku||'')+'" onchange="updateCustomItem('+i+',\'sku\',this.value)"></div></div>';
+    fields+='<div class="g2"><div class="fg"><label>Material Cost ($/'+((isRepair||customCat==='addons')?item.unit||'unit':'sqft')+')</label><input type="number" step="0.01" min="0" value="'+(item.cost||0)+'" onchange="updateCustomItem('+i+',\'cost\',parseFloat(this.value)||0)"></div>';
+    if(isProduct||customCat==='addons')fields+='<div class="fg"><label>Sell Low ($)</label><input type="number" step="0.01" min="0" value="'+(item.low||0)+'" onchange="updateCustomItem('+i+',\'low\',parseFloat(this.value)||0)"></div></div><div class="g2"><div class="fg"><label>Sell Mid ($)</label><input type="number" step="0.01" min="0" value="'+(item.mid||0)+'" onchange="updateCustomItem('+i+',\'mid\',parseFloat(this.value)||0)"></div>';
+    if(isProduct)fields+='<div class="fg"><label>Category</label><input type="text" value="'+esc(item.cat||'Custom')+'" onchange="updateCustomItem('+i+',\'cat\',this.value)"></div></div>';
+    else if(customCat==='addons')fields+='<div class="fg"><label>Unit</label><select onchange="updateCustomItem('+i+',\'unit\',this.value)"><option value="sqft"'+(item.unit==='sqft'?' selected':'')+'>sqft</option><option value="lnft"'+(item.unit==='lnft'?' selected':'')+'>lnft</option><option value="each"'+(item.unit==='each'?' selected':'')+'>each</option></select></div></div>';
+    if(isTopcoat)fields+='<div class="fg"><label>Description</label><input type="text" value="'+esc(item.desc||'')+'" onchange="updateCustomItem('+i+',\'desc\',this.value)"></div></div><div class="g2"><div class="fg"><label>Unit Price ($)</label><input type="number" step="0.01" min="0" value="'+(item.unitPrice||0)+'" onchange="updateCustomItem('+i+',\'unitPrice\',parseFloat(this.value)||0)"></div><div class="fg"><label>Coverage (sqft/unit)</label><input type="number" step="1" min="1" value="'+(item.coverage||1)+'" onchange="updateCustomItem('+i+',\'coverage\',parseFloat(this.value)||1)"></div></div>';
+    if(isRepair)fields+='<div class="fg"><label>Unit</label><select onchange="updateCustomItem('+i+',\'unit\',this.value)"><option value="sqft"'+(item.unit==='sqft'?' selected':'')+'>sqft</option><option value="lnft"'+(item.unit==='lnft'?' selected':'')+'>lnft</option><option value="each"'+(item.unit==='each'?' selected':'')+'>each</option></select></div></div>';
+    return'<div style="padding:12px;border:1px solid var(--b1);border-radius:10px;background:var(--s2);margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:600;font-size:13px;color:var(--t1)">'+(item.name||'New Item')+'</span><button class="btn btn-danger" onclick="deleteCustomItem('+i+')" style="font-size:11px;padding:3px 10px">Delete</button></div>'+fields+'</div>';
+  }).join('');
+}
+function esc(s){return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function addCustomItem(){
+  const cat=CUSTOM_CATS.find(c=>c.id===customCat);if(!cat)return;
+  if(!settings[cat.key])settings[cat.key]=[];
+  const id='custom-'+uid();
+  if(customCat==='products')settings[cat.key].push({id,sku:'',name:'',series:'Custom',cat:'Custom',cost:0,low:0,mid:0});
+  else if(customCat==='topcoats')settings[cat.key].push({id,sku:'',name:'',cost:0,desc:'',unitPrice:0,coverage:1});
+  else if(customCat==='repairs')settings[cat.key].push({id,sku:'',name:'',cost:0,unit:'sqft'});
+  else if(customCat==='addons')settings[cat.key].push({id,sku:'',name:'',cost:0,low:0,mid:0,unit:'sqft'});
+  saveSettingsData(settings);renderCustomCatTabs();renderCustomItems();
+}
+function updateCustomItem(idx,field,val){
+  const cat=CUSTOM_CATS.find(c=>c.id===customCat);if(!cat)return;
+  const items=settings[cat.key];if(!items||!items[idx])return;
+  items[idx][field]=val;saveSettingsData(settings);renderCustomCatTabs();
+}
+function deleteCustomItem(idx){
+  const cat=CUSTOM_CATS.find(c=>c.id===customCat);if(!cat)return;
+  const items=settings[cat.key];if(!items||!items[idx])return;
+  openConfirm('Delete Item','Remove "'+items[idx].name+'" from custom '+cat.label.toLowerCase()+'?',()=>{
+    items.splice(idx,1);saveSettingsData(settings);renderCustomCatTabs();renderCustomItems();toast('Deleted','Custom item removed.');
+  });
+}
+
 // ═══════════════════════════════════════════════════════════
 // EMAIL / TEXT COMMUNICATION
 // ═══════════════════════════════════════════════════════════
@@ -2340,7 +2407,8 @@ function emailProposal(){
   const rec=getRecord();const est=getEstimate();if(!rec||!est)return;
   const to=rec.email||'';
   const subj='Proposal from '+(settings.companyName||'The Concrete Protector')+' - '+(est.name||'Estimate');
-  const body='Hi '+(rec.firstName||'')+',\n\nPlease find attached our proposal for '+(est.name||'your project')+'.\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
+  const ec=calcEstCosts(est);
+  const body='Hi '+(rec.firstName||'')+',\n\nWe\'ve prepared a proposal for '+(est.name||'your project')+'.\n\nEstimate Total: '+fmt(ec.totalWithTax)+'\n\nWe\'ll send the PDF separately. Please let us know if you have any questions!\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
   window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body));
   logActivity(rec.id,'email_sent','Proposal email opened for '+(rec.email||'(no email)'));
   if(!est.quoteStatus||est.quoteStatus==='draft'){est.quoteStatus='sent';est.quoteSentAt=new Date().toISOString()}
@@ -2361,7 +2429,7 @@ function emailInvoice(){
   const inv=getInvoiceById(nav.invoiceId);const rec=getRecord();if(!inv||!rec)return;
   const to=rec.email||'';
   const subj='Invoice '+inv.number+' from '+(settings.companyName||'The Concrete Protector');
-  const body='Hi '+(rec.firstName||'')+',\n\nPlease find attached Invoice '+inv.number+' for '+fmt(inv.total)+'.\n\nDue Date: '+(inv.dueDate||'N/A')+'\nBalance Due: '+fmt(inv.balance)+'\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
+  const body='Hi '+(rec.firstName||'')+',\n\nHere are the details for Invoice '+inv.number+':\n\nAmount: '+fmt(inv.total)+'\nDue Date: '+(inv.dueDate?new Date(inv.dueDate+'T12:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'N/A')+'\nBalance Due: '+fmt(inv.balance)+'\n\nPlease let us know if you have any questions.\n\nThank you,\n'+(settings.contactName||settings.companyName||'');
   window.open('mailto:'+encodeURIComponent(to)+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(body));
   logActivity(rec.id,'email_sent','Invoice '+inv.number+' email opened for '+(rec.email||'(no email)'));saveDB(db);
 }
@@ -2426,7 +2494,7 @@ function createInvoice(type){
   const lineTotal=depositPct?ec.sell*(depositPct/100):ec.sell;
   const taxAmt=depositPct?ec.taxAmount*(depositPct/100):ec.taxAmount;
   const items=type==='deposit'?[{description:'Deposit ('+depositPct+'%) for '+est.name,qty:1,unit:'ea',rate:lineTotal,amount:lineTotal,taxable:true}]:
-    est.systems.map(sys=>{const sc=calcSysCosts(sys);const prod=PRODUCTS.find(p=>p.id===sys.productId);return{description:(sys.areaName||'Area')+' — '+(prod?prod.name:'Custom')+' ('+sys.sqft+' sqft)',qty:1,unit:'ea',rate:sc.sell,amount:sc.sell,taxable:sys.taxable!==false}});
+    est.systems.map(sys=>{const sc=calcSysCosts(sys);const prod=getAllProducts().find(p=>p.id===sys.productId);return{description:(sys.areaName||'Area')+' — '+(prod?prod.name:'Custom')+' ('+sys.sqft+' sqft)',qty:1,unit:'ea',rate:sc.sell,amount:sc.sell,taxable:sys.taxable!==false}});
   const termDays={due_on_receipt:0,net15:15,net30:30,net60:60};
   const due=new Date();due.setDate(due.getDate()+(termDays[settings.paymentTerms]||30));
   const inv={

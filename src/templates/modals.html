@@ -67,8 +67,8 @@
 <!-- MOBILE BOTTOM NAV -->
 <div class="mobile-bottom-nav">
   <button :class="{active:nav.screen==='home'}" @click="goHome()"><span class="nav-icon">&#127968;</span>Home</button>
-  <button :class="{active:nav.screen==='list'}" @click="goFolder('lead',true)"><span class="nav-icon">&#128203;</span>Pipeline</button>
+  <button :class="{active:['list','record','estimate','system','invoice'].includes(nav.screen)}" @click="goFolder('lead',true)"><span class="nav-icon">&#128203;</span>Pipeline</button>
   <button :class="{active:nav.screen==='calendar'}" @click="goCalendar()"><span class="nav-icon">&#128197;</span>Calendar</button>
-  <button :class="{active:nav.screen==='reporting'}" @click="goReporting()"><span class="nav-icon">&#128200;</span>Reports</button>
+  <button :class="{active:['reporting','invoices-all'].includes(nav.screen)}" @click="goReporting()"><span class="nav-icon">&#128200;</span>Reports</button>
   <button :class="{active:nav.screen==='settings'}" @click="goSettings()"><span class="nav-icon">&#9881;</span>Settings</button>
 </div>

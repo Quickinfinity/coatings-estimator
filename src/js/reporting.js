@@ -121,6 +121,7 @@ function exportReportCSV(){
 function exportReportPDF(){
   const active=db.records.filter(r=>r.active);
   if(!active.length){toast('No Data','No active records to export.');return}
+  if(typeof window.jspdf==='undefined'){toast('Error','PDF library not loaded. Check internet connection.');return}
   const doc=new jspdf.jsPDF();
   const acR=settings.pdfAccentR||37,acG=settings.pdfAccentG||99,acB=settings.pdfAccentB||235;
   const today=new Date().toISOString().slice(0,10);

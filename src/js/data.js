@@ -129,4 +129,4 @@ const CUSTOM_CATS=[
   {id:'addons',label:'Add-ons',key:'customAddons'}
 ];
 
-function esc(s){return String(s).replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}

@@ -90,15 +90,18 @@ function sendInvoiceReminder(){
 }
 function quickEmail(){
   const rec=getRecord();if(!rec)return;
-  window.open('mailto:'+(rec.email||''));
+  if(!rec.email){toast('No Email','Add an email address to this record first.');return}
+  window.open('mailto:'+rec.email);
 }
 function quickText(){
   const rec=getRecord();if(!rec)return;
-  window.open('sms:'+(rec.phone||''));
+  if(!rec.phone){toast('No Phone','Add a phone number to this record first.');return}
+  window.open('sms:'+rec.phone);
 }
 function quickCall(){
   const rec=getRecord();if(!rec)return;
-  window.open('tel:'+(rec.phone||''));
+  if(!rec.phone){toast('No Phone','Add a phone number to this record first.');return}
+  window.open('tel:'+rec.phone);
 }
 function renderQuickContactBtns(){
   const rec=getRecord();if(!rec)return;
@@ -107,5 +110,6 @@ function renderQuickContactBtns(){
   if(rec.email)btns+='<button class="btn btn-ghost" onclick="quickEmail()" style="font-size:12px">&#9993; Email</button>';
   if(rec.phone)btns+='<button class="btn btn-ghost" onclick="quickText()" style="font-size:12px">&#128172; Text</button>';
   if(rec.phone)btns+='<button class="btn btn-ghost" onclick="quickCall()" style="font-size:12px">&#128222; Call</button>';
+  if(!btns)btns='<span style="font-size:11px;color:var(--t4)">Add email or phone to enable quick contact</span>';
   el.innerHTML=btns;
 }

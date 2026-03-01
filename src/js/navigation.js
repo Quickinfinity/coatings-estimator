@@ -121,15 +121,16 @@ function initSidebar(){
 // ── Keyboard Shortcuts ──────────────────────────────────────
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
-    closeConfirm();closeExport();closeImport();closePaymentModal();
+    closeConfirm();closeExport();closeImport();closePaymentModal();closeQuickAdd();closeMobileSidebar();
     const gs=document.getElementById('globalSearchResults');if(gs)gs.style.display='none';
   }
   if((e.metaKey||e.ctrlKey)&&e.key==='s'){
     e.preventDefault();
-    if(nav.screen==='system')saveSystem();
-    else if(nav.screen==='estimate')saveEstimate();
-    else if(nav.screen==='record')saveRecord();
-    else if(nav.screen==='settings')saveSettings();
+    if(nav.screen==='system'){saveSystem();flashSaveBtn('sysSaveBtn')}
+    else if(nav.screen==='estimate'){saveEstimate()}
+    else if(nav.screen==='record'){saveRecord();flashSaveBtn('saveRecordBtn')}
+    else if(nav.screen==='settings'){saveSettings()}
+    else if(nav.screen==='invoice'){const inv=getInvoiceById(nav.invoiceId);if(inv){updateInvoiceField('notes',document.getElementById('invNotes').value);toast('Saved','Invoice updated.')}}
   }
 });
 document.addEventListener('click',function(e){

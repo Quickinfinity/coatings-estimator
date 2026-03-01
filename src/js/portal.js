@@ -12,7 +12,7 @@ function generateApprovalPage(){
   const ec=calcEstCosts(est);
   const accentR=settings.pdfAccentR||37,accentG=settings.pdfAccentG||99,accentB=settings.pdfAccentB||235;
   const accent='rgb('+accentR+','+accentG+','+accentB+')';
-  const logo=settings.companyLogo?'<img src="'+settings.companyLogo+'" style="max-height:50px;max-width:180px;margin-bottom:12px">':'';
+  const logo=settings.companyLogo?'<img src="'+esc(settings.companyLogo)+'" style="max-height:50px;max-width:180px;margin-bottom:12px">':'';
   const areas=est.systems.map(s=>{
     const sc=calcSysCosts(s);
     const prod=getAllProducts().find(p=>p.id===s.productId);
@@ -35,9 +35,9 @@ function generateApprovalPage(){
     '.btn-decline{background:#fee2e2;color:#ef4444}.btn-clear{background:#f3f4f6;color:#6b7280;font-size:13px;padding:8px 16px}'+
     '.confirmed{display:none;text-align:center;padding:40px}.confirmed h2{color:#22c55e;font-size:24px;margin-bottom:8px}'+
     '.terms{font-size:12px;color:#9ca3af;margin-top:16px;line-height:1.6}'+
-    '</style></head><body><div class="container"><div class="header">'+logo+'<h1>'+(settings.companyName||'Estimate')+'</h1><p>Estimate for '+esc(rn)+'</p></div>'+
+    '</style></head><body><div class="container"><div class="header">'+logo+'<h1>'+esc(settings.companyName||'Estimate')+'</h1><p>Estimate for '+esc(rn)+'</p></div>'+
     '<div class="body" id="reviewSection"><p style="font-size:14px;color:#6b7280;margin-bottom:16px">'+esc(approvalMsg)+'</p>'+
-    '<h3 style="font-size:16px;font-weight:600;margin-bottom:8px">'+(est.name||'Estimate')+'</h3>'+
+    '<h3 style="font-size:16px;font-weight:600;margin-bottom:8px">'+esc(est.name||'Estimate')+'</h3>'+
     '<table><thead><tr><th>Area</th><th>System</th><th style="text-align:right">Size</th><th style="text-align:right">Price</th></tr></thead><tbody>'+areas+'</tbody></table>'+
     '<div class="total">Total: '+fmt(ec.totalWithTax)+'</div>'+
     (settings.terms?'<div class="terms"><strong>Terms & Conditions:</strong><br>'+esc(settings.terms)+'</div>':'')+
@@ -80,7 +80,7 @@ function generateClientPortal(){
   const rn=((rec.firstName||'')+' '+(rec.lastName||'')).trim()||'Client';
   const accentR=settings.pdfAccentR||37,accentG=settings.pdfAccentG||99,accentB=settings.pdfAccentB||235;
   const accent='rgb('+accentR+','+accentG+','+accentB+')';
-  const logo=settings.companyLogo?'<img src="'+settings.companyLogo+'" style="max-height:50px;max-width:180px;margin-bottom:12px">':'';
+  const logo=settings.companyLogo?'<img src="'+esc(settings.companyLogo)+'" style="max-height:50px;max-width:180px;margin-bottom:12px">':'';
   // Estimates
   let estHTML='';
   rec.estimates.forEach(est=>{
@@ -90,7 +90,7 @@ function generateClientPortal(){
     const qsColor={draft:'#9ca3af',sent:'#3b82f6',approved:'#22c55e',declined:'#ef4444'};
     estHTML+='<div style="border:1px solid #e5e7eb;border-radius:12px;padding:20px;margin-bottom:12px">'+
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'+
-        '<h3 style="font-size:16px;font-weight:600">'+(est.name||'Estimate')+'</h3>'+
+        '<h3 style="font-size:16px;font-weight:600">'+esc(est.name||'Estimate')+'</h3>'+
         '<span style="font-size:12px;font-weight:600;color:'+qsColor[qs]+';text-transform:uppercase">'+qsLabel[qs]+'</span>'+
       '</div>'+
       '<div style="font-size:14px;color:#6b7280;margin-bottom:8px">'+est.systems.length+' area'+(est.systems.length!==1?'s':'')+' &middot; '+ec.sqft.toLocaleString()+' sqft</div>'+
@@ -105,7 +105,7 @@ function generateClientPortal(){
       const statusColor={draft:'#9ca3af',sent:'#3b82f6',paid:'#22c55e',partial:'#f59e0b',overdue:'#ef4444'};
       invHTML+='<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:8px">'+
         '<div><div style="font-weight:600;font-size:14px">'+esc(inv.number||'Invoice')+'</div>'+
-        '<div style="font-size:12px;color:#6b7280">'+new Date(inv.date||inv.createdAt).toLocaleDateString()+'</div></div>'+
+        '<div style="font-size:12px;color:#6b7280">'+(inv.date||inv.createdAt?new Date(inv.date||inv.createdAt).toLocaleDateString():'')+'</div></div>'+
         '<div style="text-align:right"><div style="font-weight:600;color:'+accent+'">'+fmt(inv.total||0)+'</div>'+
         '<div style="font-size:12px;font-weight:600;color:'+(statusColor[inv.status]||'#9ca3af')+'">'+(inv.status||'draft').toUpperCase()+'</div></div>'+
       '</div>';
@@ -123,14 +123,14 @@ function generateClientPortal(){
     '.body{padding:28px 32px}h2{font-size:18px;font-weight:600;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #f3f4f6}'+
     '.footer{padding:20px 32px;background:#f9fafb;text-align:center;font-size:12px;color:#9ca3af}'+
     '</style></head><body><div class="container"><div class="header">'+logo+
-    '<h1>'+(settings.companyName||'Client Portal')+'</h1>'+
+    '<h1>'+esc(settings.companyName||'Client Portal')+'</h1>'+
     '<p>Project details for '+esc(rn)+'</p></div>'+
     '<div class="body">'+
     (rec.address?'<div style="font-size:14px;color:#6b7280;margin-bottom:20px">'+esc(rec.address)+(rec.city?', '+esc(rec.city):'')+(rec.state?' '+esc(rec.state):'')+(rec.zip?' '+esc(rec.zip):'')+'</div>':'')+
     (estHTML?'<h2>Estimates</h2>'+estHTML:'')+
     (invHTML?'<h2 style="margin-top:24px">Invoices</h2>'+invHTML:'')+
     (paymentBtn?'<div style="text-align:center;margin-top:24px">'+paymentBtn+'</div>':'')+
-    '</div><div class="footer">&copy; '+(new Date().getFullYear())+' '+(settings.companyName||'')+(settings.phone?' &middot; '+esc(settings.phone):'')+(settings.email?' &middot; '+esc(settings.email):'')+'</div>'+
+    '</div><div class="footer">&copy; '+(new Date().getFullYear())+' '+esc(settings.companyName||'')+(settings.phone?' &middot; '+esc(settings.phone):'')+(settings.email?' &middot; '+esc(settings.email):'')+'</div>'+
     '</div></body></html>';
   const blob=new Blob([html],{type:'text/html'});
   const a=document.createElement('a');

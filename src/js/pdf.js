@@ -163,7 +163,8 @@ function generateContract(){
   // Terms
   y+=14;doc.setFontSize(10);doc.text('Terms & Conditions',14,y);y+=7;
   doc.setFont(pf,'normal');doc.setFontSize(8);doc.setTextColor(60);
-  const terms=document.getElementById('contractTerms').value;
+  const termsEl=document.getElementById('contractTerms');
+  const terms=termsEl?termsEl.value:(settings.terms||'Proposal valid for 30 days. 50% deposit required to schedule.');
   doc.splitTextToSize(terms,pw-28).forEach(l=>{if(y>265){doc.addPage();y=20}doc.text(l,14,y);y+=4});
   // Signatures
   y+=10;if(y>230){doc.addPage();y=20}

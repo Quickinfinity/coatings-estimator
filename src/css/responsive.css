@@ -98,9 +98,17 @@
     cursor:pointer;font-family:inherit;
     min-width:44px;min-height:44px;
     justify-content:center;
+    transition:color .15s,transform .15s;
+    position:relative;
   }
-  .mobile-bottom-nav button .nav-icon{font-size:18px}
-  .mobile-bottom-nav button.active{color:var(--accent)}
+  .mobile-bottom-nav button .nav-icon{font-size:18px;transition:transform .15s}
+  .mobile-bottom-nav button.active{color:var(--accent);font-weight:600}
+  .mobile-bottom-nav button.active .nav-icon{transform:scale(1.15)}
+  .mobile-bottom-nav button.active::after{
+    content:'';position:absolute;top:2px;left:50%;transform:translateX(-50%);
+    width:4px;height:4px;border-radius:50%;background:var(--accent);
+  }
+  .mobile-bottom-nav button:active{transform:scale(.92)}
   .mc{padding-bottom:80px!important}
 
   /* Batch bar above bottom nav */

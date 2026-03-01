@@ -97,7 +97,7 @@ function recName(r){
 // ═══════════════════════════════════════════════════════════
 function renderCalendar(){
   const label=new Date(calYear,calMonth).toLocaleDateString('en-US',{month:'long',year:'numeric'});
-  document.getElementById('calMonthLabel').textContent=label;
+  const labelEl=document.getElementById('calMonthLabel');if(labelEl)labelEl.textContent=label;
   const firstDay=new Date(calYear,calMonth,1).getDay();
   const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
   const todayStr=new Date().toISOString().slice(0,10);
@@ -168,8 +168,9 @@ function renderWeekView(){
   const endD=new Date(dates[6]+'T12:00');
   const startLabel=startD.toLocaleDateString('en-US',{month:'short',day:'numeric'});
   const endLabel=endD.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  document.getElementById('calMonthLabel').textContent=startLabel+' \u2013 '+endLabel;
+  const labelEl=document.getElementById('calMonthLabel');if(labelEl)labelEl.textContent=startLabel+' \u2013 '+endLabel;
 
+  const weekEl=document.getElementById('weekGrid');if(!weekEl)return;
   const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
   // Build header
@@ -223,7 +224,7 @@ function renderWeekView(){
     html+='</div>';
   }
 
-  document.getElementById('weekGrid').innerHTML=html;
+  weekEl.innerHTML=html;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -241,7 +242,9 @@ function renderDispatch(){
   const endD=new Date(dates[6]+'T12:00');
   const startLabel=startD.toLocaleDateString('en-US',{month:'short',day:'numeric'});
   const endLabel=endD.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  document.getElementById('calMonthLabel').textContent=startLabel+' \u2013 '+endLabel;
+  const dLabelEl=document.getElementById('calMonthLabel');if(dLabelEl)dLabelEl.textContent=startLabel+' \u2013 '+endLabel;
+
+  const dispGrid=document.getElementById('dispatchGrid');if(!dispGrid)return;
 
   // ── Crew legend ──
   const crew=settings.crewMembers||[];
@@ -259,8 +262,8 @@ function renderDispatch(){
   document.getElementById('dispatchCrewLegend').innerHTML=legendHtml;
 
   // ── Dispatch time grid ──
-  const startHour=6;
-  const endHour=18; // 6 PM
+  const startHour=settings.workHoursStart||6;
+  const endHour=settings.workHoursEnd||18;
   const dayNames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
   let html='';
@@ -339,7 +342,7 @@ function renderDispatch(){
     }
   }
 
-  document.getElementById('dispatchGrid').innerHTML=html;
+  dispGrid.innerHTML=html;
 
   // ── Unscheduled projects ──
   renderUnscheduled();

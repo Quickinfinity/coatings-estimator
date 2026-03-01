@@ -8,3 +8,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:16px;backg
 ::-webkit-scrollbar-thumb{background:#c1c5cd;border-radius:4px}
 ::-webkit-scrollbar-thumb:hover{background:#9ca3af}
 ::selection{background:rgba(37,99,235,.2);color:var(--t1)}
+/* Focus-visible ring for keyboard accessibility */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* Reduced motion preference */
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}

@@ -46,15 +46,14 @@ function showTemplatePickerModal(rec){
   const tpls=settings.estimateTemplates||[];
   const items=tpls.map((t,i)=>'<div onclick="closeConfirm();createBlankEstimate(getRecord(),settings.estimateTemplates['+i+'].systems)" style="padding:14px 16px;background:var(--s3);border-radius:10px;margin-bottom:8px;cursor:pointer;border:1px solid var(--brd);transition:border-color .15s" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--brd)\'"><div style="font-weight:600;font-size:14px;color:var(--t1)">'+esc(t.name)+'</div><div style="font-size:12px;color:var(--t3);margin-top:2px">'+t.systems.length+' area'+(t.systems.length!==1?'s':'')+'</div></div>').join('');
   const modal=document.getElementById('confirmModal');
-  modal.querySelector('.modal-card').innerHTML='<div style="padding:20px"><h3 style="font-size:16px;font-weight:700;margin-bottom:4px">New Estimate</h3><p style="font-size:13px;color:var(--t3);margin-bottom:16px">Start blank or use a template</p><div onclick="closeConfirm();createBlankEstimate(getRecord())" style="padding:14px 16px;background:var(--s3);border-radius:10px;margin-bottom:12px;cursor:pointer;border:2px solid var(--accent)"><div style="font-weight:600;font-size:14px;color:var(--accent)">+ Start Blank</div><div style="font-size:12px;color:var(--t3);margin-top:2px">Empty estimate — add areas manually</div></div><div style="font-size:12px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Or choose a template</div>'+items+'</div>';
-  modal.classList.add('active');
+  modal.querySelector('.modal').innerHTML='<div style="padding:20px"><h3 style="font-size:16px;font-weight:700;margin-bottom:4px">New Estimate</h3><p style="font-size:13px;color:var(--t3);margin-bottom:16px">Start blank or use a template</p><div onclick="closeConfirm();createBlankEstimate(getRecord())" style="padding:14px 16px;background:var(--s3);border-radius:10px;margin-bottom:12px;cursor:pointer;border:2px solid var(--accent)"><div style="font-weight:600;font-size:14px;color:var(--accent)">+ Start Blank</div><div style="font-size:12px;color:var(--t3);margin-top:2px">Empty estimate — add areas manually</div></div><div style="font-size:12px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Or choose a template</div>'+items+'</div>';
+  modal.scrollTop=0;modal.classList.add('active');
 }
 function saveEstimate(){
   saveDB(db);
   // Button feedback
   const btn=document.getElementById('estSaveBtn');
-  btn.textContent='\u2713 Saved!';btn.style.opacity='0.7';btn.disabled=true;
-  setTimeout(()=>{btn.textContent='Save';btn.style.opacity='';btn.disabled=false},1500);
+  if(btn){const orig=btn.innerHTML;btn.innerHTML='&#10003; Saved!';btn.style.background='#16a34a';setTimeout(()=>{btn.innerHTML=orig;btn.style.background=''},1500)}
   // Show next-step actions
   const est=getEstimate();const ec=calcEstCosts(est);
   const hasAreas=est&&est.systems.length>0;
@@ -70,7 +69,8 @@ function saveEstimate(){
   setTimeout(()=>{el.style.display='none'},8000);
   toast('Saved','Estimate saved.');
 }
-function confirmDeleteEstimate(){const rec=getRecord();if(!rec)return;const est=getEstimate();const eName=(est||{}).name||'Estimate';openConfirm('Delete Estimate','Delete this estimate and all areas?',()=>{if(est)_lastDeleted={type:'estimate',data:JSON.parse(JSON.stringify(est)),parentId:rec.id};logActivity(rec.id,'estimate_deleted','Estimate \''+eName+'\' deleted');rec.estimates=rec.estimates.filter(e=>e.id!==nav.estimateId);rec.updatedAt=new Date().toISOString();saveDB(db);goRecord(nav.recordId);toast('Deleted','Estimate removed.',{fn:true})})}
+function saveEstimateWithFeedback(){saveEstimate()}
+function confirmDeleteEstimate(){const rec=getRecord();if(!rec)return;const est=getEstimate();const eName=(est||{}).name||'Estimate';openConfirm('Delete Estimate','Delete this estimate and all areas?',()=>{if(est)_lastDeleted={type:'estimate',data:JSON.parse(JSON.stringify(est)),parentId:rec.id};logActivity(rec.id,'estimate_deleted','Estimate \''+eName+'\' deleted');rec.estimates=rec.estimates.filter(e=>e.id!==nav.estimateId);rec.updatedAt=new Date().toISOString();saveDB(db);goRecord(nav.recordId);toast('Deleted','Estimate removed.',{fn:true})},'Delete')}
 
 // ═══════════════════════════════════════════════════════════
 // SYSTEM EDITOR
@@ -181,8 +181,14 @@ function updateAddon(id,field,val){
   renderAddonList(sys);calcSystem();
 }
 function saveSystem(){calcSystem();saveDB(db);renderBreadcrumb();toast('Saved','Area saved.')}
+function saveSystemWithFeedback(){
+  saveSystem();
+  const btn=document.getElementById('sysSaveBtn');if(!btn)return;
+  const orig=btn.innerHTML;btn.innerHTML='&#10003; Saved!';btn.style.background='#16a34a';
+  setTimeout(()=>{btn.innerHTML=orig;btn.style.background=''},1500);
+}
 function newSystem(){const est=getEstimate();if(!est)return;const sys={id:uid(),areaName:'',length:0,width:0,sqft:0,productId:null,sellRate:0,topcoatId:null,notes:'',taxable:true,repairs:{},addons:{}};est.systems.push(sys);if(nav.recordId)logActivity(nav.recordId,'area_added','Area added to \''+est.name+'\'');saveDB(db);goSystem(sys.id)}
-function confirmDeleteSystem(){const est=getEstimate();if(!est)return;const sys=getSystem();const aName=(sys||{}).areaName||'Area';openConfirm('Remove Area','Remove this area from the estimate?',()=>{if(sys)_lastDeleted={type:'system',data:JSON.parse(JSON.stringify(sys)),parentId:nav.estimateId,recordId:nav.recordId};if(nav.recordId)logActivity(nav.recordId,'area_removed','Area \''+aName+'\' removed from \''+est.name+'\'');est.systems=est.systems.filter(s=>s.id!==nav.systemId);saveDB(db);goEstimate(nav.estimateId);toast('Removed','Area removed.',{fn:true})})}
+function confirmDeleteSystem(){const est=getEstimate();if(!est)return;const sys=getSystem();const aName=(sys||{}).areaName||'Area';openConfirm('Remove Area','Remove this area from the estimate?',()=>{if(sys)_lastDeleted={type:'system',data:JSON.parse(JSON.stringify(sys)),parentId:nav.estimateId,recordId:nav.recordId};if(nav.recordId)logActivity(nav.recordId,'area_removed','Area \''+aName+'\' removed from \''+est.name+'\'');est.systems=est.systems.filter(s=>s.id!==nav.systemId);saveDB(db);goEstimate(nav.estimateId);toast('Removed','Area removed.',{fn:true})},'Remove')}
 function duplicateSystem(){
   const est=getEstimate();const sys=getSystem();if(!est||!sys)return;
   const dup=JSON.parse(JSON.stringify(sys));dup.id=uid();dup.areaName=(sys.areaName||'Area')+' (Copy)';
@@ -250,11 +256,22 @@ function removeSysLineItem(idx){
 // ═══════════════════════════════════════════════════════════
 // MODALS / TOAST / IMPORT-EXPORT
 // ═══════════════════════════════════════════════════════════
-function openConfirm(t,m,fn){document.getElementById('confirmTitle').textContent=t;document.getElementById('confirmMsg').textContent=m;document.getElementById('confirmYes').onclick=()=>{closeConfirm();fn()};document.getElementById('confirmModal').classList.add('active')}
+function openConfirm(t,m,fn,btnLabel){
+  document.getElementById('confirmTitle').textContent=t;
+  document.getElementById('confirmMsg').textContent=m;
+  const yesBtn=document.getElementById('confirmYes');
+  yesBtn.onclick=()=>{closeConfirm();fn()};
+  yesBtn.textContent=btnLabel||'Confirm';
+  // Use danger style for delete, success for positive actions, primary for general
+  yesBtn.className='btn '+(btnLabel==='Delete'?'btn-danger':btnLabel==='Invoice'?'btn-success':'btn-primary');
+  const overlay=document.getElementById('confirmModal');
+  overlay.scrollTop=0;
+  overlay.classList.add('active');
+}
 function closeConfirm(){document.getElementById('confirmModal').classList.remove('active')}
-function openExport(){document.getElementById('exportModal').classList.add('active')}
+function openExport(){const e=document.getElementById('exportModal');e.scrollTop=0;e.classList.add('active')}
 function closeExport(){document.getElementById('exportModal').classList.remove('active')}
-function openImport(){document.getElementById('importModal').classList.add('active')}
+function openImport(){const i=document.getElementById('importModal');i.scrollTop=0;i.classList.add('active')}
 function closeImport(){document.getElementById('importModal').classList.remove('active')}
 let _lastDeleted=null;let _toastTimer=null;
 function toast(t,m,undoOpt){

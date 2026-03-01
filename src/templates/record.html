@@ -1,10 +1,14 @@
 <!-- RECORD -->
 <div class="screen" v-show="nav.screen==='record'" id="scr-record">
   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
-    <div class="sh" style="margin-bottom:0;flex:1" id="recordHeader"></div>
-    <div class="btn-row">
-      <button class="btn btn-success" onclick="saveRecord()">Save</button>
-      <button class="btn btn-danger" onclick="confirmDeleteRecord()">Delete</button>
+    <div style="display:flex;align-items:center;gap:12px;flex:1">
+      <button class="btn btn-ghost" onclick="goFolder(nav.folderStatus,nav.folderActive)" style="padding:8px 12px;font-size:13px" title="Back to list">&larr; Back</button>
+      <div class="sh" style="margin-bottom:0;flex:1" id="recordHeader"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span id="autoSaveIndicator" style="font-size:11px;color:var(--t4);display:none"></span>
+      <button class="btn btn-success" id="saveRecordBtn" onclick="saveRecordWithFeedback()" style="font-size:13px;padding:8px 18px">&#10003; Save</button>
+      <button class="btn btn-ghost" onclick="confirmDeleteRecord()" style="font-size:12px;color:var(--t3)">Delete</button>
     </div>
   </div>
   <div id="duplicateWarning"></div>
@@ -61,9 +65,8 @@
     </div>
     <div class="fg"><label>Notes</label><textarea id="recNotes" placeholder="Additional notes..." oninput="autoSaveRecord()"></textarea></div>
     <div style="margin-top:8px"><label style="font-size:12px;font-weight:600;color:var(--t3)">Tags</label><div id="tagBar" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;align-items:center"></div></div>
-    <div class="g2" style="margin-top:8px">
+    <div style="margin-top:8px;max-width:280px">
       <div class="fg"><label>Lead Source</label><select id="recLeadSource" onchange="autoSaveRecord()"><option value="">-- Select --</option></select></div>
-      <div class="fg"></div>
     </div>
   </div>
   <div class="cd">

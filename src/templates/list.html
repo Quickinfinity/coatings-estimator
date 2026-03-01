@@ -12,7 +12,7 @@
     <div class="search-bar" style="flex:1;min-width:220px"><input type="text" id="searchInput" placeholder="Search by name, company, or address..." oninput="filterList()"></div>
     <select id="tagFilter" onchange="filterList()" style="font-size:12px;padding:8px 10px;border-radius:8px;border:1px solid var(--brd);background:var(--s3);color:var(--t1)"><option value="">All Tags</option></select>
     <button class="btn btn-ghost" onclick="toggleBatchMode()" id="batchToggleBtn" style="font-size:12px">Select</button>
-    <button class="btn btn-primary" id="newLeadBtn" onclick="newRecord()">+ New Lead</button>
+    <button class="btn btn-primary" id="newLeadBtn" onclick="openQuickAdd()">+ New Lead</button>
   </div>
   <div id="listItems"></div>
   <div id="batchBar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--s2);border-top:2px solid var(--accent);padding:12px 20px;z-index:100;box-shadow:0 -4px 16px rgba(0,0,0,.12)">

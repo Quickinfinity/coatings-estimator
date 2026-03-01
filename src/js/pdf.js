@@ -17,7 +17,7 @@ function generateProposal(returnBase64){
   const compName=settings.companyName||'The Concrete Protector';
   const compTag=settings.tagline||'Decorative Concrete Coatings Proposal';
   doc.setFillColor(ar,ag,ab);doc.rect(0,0,pw,32,'F');
-  doc.setTextColor(0);doc.setFontSize(20);doc.setFont(pf,'bold');
+  doc.setTextColor(255,255,255);doc.setFontSize(20);doc.setFont(pf,'bold');
   doc.text(compName,14,16);
   doc.setFontSize(10);doc.setFont(pf,'normal');
   doc.text(compTag,14,24);
@@ -66,7 +66,7 @@ function generateProposal(returnBase64){
     doc.text('Tax ('+(settings.taxRate||0)+'%):',130,y+2);doc.text(fmt(ec.taxAmount),pw-16,y+2,{align:'right'});y+=8;
   }
   doc.setFillColor(ar,ag,ab);doc.rect(100,y-5,pw-114,10,'F');
-  doc.setFontSize(12);doc.setFont(pf,'bold');doc.setTextColor(0);
+  doc.setFontSize(12);doc.setFont(pf,'bold');doc.setTextColor(255,255,255);
   doc.text('TOTAL:',102,y+2);doc.text(fmt(ec.taxAmount>0?ec.totalWithTax:ec.sell),pw-16,y+2,{align:'right'});
   // Terms
   y+=20;doc.setTextColor(80);doc.setFontSize(9);doc.setFont(pf,'bold');
@@ -99,7 +99,7 @@ function initSignaturePads(){
     const canvas=document.getElementById(id);if(!canvas)return;
     const ctx=canvas.getContext('2d');
     canvas.width=canvas.offsetWidth*2;canvas.height=canvas.offsetHeight*2;
-    ctx.scale(2,2);ctx.strokeStyle='#fafafa';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.scale(2,2);ctx.strokeStyle='#1f2937';ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';
     let drawing=false;let lx=0,ly=0;
     function getPos(e){const r=canvas.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}
     canvas.addEventListener('mousedown',e=>{drawing=true;const p=getPos(e);lx=p.x;ly=p.y});

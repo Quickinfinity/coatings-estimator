@@ -2,14 +2,14 @@
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════
 function showScreen(id){window.scrollTo({top:0,behavior:'smooth'})}
-function goHome(){Object.assign(nav,{screen:'home',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null,invoiceId:null});renderBreadcrumb();renderHome();showScreen('home');updateSidebarActive();closeMobileSidebar()}
-function goFolder(s,a){nav.screen='list';nav.folderStatus=s;nav.folderActive=a;nav.recordId=null;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderList();showScreen('list');updateSidebarActive();closeMobileSidebar()}
-function goRecord(id){nav.screen='record';nav.recordId=id;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderRecord();showScreen('record');updateSidebarActive()}
-function goEstimate(id){nav.screen='estimate';nav.estimateId=id;nav.systemId=null;renderBreadcrumb();renderEstimate();showScreen('estimate');updateSidebarActive()}
-function goSystem(id){nav.screen='system';nav.systemId=id;renderBreadcrumb();renderSystem();showScreen('system');updateSidebarActive()}
-function goInvoice(id){nav.screen='invoice';nav.invoiceId=id;renderBreadcrumb();renderInvoice();showScreen('invoice');updateSidebarActive()}
-function goReporting(){Object.assign(nav,{screen:'reporting',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null,invoiceId:null});renderBreadcrumb();renderReporting();showScreen('reporting');updateSidebarActive()}
-function goSettings(){Object.assign(nav,{screen:'settings',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null,invoiceId:null});renderBreadcrumb();renderSettings();showScreen('settings');updateSidebarActive()}
+function goHome(){flushAutoSave();Object.assign(nav,{screen:'home',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null,invoiceId:null});renderBreadcrumb();renderHome();showScreen('home');updateSidebarActive();closeMobileSidebar()}
+function goFolder(s,a){flushAutoSave();nav.screen='list';nav.folderStatus=s;nav.folderActive=a;nav.recordId=null;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderList();showScreen('list');updateSidebarActive();closeMobileSidebar()}
+function goRecord(id){flushAutoSave();nav.screen='record';nav.recordId=id;nav.estimateId=null;nav.systemId=null;renderBreadcrumb();renderRecord();showScreen('record');updateSidebarActive();setTimeout(()=>{const f=document.getElementById('recFirst');if(f&&!f.value)f.focus()},150)}
+function goEstimate(id){flushAutoSave();nav.screen='estimate';nav.estimateId=id;nav.systemId=null;renderBreadcrumb();renderEstimate();showScreen('estimate');updateSidebarActive()}
+function goSystem(id){flushAutoSave();nav.screen='system';nav.systemId=id;renderBreadcrumb();renderSystem();showScreen('system');updateSidebarActive()}
+function goInvoice(id){flushAutoSave();nav.screen='invoice';nav.invoiceId=id;renderBreadcrumb();renderInvoice();showScreen('invoice');updateSidebarActive()}
+function goReporting(){flushAutoSave();Object.assign(nav,{screen:'reporting',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null,invoiceId:null});renderBreadcrumb();renderReporting();showScreen('reporting');updateSidebarActive()}
+function goSettings(){flushAutoSave();Object.assign(nav,{screen:'settings',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null,invoiceId:null});renderBreadcrumb();renderSettings();showScreen('settings');updateSidebarActive()}
 function newRecordFromHeader(){nav.folderStatus='lead';nav.folderActive=true;newRecord()}
 let estTab='areas';
 function switchEstTab(tab){

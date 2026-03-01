@@ -37,16 +37,20 @@ function getSettingsKey(){return'ce_settings_'+getActiveProfileId()}
 function loadDB(){try{return JSON.parse(localStorage.getItem(getDBKey()))||{records:[]}}catch{return{records:[]}}}
 function saveDB(d){localStorage.setItem(getDBKey(),JSON.stringify(d))}
 let db=loadDB();
+// Now that getSettingsKey() is defined, load real settings
+Object.assign(settings, loadSettings());
 let nav={screen:'home',folderStatus:null,folderActive:true,recordId:null,estimateId:null,systemId:null,invoiceId:null};
 let seriesFilter='All';
 
 // ── Profile Management Functions ─────────────────────────
 function goProfileSetup(){
+  nav.screen='profile-setup';
   document.getElementById('sidebar').style.display='none';
   document.querySelector('.hdr').style.display='none';
   showScreen('profile-setup');
 }
 function goProfileSelect(){
+  nav.screen='profile-select';
   document.getElementById('sidebar').style.display='none';
   document.querySelector('.hdr').style.display='none';
   renderProfileCards();
@@ -73,21 +77,41 @@ function createProfile(){
   const profiles=getProfiles();profiles.push(profile);saveProfiles(profiles);
   setActiveProfileId(profile.id);
   const s={...SETTINGS_DEFAULTS,companyName:company,contactName:name,email:profile.email,phone:profile.phone,city:profile.city,state:profile.state};
-  saveSettingsData(s);settings=s;
+  saveSettingsData(s);Object.keys(settings).forEach(k=>delete settings[k]);Object.assign(settings,s);
   db={records:[]};saveDB(db);
   showAppChrome();updateProfileBadge();goHome();toast('Welcome','Profile created. Start adding leads!');
+}
+let _pendingPinProfileId=null;
+function openPinModal(pid,name){
+  _pendingPinProfileId=pid;
+  document.getElementById('pinModalTitle').textContent='Enter PIN';
+  document.getElementById('pinModalDesc').textContent='Unlock '+name+'\u2019s workspace';
+  document.getElementById('pinInput').value='';
+  document.getElementById('pinError').textContent='';
+  const pinOv=document.getElementById('pinModal');pinOv.scrollTop=0;pinOv.classList.add('active');
+  setTimeout(()=>document.getElementById('pinInput').focus(),100);
+}
+function closePinModal(){document.getElementById('pinModal').classList.remove('active');_pendingPinProfileId=null}
+function submitPin(){
+  const pin=document.getElementById('pinInput').value;
+  const profiles=getProfiles();
+  const p=profiles.find(x=>x.id===_pendingPinProfileId);
+  if(!p)return;
+  if(pin!==p.pin){document.getElementById('pinError').textContent='Incorrect PIN. Try again.';document.getElementById('pinInput').value='';document.getElementById('pinInput').focus();return}
+  closePinModal();
+  doSwitchProfile(_pendingPinProfileId);
 }
 function switchProfile(pid){
   const profiles=getProfiles();
   const p=profiles.find(x=>x.id===pid);
   if(!p)return;
-  if(p.pin){
-    const entered=prompt('Enter PIN for '+p.name+':');
-    if(entered!==p.pin){toast('Denied','Incorrect PIN.');return}
-  }
+  if(p.pin){openPinModal(pid,p.name);return}
+  doSwitchProfile(pid);
+}
+function doSwitchProfile(pid){
   setActiveProfileId(pid);
-  db=loadDB();settings=loadSettings();initEmailJS();
-  showAppChrome();updateProfileBadge();goHome();toast('Switched','Loaded '+p.name+'\'s workspace.');
+  db=loadDB();Object.keys(settings).forEach(k=>delete settings[k]);Object.assign(settings,loadSettings());initEmailJS();
+  showAppChrome();updateProfileBadge();goHome();toast('Switched','Loaded '+getActiveProfile().name+'\'s workspace.');
 }
 function renderProfileCards(){
   const profiles=getProfiles();
@@ -120,7 +144,7 @@ function deleteProfile(pid){
     saveProfiles(remaining);
     if(getActiveProfileId()===pid){
       setActiveProfileId(remaining[0].id);
-      db=loadDB();settings=loadSettings();initEmailJS();
+      db=loadDB();Object.keys(settings).forEach(k=>delete settings[k]);Object.assign(settings,loadSettings());initEmailJS();
     }
     updateProfileBadge();goProfileSelect();toast('Deleted','Profile removed.');
   });

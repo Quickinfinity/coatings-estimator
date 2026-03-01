@@ -7,6 +7,34 @@ function renderHome(){
   const greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
   const dateStr=now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   document.getElementById('homeGreeting').innerHTML='<div style="font-size:13px;color:var(--t3);margin-bottom:4px">'+dateStr+'</div><h2 style="font-size:22px;font-weight:700;letter-spacing:-.5px;margin-bottom:20px">'+greeting+'</h2>';
+  // First-run onboarding
+  if(db.records.length===0){
+    document.getElementById('workflowCards').innerHTML='';
+    document.getElementById('overdueAlert').innerHTML='';
+    document.getElementById('recentActivity').innerHTML='';
+    const p=getActiveProfile();
+    const name=p?p.name.split(' ')[0]:'there';
+    document.getElementById('workflowCards').parentElement.insertAdjacentHTML('afterbegin',
+      '<div id="onboardingHero" style="text-align:center;padding:40px 20px;margin-bottom:24px">'+
+      '<div style="font-size:56px;margin-bottom:16px">&#128075;</div>'+
+      '<h2 style="font-size:24px;font-weight:700;margin-bottom:8px">Welcome, '+esc(name)+'!</h2>'+
+      '<p style="font-size:15px;color:var(--t3);max-width:480px;margin:0 auto 24px;line-height:1.6">Your coatings pipeline is ready. Add your first lead to get started \u2014 the dashboard will come to life as you build your pipeline.</p>'+
+      '<button class="btn btn-primary" onclick="openQuickAdd()" style="font-size:16px;padding:14px 32px;border-radius:12px">+ Add Your First Lead</button>'+
+      '<div style="margin-top:32px;display:flex;justify-content:center;gap:24px;flex-wrap:wrap">'+
+        '<div style="text-align:center;padding:16px 20px;background:var(--s3);border-radius:12px;min-width:140px"><div style="font-size:24px;margin-bottom:4px">&#128221;</div><div style="font-size:12px;font-weight:600;color:var(--t2)">Add Leads</div><div style="font-size:11px;color:var(--t4)">Capture contacts</div></div>'+
+        '<div style="text-align:center;padding:16px 20px;background:var(--s3);border-radius:12px;min-width:140px"><div style="font-size:24px;margin-bottom:4px">&#128200;</div><div style="font-size:12px;font-weight:600;color:var(--t2)">Create Estimates</div><div style="font-size:11px;color:var(--t4)">Build proposals</div></div>'+
+        '<div style="text-align:center;padding:16px 20px;background:var(--s3);border-radius:12px;min-width:140px"><div style="font-size:24px;margin-bottom:4px">&#128176;</div><div style="font-size:12px;font-weight:600;color:var(--t2)">Get Paid</div><div style="font-size:11px;color:var(--t4)">Invoice & collect</div></div>'+
+      '</div>'+
+      '</div>');
+    // Hide the rest of the dashboard for clean first-run
+    document.querySelector('.home-bottom').style.display='none';
+    if(document.getElementById('followUpSection'))document.getElementById('followUpSection').innerHTML='';
+    if(document.getElementById('leadSourceChart'))document.getElementById('leadSourceChart').innerHTML='';
+    return;
+  }
+  // Normal dashboard — remove onboarding hero if present
+  const hero=document.getElementById('onboardingHero');if(hero)hero.remove();
+  document.querySelector('.home-bottom').style.display='';
   // Counts and values
   const c={};const vals={};
   STATUSES.forEach(s=>{c[s.id]={active:0,inactive:0};vals[s.id]=0});
@@ -36,7 +64,7 @@ function renderHome(){
       const ago=timeAgo(new Date(r.updatedAt||r.createdAt));
       return'<div class="list-item" onclick="goFolder(\''+r.status+'\','+r.active+');setTimeout(()=>goRecord(\''+r.id+'\'),50)" style="margin-bottom:4px;padding:10px 14px"><div class="li-left"><div class="li-avatar '+r.status+'" style="width:32px;height:32px;font-size:11px;border-radius:8px">'+((r.firstName||'?')[0]+(r.lastName||'?')[0]).toUpperCase()+'</div><div><div class="li-name" style="font-size:13px">'+name+'</div><div class="li-meta">'+ago+'</div></div></div><div class="li-right"><div class="li-badge '+r.status+'">'+r.status+'</div></div></div>'
     }).join('');
-  }else{document.getElementById('recentActivity').innerHTML='<div class="empty"><div class="empty-text">No activity yet. Create your first lead!</div></div>'}
+  }else{document.getElementById('recentActivity').innerHTML='<div class="empty"><div class="empty-icon" style="font-size:40px;margin-bottom:8px">&#128203;</div><div class="empty-text">No activity yet.</div><button class="btn btn-primary" onclick="openQuickAdd()" style="margin-top:10px">+ Add Lead</button></div>'}
   // Follow-ups due
   renderFollowUpSection();
   // Business Performance with Trends
@@ -131,7 +159,7 @@ function batchDelete(){
   openConfirm('Batch Delete','Permanently delete '+n+' record(s)? This cannot be undone.',()=>{
     batchSelected.forEach(id=>{db.records=db.records.filter(r=>r.id!==id)});
     saveDB(db);toggleBatchMode();filterList();toast('Deleted',n+' record(s) deleted.');
-  });
+  },'Delete');
 }
 function isRecordInvoiced(r){
   if(!r.estimates.length)return false;
@@ -182,7 +210,7 @@ function filterList(){
   if(nav.folderStatus==='completed'&&invFilter==='need')items=items.filter(r=>!isRecordInvoiced(r));
   if(tagVal)items=items.filter(r=>(r.tags||[]).includes(tagVal));
   const f=q?items.filter(r=>[r.firstName,r.lastName,r.company,r.address,r.city,r.email,r.phone,r.notes].join(' ').toLowerCase().includes(q)):items;
-  if(!f.length){document.getElementById('listItems').innerHTML='<div class="empty"><div class="empty-icon">&#128194;</div><div class="empty-text">'+(invFilter!=='all'?'No records match this filter.':'No records here yet.')+'</div></div>';return}
+  if(!f.length){document.getElementById('listItems').innerHTML='<div class="empty"><div class="empty-icon">&#128194;</div><div class="empty-text">'+(q||tagVal?'No records match your search.':invFilter!=='all'?'No records match this filter.':'No records here yet.')+'</div>'+(nav.folderStatus==='lead'&&nav.folderActive&&!q&&!tagVal?'<button class="btn btn-primary" onclick="openQuickAdd()" style="margin-top:10px">+ Add Lead</button>':'')+'</div>';return}
   document.getElementById('listItems').innerHTML=f.map(r=>{
     const name=(r.firstName||'')+' '+(r.lastName||'');
     const ini=((r.firstName||'?')[0]+(r.lastName||'?')[0]).toUpperCase();
@@ -297,13 +325,49 @@ function saveRecord(){
   rec.updatedAt=new Date().toISOString();
   saveDB(db);renderBreadcrumb();toast('Saved','Record updated.');
 }
+function saveRecordWithFeedback(){
+  saveRecord();
+  const btn=document.getElementById('saveRecordBtn');if(!btn)return;
+  const orig=btn.innerHTML;
+  btn.innerHTML='&#10003; Saved!';btn.style.background='#22c55e';btn.style.color='#fff';
+  setTimeout(()=>{btn.innerHTML=orig;btn.style.background='';btn.style.color=''},1500);
+}
 function changeStatus(s){const rec=getRecord();if(!rec)return;const label=STATUSES.find(x=>x.id===s).label;logActivity(rec.id,'status_change','Status changed to '+label);rec.status=s;rec.active=true;saveDB(db);nav.folderStatus=s;nav.folderActive=true;renderRecord();renderBreadcrumb();toast('Moved','Now in '+label+'s.');
   // Auto-advance prompts
-  if(s==='completed'&&!isRecordInvoiced(rec)&&rec.estimates.some(e=>e.systems.length>0)){setTimeout(()=>openConfirm('Create Invoice?','Job complete! Ready to invoice this project?',()=>{quickInvoiceRecord(rec.id)}),500)}
+  if(s==='completed'&&!isRecordInvoiced(rec)&&rec.estimates.some(e=>e.systems.length>0)){setTimeout(()=>openConfirm('Create Invoice?','Job complete! Ready to invoice this project?',()=>{quickInvoiceRecord(rec.id)},'Invoice'),500)}
 }
 function toggleActive(){const rec=getRecord();if(!rec)return;rec.active=document.getElementById('recActive').checked;logActivity(rec.id,rec.active?'activated':'archived',rec.active?'Record activated':'Record archived');rec.updatedAt=new Date().toISOString();saveDB(db);nav.folderActive=rec.active;renderBreadcrumb();toast(rec.active?'Active':'Archived',rec.active?'Record is active.':'Moved to inactive.')}
-function newRecord(){const rec={id:uid(),status:'lead',active:true,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),firstName:'',lastName:'',company:'',email:'',phone:'',phoneType:'cell',bestTimeToCall:'',address:'',city:'',state:'',zip:'',notes:'',estimates:[],activityLog:[],projectStartDate:null,projectEndDate:null,projectNotes:'',scheduledTime:'',scheduledDuration:0,assignedCrew:'',followUpDate:null,followUpNote:'',followUpCompleted:false,tags:[],leadSource:''};db.records.unshift(rec);saveDB(db);goRecord(rec.id);toast('New Lead','Enter contact details.')}
-function confirmDeleteRecord(){const rec=getRecord();if(!rec)return;const ec=rec.estimates.length;const ic=rec.estimates.reduce((s,e)=>s+(e.invoices?e.invoices.length:0),0);const msg='Permanently delete this record'+(ec?' with '+ec+' estimate'+(ec>1?'s':''):'')+(ic?' and '+ic+' invoice'+(ic>1?'s':''):'')+' ? You can also Archive it instead.';openConfirm('Delete Record',msg,()=>{_lastDeleted={type:'record',data:JSON.parse(JSON.stringify(rec))};db.records=db.records.filter(r=>r.id!==nav.recordId);saveDB(db);goFolder(nav.folderStatus,nav.folderActive);toast('Deleted','Record removed.',{fn:true})})}
+// ── Shared Record Factory ───────────────────────────────────
+function createRecord(){return{id:uid(),status:'lead',active:true,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),firstName:'',lastName:'',company:'',email:'',phone:'',phoneType:'cell',bestTimeToCall:'',address:'',city:'',state:'',zip:'',notes:'',estimates:[],activityLog:[],projectStartDate:null,projectEndDate:null,projectNotes:'',scheduledTime:'',scheduledDuration:0,assignedCrew:'',followUpDate:null,followUpNote:'',followUpCompleted:false,tags:[],leadSource:''}}
+// ── Quick Add Modal ────────────────────────────────────────
+function openQuickAdd(){
+  document.getElementById('qaFirst').value='';
+  document.getElementById('qaLast').value='';
+  document.getElementById('qaPhone').value='';
+  document.getElementById('qaEmail').value='';
+  document.getElementById('qaCompany').value='';
+  const qam=document.getElementById('quickAddModal');qam.scrollTop=0;qam.classList.add('active');
+  setTimeout(()=>document.getElementById('qaFirst').focus(),100);
+}
+function closeQuickAdd(){document.getElementById('quickAddModal').classList.remove('active')}
+function submitQuickAdd(){
+  const first=document.getElementById('qaFirst').value.trim();
+  const phone=document.getElementById('qaPhone').value.trim();
+  if(!first&&!phone){toast('Required','Enter at least a name or phone number.');return}
+  const rec=createRecord();
+  rec.firstName=first;
+  rec.lastName=document.getElementById('qaLast').value.trim();
+  rec.phone=phone;
+  rec.email=document.getElementById('qaEmail').value.trim();
+  rec.company=document.getElementById('qaCompany').value.trim();
+  db.records.unshift(rec);saveDB(db);
+  logActivity(rec.id,'created','Lead created via quick add');
+  closeQuickAdd();
+  goRecord(rec.id);
+  toast('Lead Added',((rec.firstName||'New lead')+' '+(rec.lastName||'')).trim()+' added to pipeline.');
+}
+function newRecord(){const rec=createRecord();db.records.unshift(rec);saveDB(db);goRecord(rec.id);toast('New Lead','Enter contact details.')}
+function confirmDeleteRecord(){const rec=getRecord();if(!rec)return;const ec=rec.estimates.length;const ic=rec.estimates.reduce((s,e)=>s+(e.invoices?e.invoices.length:0),0);const msg='Permanently delete this record'+(ec?' with '+ec+' estimate'+(ec>1?'s':''):'')+(ic?' and '+ic+' invoice'+(ic>1?'s':''):'')+' ? You can also Archive it instead.';openConfirm('Delete Record',msg,()=>{_lastDeleted={type:'record',data:JSON.parse(JSON.stringify(rec))};db.records=db.records.filter(r=>r.id!==nav.recordId);saveDB(db);goFolder(nav.folderStatus,nav.folderActive);toast('Deleted','Record removed.',{fn:true})},'Delete')}
 
 // ── Duplicate Detection ─────────────────────────────────────
 function findDuplicates(rec){
@@ -451,7 +515,7 @@ function approveQuote(estId){
   saveDB(db);
   if(nav.screen==='estimate')renderEstimate();else renderRecord();
   if(rec.status==='estimate'){
-    openConfirm('Move to Project?','Quote approved! Ready to move this to Projects?',()=>{changeStatus('project')});
+    openConfirm('Move to Project?','Quote approved! Ready to move this to Projects?',()=>{changeStatus('project')},'Move');
   }
 }
 function declineQuote(estId){
@@ -462,4 +526,35 @@ function declineQuote(estId){
   saveDB(db);
   if(nav.screen==='estimate')renderEstimate();else renderRecord();
   toast('Declined','Quote marked as declined.');
+}
+
+// ═══════════════════════════════════════════════════════════
+// ACTIVITY LOG RENDERING
+// ═══════════════════════════════════════════════════════════
+function renderActivityLog(){
+  const rec=getRecord();if(!rec)return;
+  const el=document.getElementById('activityList');if(!el)return;
+  const log=rec.activityLog||[];
+  if(!log.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--t4);font-size:13px">No activity yet.</div>';return}
+  el.innerHTML=log.map(entry=>{
+    const d=new Date(entry.timestamp);
+    const ago=typeof timeAgo==='function'?timeAgo(d):d.toLocaleDateString();
+    const icons={note:'&#128221;',status_change:'&#128260;',created:'&#10024;',estimate_added:'&#9997;',estimate_deleted:'&#128465;',invoice_created:'&#128196;',payment:'&#128176;',quote_approved:'&#9989;',quote_declined:'&#10060;'};
+    const icon=icons[entry.type]||'&#128340;';
+    return'<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--b1);font-size:13px">'+
+      '<div style="flex-shrink:0;font-size:16px">'+icon+'</div>'+
+      '<div style="flex:1"><div style="color:var(--t1)">'+esc(entry.message)+'</div>'+
+      '<div style="color:var(--t4);font-size:11px;margin-top:2px">'+ago+'</div></div></div>';
+  }).join('');
+}
+
+function addActivityNote(){
+  const rec=getRecord();if(!rec)return;
+  const input=document.getElementById('activityNoteInput');if(!input)return;
+  const text=input.value.trim();if(!text)return;
+  logActivity(rec.id,'note',text);
+  input.value='';
+  saveDB(db);
+  renderActivityLog();
+  toast('Note Added','Activity note saved.');
 }

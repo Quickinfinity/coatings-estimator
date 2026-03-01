@@ -39,7 +39,7 @@ function saveSettings(){
   saveSettingsData(settings);toast('Saved','Settings updated.');
 }
 
-function confirmClearAll(){openConfirm('Clear All Data','This will permanently delete ALL records, estimates, and settings. This cannot be undone.',()=>{db.records=[];saveDB(db);Object.assign(settings,SETTINGS_DEFAULTS);saveSettingsData(settings);goHome();toast('Cleared','All data removed.')})}
+function confirmClearAll(){openConfirm('Clear All Data','This will permanently delete ALL records, estimates, and settings. This cannot be undone.',()=>{db.records=[];saveDB(db);Object.assign(settings,SETTINGS_DEFAULTS);saveSettingsData(settings);goHome();toast('Cleared','All data removed.')},'Clear All')}
 
 // ── EmailJS Integration ──────────────────────────────────────
 function isEmailJSReady(){return typeof emailjs!=='undefined'&&settings.emailjsPublicKey&&settings.emailjsServiceId&&settings.emailjsTemplateId}
@@ -242,8 +242,8 @@ function showEstimateComparison(){
   const delta=Math.max(...prices)-Math.min(...prices);
   const deltaLine=ests.length>=2?'<div style="text-align:center;padding:12px;font-size:13px;color:var(--t3)">Price difference: <strong>'+fmt(delta)+'</strong></div>':'';
   const modal=document.getElementById('confirmModal');
-  modal.querySelector('.modal-card').innerHTML='<div style="padding:20px"><h3 style="font-size:16px;font-weight:700;margin-bottom:4px">Estimate Comparison</h3><p style="font-size:13px;color:var(--t3);margin-bottom:16px">Side-by-side view of all estimates</p>'+deltaLine+'<div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px">'+cols+'</div><div style="text-align:right;margin-top:16px"><button class="btn btn-ghost" onclick="closeConfirm()">Close</button></div></div>';
-  modal.classList.add('active');
+  modal.querySelector('.modal').innerHTML='<div style="padding:20px"><h3 style="font-size:16px;font-weight:700;margin-bottom:4px">Estimate Comparison</h3><p style="font-size:13px;color:var(--t3);margin-bottom:16px">Side-by-side view of all estimates</p>'+deltaLine+'<div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px">'+cols+'</div><div style="text-align:right;margin-top:16px"><button class="btn btn-ghost" onclick="closeConfirm()">Close</button></div></div>';
+  modal.scrollTop=0;modal.classList.add('active');
 }
 
 // ── Settings Helpers ──────────────────────────────────────
@@ -269,7 +269,7 @@ function updateColorPreview(){
 function generateBookingWidget(){
   if(!isEmailJSReady()){toast('EmailJS Required','Configure EmailJS in the Email section first.');return}
   const types=(settings.bookingProjectTypes||[]).map(t=>"'"+t.replace(/'/g,"\\'")+"'").join(',');
-  const code='<!-- Coatings Estimator Booking Widget -->\n<div id="ce-booking-widget"></div>\n<script>\n(function(){\n  var c=document.getElementById("ce-booking-widget");\n  c.innerHTML=\'<form id="ce-book" style="max-width:500px;font-family:system-ui,sans-serif">'+
+  const code='<!-- Coatings Estimator Booking Widget -->\n<div id="ce-booking-widget"></div>\n<scr'+'ipt>\n(function(){\n  var c=document.getElementById("ce-booking-widget");\n  c.innerHTML=\'<form id="ce-book" style="max-width:500px;font-family:system-ui,sans-serif">'+
     '<h3 style="margin:0 0 16px;font-size:20px">Request a Free Estimate</h3>'+
     '<div style="margin-bottom:12px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Name *</label><input name="name" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:15px"></div>'+
     '<div style="margin-bottom:12px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Email *</label><input name="email" type="email" required style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:15px"></div>'+
@@ -277,9 +277,9 @@ function generateBookingWidget(){
     '<div style="margin-bottom:12px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Project Type</label><select name="type" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:15px"><option value="">Select...</option>\'+['+types+'].map(function(t){return \'<option>\'+t+\'</option>\'}).join(\'\')+\'</select></div>'+
     '<div style="margin-bottom:12px"><label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px">Notes</label><textarea name="notes" rows="3" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:6px;font-size:15px;resize:vertical"></textarea></div>'+
     '<button type="submit" style="background:#2563eb;color:#fff;border:none;padding:12px 24px;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;width:100%">Submit Request</button>'+
-    '</form>\';\n})();\n</script>';
+    '</form>\';\n})();\n<\/scr'+'ipt>';
   // Show in modal
   const modal=document.getElementById('confirmModal');
-  modal.querySelector('.modal-card').innerHTML='<div style="padding:20px"><h3 style="font-size:16px;font-weight:700;margin-bottom:4px">Booking Widget Code</h3><p style="font-size:13px;color:var(--t3);margin-bottom:12px">Copy and paste this into your website HTML.</p><textarea id="widgetCode" style="width:100%;height:200px;font-family:monospace;font-size:12px;padding:12px;background:var(--s1);border:1px solid var(--b1);border-radius:8px;color:var(--t1);resize:vertical" readonly>'+esc(code)+'</textarea><div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end"><button class="btn btn-primary" onclick="document.getElementById(\'widgetCode\').select();document.execCommand(\'copy\');toast(\'Copied\',\'Widget code copied to clipboard.\')">Copy Code</button><button class="btn btn-ghost" onclick="closeConfirm()">Close</button></div></div>';
-  modal.classList.add('active');
+  modal.querySelector('.modal').innerHTML='<div style="padding:20px"><h3 style="font-size:16px;font-weight:700;margin-bottom:4px">Booking Widget Code</h3><p style="font-size:13px;color:var(--t3);margin-bottom:12px">Copy and paste this into your website HTML.</p><textarea id="widgetCode" style="width:100%;height:200px;font-family:monospace;font-size:12px;padding:12px;background:var(--s1);border:1px solid var(--b1);border-radius:8px;color:var(--t1);resize:vertical" readonly>'+esc(code)+'</textarea><div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end"><button class="btn btn-primary" onclick="document.getElementById(\'widgetCode\').select();document.execCommand(\'copy\');toast(\'Copied\',\'Widget code copied to clipboard.\')">Copy Code</button><button class="btn btn-ghost" onclick="closeConfirm()">Close</button></div></div>';
+  modal.scrollTop=0;modal.classList.add('active');
 }

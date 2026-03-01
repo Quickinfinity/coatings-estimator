@@ -55,11 +55,11 @@ const ceApp = Vue.createApp({
   methods:{
     // Bridge to existing global functions — allows Vue templates to call them
     goHome,goFolder,goRecord,goEstimate,goSystem,goInvoice,goReporting,goSettings,goCalendar,
-    goProfileSetup,goProfileSelect,
+    goProfileSetup,goProfileSelect,openPinModal,closePinModal,submitPin,
     showScreen,toggleSidebar,toggleMobileSidebar,closeMobileSidebar,
-    newRecord,newRecordFromHeader,saveRecord,confirmDeleteRecord,
-    newEstimate,saveEstimate,confirmDeleteEstimate,
-    newSystem,saveSystem,confirmDeleteSystem,duplicateSystem,duplicateEstimate,
+    newRecord,newRecordFromHeader,createRecord,openQuickAdd,closeQuickAdd,submitQuickAdd,saveRecord,saveRecordWithFeedback,confirmDeleteRecord,
+    newEstimate,saveEstimate,saveEstimateWithFeedback,confirmDeleteEstimate,
+    newSystem,saveSystem,saveSystemWithFeedback,confirmDeleteSystem,duplicateSystem,duplicateEstimate,
     changeStatus,toggleActive,
     generateProposal,generateContract,emailProposal,emailInvoice,textProposal,
     openConfirm,closeConfirm,openExport,closeExport,openImport,closeImport,
@@ -68,7 +68,8 @@ const ceApp = Vue.createApp({
     renderBreadcrumb,renderHome,renderList,renderRecord,renderEstimate,renderSystem,renderInvoice,
     renderSettings,saveSettings,renderReporting,exportReportCSV,exportReportPDF,renderCalendar,
     renderCalendarView,renderWeekView,renderDispatch,renderUnscheduled,
-    setCalView,dispatchDrop,dispatchUnschedule,dispatchDragStart,assignCrew,
+    setCalView,calNav,dispatchDrop,dispatchUnschedule,dispatchDragStart,assignCrew,
+    renderActivityLog,addActivityNote,goAllInvoices,
     updateProfileBadge,filterList,
     // Settings tab switching (needs Vue reactivity for v-show)
     switchSettingsTab(tab){

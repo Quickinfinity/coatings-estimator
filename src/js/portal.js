@@ -50,7 +50,7 @@ function generateApprovalPage(){
     '<div class="confirmed" id="confirmedSection"><div style="font-size:48px;margin-bottom:12px">&#10004;</div><h2>Estimate Approved!</h2>'+
     '<p style="color:#6b7280">Confirmation Code: <strong id="confCode"></strong></p>'+
     '<p style="color:#9ca3af;font-size:13px;margin-top:8px">Please screenshot or save this page for your records.</p></div>'+
-    '</div><script>'+
+    '</div><scr'+'ipt>'+
     'var c=document.getElementById("sigCanvas"),ctx=c.getContext("2d"),drawing=false,lx=0,ly=0;'+
     'ctx.strokeStyle="#1f2937";ctx.lineWidth=2;ctx.lineCap="round";'+
     'function gp(e){var r=c.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top}}'+

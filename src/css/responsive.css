@@ -15,6 +15,9 @@
   .settings-tabs{gap:0}
   .settings-tab{padding:8px 10px;font-size:12px}
 
+  /* Header right: wrap buttons */
+  .hdr-right{flex-wrap:wrap;justify-content:flex-end}
+
   /* Dispatch board: horizontal scroll for week view */
   .dispatch-week{
     display:grid;
@@ -35,17 +38,15 @@
 
 /* --- Narrow tablet / large phone (800px) --- */
 @media(max-width:800px){
-  .folder-grid{grid-template-columns:1fr 1fr}
+  .folder-grid{grid-template-columns:1fr 1fr!important}
   .g2,.g3,.g4{grid-template-columns:1fr}
   .mc{padding:20px 16px 80px}
   .hdr{padding:0 16px}
   .breadcrumb{padding:10px 16px 0}
 
   /* Button rows wrap cleanly */
-  .btn-row{
-    flex-wrap:wrap;
-    gap:8px;
-  }
+  .btn-row{flex-wrap:wrap;gap:8px}
+
   /* Section headings smaller */
   .sh h2{font-size:1.1rem}
 
@@ -53,65 +54,76 @@
   .cd{width:100%;padding:16px}
   .record-card{width:100%;padding:14px}
 
-  /* Modals wider on mobile */
-  .modal{width:95%;max-width:95%;margin:20px auto}
+  /* Modals wider on mobile — override inline styles */
+  .modal{width:95%!important;max-width:95%!important;margin:20px auto}
+
+  /* Tab rows: horizontal scroll */
+  .tab-row{display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:4px;scrollbar-width:none}
+  .tab-row::-webkit-scrollbar{display:none}
+
+  /* Global search input */
+  #globalSearch{
+    width:100%;
+    padding:10px 14px;
+    font-size:15px;
+    border:1px solid var(--b2);
+    border-radius:10px;
+    background:var(--s2);
+    color:var(--t1);
+  }
+  #globalSearch::placeholder{color:var(--t4)}
+
+  /* Batch bar: above mobile bottom nav */
+  #batchBar{bottom:60px!important;z-index:140}
 }
 
 /* --- Mobile bottom nav bar (600px) --- */
-.mobile-bottom-nav{
-  display:none;
-}
+.mobile-bottom-nav{display:none}
 @media(max-width:600px){
   .mobile-bottom-nav{
     display:flex;
     position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
+    bottom:0;left:0;right:0;
     background:var(--s2);
     border-top:1px solid var(--b1);
     z-index:150;
-    padding:6px 0;
+    padding:6px 0 env(safe-area-inset-bottom,0);
     justify-content:space-around;
     align-items:center;
   }
   .mobile-bottom-nav button{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:2px;
-    background:none;
-    border:none;
-    color:var(--t3);
-    font-size:9px;
-    font-weight:500;
-    padding:4px 8px;
-    cursor:pointer;
-    font-family:inherit;
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+    background:none;border:none;color:var(--t3);
+    font-size:9px;font-weight:500;padding:4px 8px;
+    cursor:pointer;font-family:inherit;
+    min-width:44px;min-height:44px;
+    justify-content:center;
   }
-  .mobile-bottom-nav button .nav-icon{
-    font-size:18px;
-  }
-  .mobile-bottom-nav button.active{
-    color:var(--accent);
-  }
-  .mc{
-    padding-bottom:80px!important;
-  }
+  .mobile-bottom-nav button .nav-icon{font-size:18px}
+  .mobile-bottom-nav button.active{color:var(--accent)}
+  .mc{padding-bottom:80px!important}
+
+  /* Batch bar above bottom nav */
+  #batchBar{bottom:60px!important;z-index:140}
+
+  /* Header: hide text buttons, keep + New Lead */
+  .hdr-btn:not(.primary){display:none}
+  .hdr h1{font-size:16px}
+  .hdr .sub{display:none}
 }
 
 /* --- Small phone (500px) --- */
 @media(max-width:500px){
   .wf-grid{grid-template-columns:1fr}
-  .folder-grid{grid-template-columns:1fr}
+  .folder-grid{grid-template-columns:1fr!important}
   .perf-grid{grid-template-columns:1fr}
   .est-total{flex-direction:column;text-align:center}
   .hi{height:auto;padding:12px 0}
   .settings-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch}
   .settings-tab{padding:6px 8px;font-size:11px;white-space:nowrap}
 
-  /* Buttons: smaller tap targets */
-  .btn{padding:8px 14px}
+  /* Buttons: minimum tap targets */
+  .btn{padding:8px 14px;min-height:44px}
 
   /* List items: tighter */
   .list-item{padding:10px 12px}
@@ -119,16 +131,12 @@
   /* Cards: reduced padding */
   .cd{padding:14px}
 
-  /* Toast: bottom center on mobile */
-  .toast-container,
-  .toast{
-    left:50%!important;
-    right:auto!important;
+  /* Toast: bottom center on mobile, above nav */
+  .toast-container,.toast{
+    left:50%!important;right:auto!important;
     transform:translateX(-50%);
     bottom:90px!important;
-    width:90%;
-    max-width:360px;
-    text-align:center;
+    width:90%;max-width:360px;text-align:center;
   }
 
   /* Dispatch week: momentum scroll */
@@ -137,18 +145,13 @@
     -webkit-overflow-scrolling:touch;
     scroll-snap-type:x mandatory;
   }
-  .dispatch-week>*{
-    scroll-snap-align:start;
-  }
+  .dispatch-week>*{scroll-snap-align:start}
 
   /* Settings tabs: horizontal scroll, no wrap */
   .settings-tabs{
-    display:flex;
-    flex-wrap:nowrap;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    -ms-overflow-style:none;
+    display:flex;flex-wrap:nowrap;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;-ms-overflow-style:none;
   }
   .settings-tabs::-webkit-scrollbar{display:none}
 }

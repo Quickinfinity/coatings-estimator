@@ -146,8 +146,13 @@ function recalcInvoiceTotals(){
   else if(inv.discountType==='flat')inv.discountAmount=Math.min(inv.discountValue,rawSubtotal);
   else inv.discountAmount=0;
   inv.subtotal=rawSubtotal-inv.discountAmount;
-  inv.taxAmount=inv.lineItems.filter(li=>li.taxable).reduce((s,li)=>s+li.amount,0)*(inv.taxRate/100);
-  if(inv.discountAmount>0&&inv.discountType==='percent')inv.taxAmount=inv.taxAmount*(1-inv.discountValue/100);
+  const taxableSubtotal=inv.lineItems.filter(li=>li.taxable).reduce((s,li)=>s+li.amount,0);
+  if(inv.discountAmount>0){
+    const discountRatio=rawSubtotal>0?inv.discountAmount/rawSubtotal:0;
+    inv.taxAmount=(taxableSubtotal*(1-discountRatio))*(inv.taxRate/100);
+  }else{
+    inv.taxAmount=taxableSubtotal*(inv.taxRate/100);
+  }
   inv.total=inv.subtotal+inv.taxAmount;
   inv.balance=Math.max(0,inv.total-inv.amountPaid);
   if(inv.balance<=0&&inv.amountPaid>0)inv.status='paid';
@@ -198,13 +203,13 @@ function deleteInvoice(){
     est.invoices=est.invoices.filter(i=>i.id!==inv.id);
     if(nav.recordId)logActivity(nav.recordId,'invoice_deleted','Invoice '+inv.number+' deleted');
     saveDB(db);goEstimate(nav.estimateId);switchEstTab('invoices');toast('Deleted',inv.number+' removed.');
-  });
+  },'Delete');
 }
 function openPaymentModal(){
   document.getElementById('payAmount').value='';
   document.getElementById('payDate').value=new Date().toISOString().slice(0,10);
   document.getElementById('payNote').value='';
-  document.getElementById('paymentModal').classList.add('active');
+  const pm=document.getElementById('paymentModal');pm.scrollTop=0;pm.classList.add('active');
 }
 function closePaymentModal(){document.getElementById('paymentModal').classList.remove('active')}
 function recordPayment(){
@@ -238,7 +243,7 @@ function generateInvoicePDF(returnBase64){
   const pf=settings.pdfFontFamily||'helvetica';
   // Header
   doc.setFillColor(ar,ag,ab);doc.rect(0,0,pw,32,'F');
-  doc.setTextColor(0);doc.setFontSize(20);doc.setFont(pf,'bold');
+  doc.setTextColor(255,255,255);doc.setFontSize(20);doc.setFont(pf,'bold');
   doc.text('INVOICE',14,16);
   doc.setFontSize(10);doc.setFont(pf,'normal');
   doc.text(settings.companyName||'The Concrete Protector',14,24);
@@ -278,7 +283,7 @@ function generateInvoicePDF(returnBase64){
   if(inv.discountAmount>0){doc.text('Discount'+(inv.discountType==='percent'?' ('+inv.discountValue+'%)':'')+':',140,y);doc.text('-'+fmt(inv.discountAmount),pw-16,y,{align:'right'});y+=6}
   if(inv.taxAmount>0){doc.text('Tax ('+inv.taxRate+'%):',140,y);doc.text(fmt(inv.taxAmount),pw-16,y,{align:'right'});y+=6}
   doc.setFillColor(ar,ag,ab);doc.rect(120,y-4,pw-134,10,'F');
-  doc.setFontSize(12);doc.setFont(pf,'bold');doc.setTextColor(0);
+  doc.setFontSize(12);doc.setFont(pf,'bold');doc.setTextColor(255,255,255);
   doc.text('TOTAL:',122,y+3);doc.text(fmt(inv.total),pw-16,y+3,{align:'right'});y+=14;
   // Payments
   if(inv.payments.length){

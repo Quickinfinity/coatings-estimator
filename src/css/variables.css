@@ -48,6 +48,9 @@
   --shadow-md: 0 4px 12px rgba(0,0,0,.08);
   --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
   --shadow-glow: 0 0 40px rgba(37,99,235,.06);
+  /* Aliases */
+  --brd: #e5e7eb;
+  --card: #ffffff;
   /* Transitions */
   --ease: cubic-bezier(.4,0,.2,1);
 }

@@ -106,7 +106,16 @@ function getAllAddons(){return[...ADDONS,...(settings&&settings.customAddons||[]
 
 // ── Auto-save (debounced) ────────────────────────────────
 let _autoSaveTimer=null;
-function autoSave(){clearTimeout(_autoSaveTimer);_autoSaveTimer=setTimeout(()=>{saveDB(db)},800)}
+function autoSave(){
+  const ind=document.getElementById('autoSaveIndicator');
+  if(ind){ind.textContent='Saving...';ind.style.display=''}
+  clearTimeout(_autoSaveTimer);
+  _autoSaveTimer=setTimeout(()=>{
+    saveDB(db);
+    if(ind){ind.textContent='\u2713 Saved';ind.style.display='';setTimeout(()=>{ind.style.display='none'},2000)}
+  },800);
+}
+function flushAutoSave(){if(_autoSaveTimer){clearTimeout(_autoSaveTimer);_autoSaveTimer=null;saveDB(db)}}
 
 const STATUSES=[{id:'lead',label:'Lead',color:'lead'},{id:'estimate',label:'Estimate',color:'est'},{id:'project',label:'Project',color:'proj'},{id:'completed',label:'Completed',color:'comp'}];
 const FOLDER_ICONS={lead:'&#9993;',estimate:'&#9997;',project:'&#9874;',completed:'&#10003;'};

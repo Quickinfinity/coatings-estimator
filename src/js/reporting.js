@@ -98,7 +98,7 @@ function exportReportCSV(){
     const total=costs.totalWithTax||0;
     const tags=(r.tags||[]).join('; ');
     const followUp=r.followUpDate||'';
-    const scheduled=r.scheduledDate||'';
+    const scheduled=r.projectStartDate||'';
     const crewId=r.assignedCrew||'';
     let crewName='';
     if(crewId&&settings.crewMembers){

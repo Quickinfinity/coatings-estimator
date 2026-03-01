@@ -168,8 +168,8 @@
   border-color:transparent;color:#fff;font-weight:600;
 }
 .btn-primary:hover{filter:brightness(1.1);box-shadow:0 0 20px rgba(37,99,235,.3)}
-.btn-success{background:var(--proj-soft);border-color:rgba(16,185,129,.25);color:var(--proj)}
-.btn-success:hover{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.4)}
+.btn-success{background:#22c55e;border-color:transparent;color:#fff;font-weight:600}
+.btn-success:hover{filter:brightness(1.1);box-shadow:0 0 20px rgba(34,197,94,.3)}
 .btn-danger{background:var(--comp-soft);border-color:rgba(239,68,68,.2);color:var(--comp)}
 .btn-danger:hover{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3)}
 .btn-ghost{background:transparent;border-color:var(--b2);color:var(--t3)}
@@ -180,11 +180,14 @@
    MODALS
    ═══════════════════════════════════════════════════════ */
 .modal-overlay{
-  display:none;position:fixed;inset:0;
+  display:none;position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  width:100%;height:100%;
   background:rgba(0,0,0,.4);
   backdrop-filter:blur(6px);
   -webkit-backdrop-filter:blur(6px);
   z-index:200;align-items:center;justify-content:center;
+  overflow-y:auto;
 }
 .modal-overlay.active{display:flex}
 .modal{

@@ -412,9 +412,9 @@ body.sb-collapsed .hdr,body.sb-collapsed .breadcrumb,body.sb-collapsed .mc{margi
   display:none;position:fixed;
   top:0;left:0;right:0;bottom:0;
   width:100%;height:100%;
-  background:rgba(0,0,0,.4);
-  backdrop-filter:blur(6px);
-  -webkit-backdrop-filter:blur(6px);
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
   z-index:200;align-items:center;justify-content:center;
   overflow-y:auto;
 }
@@ -1245,17 +1245,22 @@ body.sb-collapsed .hdr,body.sb-collapsed .breadcrumb,body.sb-collapsed .mc{margi
       <div style="display:flex;align-items:center;gap:10px"><div class="inline-edit"><input type="text" id="estNameInput" placeholder="Estimate name..." oninput="updateEstName()"></div><span id="quoteStatusBadge"></span></div>
       <p style="font-size:13px;color:var(--t3)" id="estSubline"></p>
     </div>
-    <div class="btn-row" id="estActionBtns">
-      <button class="btn btn-primary" onclick="generateProposal()">PDF Proposal</button>
-      <button class="btn btn-ghost" onclick="emailProposal()">Email Quote</button>
-      <button class="btn btn-ghost" onclick="textProposal()">Text Quote</button>
-      <button class="btn btn-success" id="estSaveBtn" onclick="saveEstimateWithFeedback()">&#10003; Save</button>
-      <button class="btn btn-ghost" onclick="duplicateEstimate()">Duplicate</button>
-      <button class="btn btn-ghost" onclick="saveAsTemplate()">Save Template</button>
-      <button class="btn btn-ghost" onclick="generateApprovalPage()">Send for Approval</button>
-      <button class="btn btn-ghost" onclick="generateClientPortal()">Client Portal</button>
-      <button class="btn btn-ghost" onclick="window.print()">Print</button>
-      <button class="btn btn-danger" onclick="confirmDeleteEstimate()">Delete</button>
+    <div id="estActionBtns">
+      <div class="btn-row" style="margin-bottom:6px">
+        <button class="btn btn-success" id="estSaveBtn" onclick="saveEstimateWithFeedback()">&#10003; Save</button>
+        <button class="btn btn-primary" onclick="generateProposal()">PDF Proposal</button>
+        <button class="btn btn-ghost" onclick="emailProposal()">Email Quote</button>
+        <button class="btn btn-ghost" onclick="textProposal()">Text Quote</button>
+      </div>
+      <div class="btn-row" style="align-items:center">
+        <button class="btn btn-ghost" onclick="duplicateEstimate()" style="font-size:13px;padding:6px 14px">Duplicate</button>
+        <button class="btn btn-ghost" onclick="saveAsTemplate()" style="font-size:13px;padding:6px 14px">Save Template</button>
+        <button class="btn btn-ghost" onclick="generateApprovalPage()" style="font-size:13px;padding:6px 14px">Send for Approval</button>
+        <button class="btn btn-ghost" onclick="generateClientPortal()" style="font-size:13px;padding:6px 14px">Client Portal</button>
+        <button class="btn btn-ghost" onclick="window.print()" style="font-size:13px;padding:6px 14px">Print</button>
+        <span style="flex:1"></span>
+        <button class="btn btn-danger" onclick="confirmDeleteEstimate()" style="font-size:13px;padding:6px 14px">Delete</button>
+      </div>
     </div>
   </div>
   <div class="est-total" id="estTotalBar"></div>

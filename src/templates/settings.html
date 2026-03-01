@@ -1,0 +1,258 @@
+<!-- SETTINGS -->
+<div class="screen" v-show="nav.screen==='settings'" id="scr-settings">
+  <div class="sh"><h2>Settings</h2><p>Configure your company, proposals, integrations, and more.</p></div>
+
+  <!-- Tab Navigation -->
+  <div class="settings-tabs">
+    <button class="settings-tab" :class="{active: settingsTab==='company'}" @click="switchSettingsTab('company')">&#127970; Company</button>
+    <button class="settings-tab" :class="{active: settingsTab==='proposals'}" @click="switchSettingsTab('proposals')">&#9998; Proposals</button>
+    <button class="settings-tab" :class="{active: settingsTab==='invoicing'}" @click="switchSettingsTab('invoicing')">&#128176; Invoicing</button>
+    <button class="settings-tab" :class="{active: settingsTab==='pdf'}" @click="switchSettingsTab('pdf')">&#127912; PDF</button>
+    <button class="settings-tab" :class="{active: settingsTab==='products'}" @click="switchSettingsTab('products')">&#9881; Products</button>
+    <button class="settings-tab" :class="{active: settingsTab==='templates'}" @click="switchSettingsTab('templates')">&#128203; Templates</button>
+    <button class="settings-tab" :class="{active: settingsTab==='leadsources'}" @click="switchSettingsTab('leadsources')">&#128161; Lead Sources</button>
+    <button class="settings-tab" :class="{active: settingsTab==='team'}" @click="switchSettingsTab('team')">&#128101; Team</button>
+    <button class="settings-tab" :class="{active: settingsTab==='integrations'}" @click="switchSettingsTab('integrations')">&#128279; Integrations</button>
+    <button class="settings-tab" :class="{active: settingsTab==='data'}" @click="switchSettingsTab('data')">&#128202; Data</button>
+  </div>
+
+  <!-- Tab 1: Company -->
+  <div v-show="settingsTab==='company'">
+    <div class="cd">
+      <div class="ct"><span class="ic io">&#127970;</span> Company Information</div>
+      <div class="g2">
+        <div class="fg"><label>Company Name</label><input type="text" v-model="settings.companyName" placeholder="Your company name"></div>
+        <div class="fg"><label>Contact Name</label><input type="text" v-model="settings.contactName" placeholder="Your name"></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label>Phone</label><input type="tel" v-model="settings.phone" placeholder="(555) 123-4567"></div>
+        <div class="fg"><label>Email</label><input type="email" v-model="settings.email" placeholder="email@company.com"></div>
+      </div>
+      <div class="fg"><label>Address</label><input type="text" v-model="settings.address" placeholder="Street address"></div>
+      <div class="g3">
+        <div class="fg"><label>City</label><input type="text" v-model="settings.city" placeholder="City"></div>
+        <div class="fg"><label>State</label><input type="text" v-model="settings.state" placeholder="State"></div>
+        <div class="fg"><label>Zip</label><input type="text" v-model="settings.zip" placeholder="Zip code"></div>
+      </div>
+      <div class="fg" style="margin-top:8px">
+        <label>Company Logo</label>
+        <div style="margin-bottom:8px">
+          <img v-if="settings.companyLogo" :src="settings.companyLogo" style="max-height:60px;max-width:200px;border-radius:6px;border:1px solid var(--b1)">
+          <div v-else style="font-size:12px;color:var(--t4)">No logo uploaded</div>
+        </div>
+        <input type="file" id="setLogo" accept="image/*" onchange="handleLogoUpload(event)" style="font-size:13px">
+        <button v-if="settings.companyLogo" class="btn btn-ghost" onclick="clearLogo()" style="font-size:11px;padding:3px 10px;margin-top:4px">Remove Logo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: Proposals -->
+  <div v-show="settingsTab==='proposals'">
+    <div class="cd">
+      <div class="ct"><span class="ic ior">&#9998;</span> Proposal & Contract Defaults</div>
+      <div class="fg"><label>Company Tagline</label><input type="text" v-model="settings.tagline" placeholder="e.g. Quality Coatings, Done Right"></div>
+      <div class="g2">
+        <div class="fg"><label>Proposal Valid (days)</label><input type="number" v-model.number="settings.proposalValidDays" min="1" max="365" style="max-width:100px"></div>
+        <div class="fg"><label>Warranty Period (years)</label><input type="number" v-model.number="settings.warrantyYears" min="0" max="25" style="max-width:100px"></div>
+      </div>
+      <div class="fg"><label>Warranty Text</label><textarea v-model="settings.warrantyText" rows="2" placeholder="Workmanship warranty language..."></textarea></div>
+      <div class="fg"><label>Default Terms & Conditions</label><textarea v-model="settings.terms" rows="5" placeholder="Terms will appear on proposals and contracts..."></textarea></div>
+      <div class="g2">
+        <div class="fg"><label>Tax Rate (%)</label><input type="number" v-model.number="settings.taxRate" min="0" step="0.1" style="max-width:120px"></div>
+        <div class="fg"><label>Payment Terms</label>
+          <select v-model="settings.paymentTerms">
+            <option value="due_on_receipt">Due on Receipt</option>
+            <option value="net15">Net 15</option>
+            <option value="net30">Net 30</option>
+            <option value="net60">Net 60</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Invoicing -->
+  <div v-show="settingsTab==='invoicing'">
+    <div class="cd">
+      <div class="ct"><span class="ic ig">&#128176;</span> Invoicing & Financial</div>
+      <div class="g2">
+        <div class="fg"><label>Deposit Percentage (%)</label><input type="number" v-model.number="settings.depositPercent" min="0" max="100" style="max-width:100px"></div>
+        <div class="fg"><label>Late Fee (%)</label><input type="number" v-model.number="settings.lateFeePercent" min="0" max="100" step="0.5" style="max-width:100px"></div>
+      </div>
+      <div class="g3">
+        <div class="fg"><label>Invoice Prefix</label><input type="text" v-model="settings.invoicePrefix" style="max-width:120px"></div>
+        <div class="fg"><label>Number Padding</label><input type="number" v-model.number="settings.invoiceNumberPadding" min="1" max="6" style="max-width:80px"></div>
+        <div class="fg"><label>Preview</label>
+          <div style="padding:8px 12px;background:var(--s3);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--t2)">{{ (settings.invoicePrefix || 'INV-') + '1'.padStart(settings.invoiceNumberPadding || 3, '0') }}</div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label>Labor Rate ($/hr)</label><input type="number" v-model.number="settings.laborRate" min="0" step="0.5" style="max-width:120px"></div>
+        <div class="fg"><label>Target Margin (%)</label><input type="number" v-model.number="settings.targetMargin" min="0" max="100" step="1" style="max-width:120px"></div>
+      </div>
+      <p style="font-size:11px;color:var(--t4);margin-top:-4px">Labor rate and margin target are for reference — they do not auto-calculate pricing.</p>
+    </div>
+  </div>
+
+  <!-- Tab 4: PDF -->
+  <div v-show="settingsTab==='pdf'">
+    <div class="cd">
+      <div class="ct"><span class="ic ib">&#127912;</span> PDF Appearance</div>
+      <div class="g3">
+        <div class="fg"><label>Accent Color</label><input type="color" id="setPdfAccentColor" oninput="updateColorPreview()" style="width:48px;height:36px;padding:2px;cursor:pointer;border:1px solid var(--b1);border-radius:6px"></div>
+        <div class="fg"><label>PDF Font</label>
+          <select v-model="settings.pdfFontFamily">
+            <option value="helvetica">Helvetica</option>
+            <option value="times">Times</option>
+            <option value="courier">Courier</option>
+          </select>
+        </div>
+        <div class="fg"><label>File Prefix</label><input type="text" v-model="settings.pdfFilePrefix" style="max-width:120px"></div>
+      </div>
+      <div id="pdfColorPreview" style="height:8px;border-radius:4px;margin-top:-4px"></div>
+    </div>
+  </div>
+
+  <!-- Tab 5: Products -->
+  <div v-show="settingsTab==='products'">
+    <div class="cd">
+      <div class="ct"><span class="ic io">&#9881;</span> Custom Products & Services</div>
+      <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Add your own coating systems, topcoats, repairs, and add-ons. Built-in TCP products are always available.</p>
+      <div class="tab-row" id="customCatTabs"></div>
+      <div id="customItemsList" style="margin-top:12px"></div>
+      <button class="btn btn-primary" onclick="addCustomItem()" style="margin-top:10px;font-size:12px;padding:6px 16px">+ Add Item</button>
+    </div>
+  </div>
+
+  <!-- Tab 6: Templates -->
+  <div v-show="settingsTab==='templates'">
+    <div class="cd">
+      <div class="ct"><span class="ic ior">&#128203;</span> Estimate Templates</div>
+      <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Save common job configurations as templates. Create new estimates from them in one click.</p>
+      <div id="templateList"></div>
+      <p style="font-size:11px;color:var(--t4);margin-top:8px">To save a template, open any estimate and click "Save as Template" in the action bar.</p>
+    </div>
+  </div>
+
+  <!-- Tab 7: Lead Sources -->
+  <div v-show="settingsTab==='leadsources'">
+    <div class="cd">
+      <div class="ct"><span class="ic ior">&#128161;</span> Lead Source Presets</div>
+      <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Configure where your leads come from. These appear as a dropdown when creating or editing records.</p>
+      <div id="leadSourceList"></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <input type="text" id="newLeadSource" placeholder="New lead source..." style="flex:1;padding:8px 12px;font-size:14px;border:1px solid var(--b1);border-radius:var(--r-sm);background:var(--s1);color:var(--t1);font-family:inherit" onkeydown="if(event.key==='Enter')addLeadSource()">
+        <button class="btn btn-primary" onclick="addLeadSource()" style="font-size:12px;padding:6px 16px">+ Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 8: Team / Crew -->
+  <div v-show="settingsTab==='team'">
+    <div class="cd">
+      <div class="ct"><span class="ic ig">&#128101;</span> Crew Members</div>
+      <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Add your team for project scheduling and dispatch. Crew members can be assigned to projects on the calendar.</p>
+      <div id="crewList"></div>
+      <button class="btn btn-primary" onclick="addCrewMember()" style="margin-top:10px;font-size:12px;padding:6px 16px">+ Add Crew Member</button>
+    </div>
+  </div>
+
+  <!-- Tab 9: Integrations -->
+  <div v-show="settingsTab==='integrations'">
+    <!-- EmailJS -->
+    <div class="cd">
+      <div class="ct"><span class="ic io">&#9993;</span> Email (EmailJS)</div>
+      <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Send proposals and invoices with PDF attachments. Free: 200 emails/month.</p>
+      <div id="emailjsStatus" style="margin-bottom:12px"></div>
+      <div class="fg"><label>Public Key</label><input type="text" v-model="settings.emailjsPublicKey" placeholder="e.g. abc123XYZ"></div>
+      <div class="g2">
+        <div class="fg"><label>Service ID</label><input type="text" v-model="settings.emailjsServiceId" placeholder="e.g. service_xxxxx"></div>
+        <div class="fg"><label>Template ID</label><input type="text" v-model="settings.emailjsTemplateId" placeholder="e.g. template_xxxxx"></div>
+      </div>
+      <details style="margin-top:10px;font-size:12px;color:var(--t3)">
+        <summary style="cursor:pointer;font-weight:600;color:var(--t2)">Setup Instructions</summary>
+        <ol style="padding-left:18px;margin-top:8px;line-height:1.8" v-pre>
+          <li>Go to <strong>emailjs.com</strong> and create a free account</li>
+          <li>Add an <strong>Email Service</strong> (Gmail, Outlook, or SMTP)</li>
+          <li>Create a <strong>Template</strong> with these variables:<br>
+            <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{to_email}}</code>
+            <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{to_name}}</code>
+            <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{from_name}}</code>
+            <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{reply_to}}</code>
+            <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{subject}}</code>
+            <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">{{message}}</code>
+          </li>
+          <li>In Template Settings &gt; Attachments, add a <strong>Dynamic Attachment</strong> named <code style="font-size:11px;background:var(--s2);padding:2px 6px;border-radius:4px">attachment</code></li>
+          <li>Copy your <strong>Public Key</strong>, <strong>Service ID</strong>, and <strong>Template ID</strong> above</li>
+        </ol>
+      </details>
+      <button class="btn btn-ghost" onclick="testEmailJS()" style="margin-top:10px;font-size:12px;padding:6px 16px">Test Connection</button>
+    </div>
+    <!-- Stripe -->
+    <div class="cd">
+      <div class="ct"><span class="ic ig">&#128179;</span> Stripe Payments</div>
+      <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Accept online payments via Stripe Payment Links. No server required.</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <label class="toggle"><input type="checkbox" v-model="settings.stripeEnabled"><span class="slider"></span></label>
+        <span style="font-size:14px;color:var(--t2)">Enable Stripe Payments</span>
+      </div>
+      <div v-show="settings.stripeEnabled">
+        <div class="fg"><label>Payment Link Base URL</label><input type="text" v-model="settings.stripePaymentLinkBase" placeholder="https://buy.stripe.com/xxxxx"></div>
+        <details style="font-size:12px;color:var(--t3)">
+          <summary style="cursor:pointer;font-weight:600;color:var(--t2)">How to Create a Payment Link</summary>
+          <ol style="padding-left:18px;margin-top:8px;line-height:1.8">
+            <li>Log into <strong>dashboard.stripe.com</strong></li>
+            <li>Go to <strong>Payment Links</strong> &rarr; create new</li>
+            <li>Set pricing to "Customer chooses amount" or fixed price</li>
+            <li>Copy the link URL and paste above</li>
+            <li>Invoices will include a "Pay Now" button</li>
+          </ol>
+        </details>
+      </div>
+    </div>
+    <!-- Mailchimp -->
+    <div class="cd">
+      <div class="ct"><span class="ic ib">&#128231;</span> Mailchimp</div>
+      <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Connect Mailchimp for email marketing. Paste your embed form code for client portals.</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <label class="toggle"><input type="checkbox" v-model="settings.mailchimpEnabled"><span class="slider"></span></label>
+        <span style="font-size:14px;color:var(--t2)">Enable Mailchimp</span>
+      </div>
+      <div v-show="settings.mailchimpEnabled">
+        <div class="fg"><label>Embed Form Code (HTML)</label><textarea v-model="settings.mailchimpEmbedCode" rows="4" placeholder="Paste Mailchimp embed form HTML..."></textarea></div>
+      </div>
+    </div>
+    <!-- Booking Widget -->
+    <div class="cd">
+      <div class="ct"><span class="ic ior">&#128197;</span> Booking Widget</div>
+      <p style="font-size:12px;color:var(--t3);margin-bottom:12px">Generate an embeddable contact form for your website. Submissions sent via EmailJS.</p>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <label class="toggle"><input type="checkbox" v-model="settings.bookingEnabled"><span class="slider"></span></label>
+        <span style="font-size:14px;color:var(--t2)">Enable Booking Widget</span>
+      </div>
+      <div v-show="settings.bookingEnabled">
+        <div class="fg"><label>Notification Email</label><input type="text" v-model="settings.bookingNotifyEmail" placeholder="email@company.com"></div>
+        <div class="fg"><label>Project Types (comma-separated)</label><input type="text" :value="(settings.bookingProjectTypes||[]).join(', ')" @change="settings.bookingProjectTypes=$event.target.value.split(',').map(s=>s.trim()).filter(Boolean)" placeholder="Garage Floor, Patio, Basement..."></div>
+        <button class="btn btn-ghost" onclick="generateBookingWidget()" style="font-size:12px;padding:6px 16px">Generate Widget Code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 10: Data -->
+  <div v-show="settingsTab==='data'">
+    <div class="cd">
+      <div class="ct"><span class="ic ig">&#128202;</span> Data Management</div>
+      <div id="settingsStats" style="margin-bottom:16px"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="doExport()">Export Data (JSON)</button>
+        <button class="btn btn-ghost" onclick="openImport()">Import Data</button>
+        <button class="btn btn-danger" onclick="confirmClearAll()">Clear All Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Persistent Save Button -->
+  <div class="btn-row" style="margin-top:16px">
+    <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+  </div>
+</div>

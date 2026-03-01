@@ -1,0 +1,41 @@
+<!-- INVOICE -->
+<div class="screen" v-show="nav.screen==='invoice'" id="scr-invoice">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div style="flex:1">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <h2 id="invNumber" style="font-size:20px">INV-001</h2>
+        <span id="invStatusBadge" class="li-badge"></span>
+      </div>
+      <p style="font-size:13px;color:var(--t3)" id="invSubline"></p>
+    </div>
+    <div class="btn-row" id="invActions"></div>
+  </div>
+  <div class="cd" id="invFromToCard">
+    <div class="ct"><span class="ic io">&#128179;</span> Invoice Details</div>
+    <div class="g2" style="margin-bottom:16px">
+      <div><div style="font-size:11px;text-transform:uppercase;color:var(--t3);font-weight:600;margin-bottom:6px">From</div><div id="invFrom" style="font-size:13px;color:var(--t2);line-height:1.6"></div></div>
+      <div><div style="font-size:11px;text-transform:uppercase;color:var(--t3);font-weight:600;margin-bottom:6px">Bill To</div><div id="invTo" style="font-size:13px;color:var(--t2);line-height:1.6"></div></div>
+    </div>
+    <div class="g3">
+      <div class="fg"><label>Due Date</label><input type="date" id="invDueDate" onchange="updateInvoiceField('dueDate',this.value)"></div>
+      <div class="fg"><label>Type</label><div id="invType" style="font-size:14px;padding:8px 0;color:var(--t2)"></div></div>
+      <div class="fg"><label>Status</label><div id="invStatus" style="font-size:14px;padding:8px 0"></div></div>
+    </div>
+  </div>
+  <div class="cd">
+    <div class="ct" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span class="ic ig">&#9776;</span> Line Items</div><button class="btn btn-ghost" onclick="addLineItem()" style="font-size:12px;padding:4px 12px">+ Add Item</button></div>
+    <div id="invLineItems"></div>
+    <div id="invDiscount" style="padding:8px 0;border-top:1px solid var(--b1)"></div>
+    <div class="sg" id="invTotals"></div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ib">&#128176;</span> Payments</div>
+    <div id="invPayments"></div>
+    <div class="sg" id="invBalance"></div>
+  </div>
+  <div id="stripePayBtn" style="margin-bottom:14px"></div>
+  <div class="cd">
+    <div class="ct"><span class="ic ior">&#9998;</span> Notes</div>
+    <div class="fg"><textarea id="invNotes" rows="3" placeholder="Invoice notes (visible on PDF)..." onchange="updateInvoiceField('notes',this.value)"></textarea></div>
+  </div>
+</div>

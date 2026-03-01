@@ -1,0 +1,53 @@
+/* ═══════════════════════════════════════════════════════
+   DESIGN SYSTEM
+   ═══════════════════════════════════════════════════════ */
+:root {
+  /* Surface layers */
+  --bg: #f0f2f5;
+  --s1: #e8eaef;
+  --s2: #ffffff;
+  --s3: #f5f6f8;
+  --s4: #d1d5db;
+  /* Borders */
+  --b1: #e5e7eb;
+  --b2: #d1d5db;
+  --b3: #9ca3af;
+  /* Text */
+  --t1: #111827;
+  --t2: #374151;
+  --t3: #6b7280;
+  --t4: #9ca3af;
+  /* Accent */
+  --accent: #2563eb;
+  --accent2: #0ea5e9;
+  --accent-glow: rgba(37,99,235,.10);
+  --accent-glow2: rgba(37,99,235,.05);
+  /* Pipeline */
+  --lead: #2563eb;
+  --lead-soft: rgba(37,99,235,.08);
+  --est: #ea580c;
+  --est-soft: rgba(234,88,12,.08);
+  --proj: #16a34a;
+  --proj-soft: rgba(22,163,74,.08);
+  --comp: #dc2626;
+  --comp-soft: rgba(220,38,38,.08);
+  /* Semantic */
+  --success: #16a34a;
+  --danger: #dc2626;
+  --info: #2563eb;
+  /* Glass */
+  --glass: rgba(0,0,0,.02);
+  --glass2: rgba(0,0,0,.04);
+  /* Radius */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  /* Shadow */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
+  --shadow-glow: 0 0 40px rgba(37,99,235,.06);
+  /* Transitions */
+  --ease: cubic-bezier(.4,0,.2,1);
+}

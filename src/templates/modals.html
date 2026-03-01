@@ -1,0 +1,44 @@
+<!-- MODALS -->
+<div class="modal-overlay" id="confirmModal" onclick="if(event.target===this)closeConfirm()">
+  <div class="modal">
+    <h3 id="confirmTitle">Confirm</h3>
+    <p style="font-size:13px;color:var(--t3);margin-bottom:20px;line-height:1.5" id="confirmMsg"></p>
+    <div class="btn-row"><button class="btn btn-danger" id="confirmYes">Delete</button><button class="btn btn-ghost" onclick="closeConfirm()">Cancel</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="exportModal" onclick="if(event.target===this)closeExport()">
+  <div class="modal">
+    <h3>Export Data</h3>
+    <p style="font-size:13px;color:var(--t3);margin-bottom:20px;line-height:1.5">Download all records as a JSON file for backup or transfer.</p>
+    <div class="btn-row"><button class="btn btn-primary" onclick="doExport()">Download</button><button class="btn btn-ghost" onclick="closeExport()">Cancel</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="importModal" onclick="if(event.target===this)closeImport()">
+  <div class="modal">
+    <h3>Import Data</h3>
+    <p style="font-size:13px;color:var(--t3);margin-bottom:16px;line-height:1.5">Load a previously exported JSON file. This will <strong style="color:var(--comp)">replace</strong> all current data.</p>
+    <div class="fg"><input type="file" id="importFile" accept=".json" style="font-size:13px"></div>
+    <div class="btn-row"><button class="btn btn-primary" onclick="doImport()">Import</button><button class="btn btn-ghost" onclick="closeImport()">Cancel</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="paymentModal" onclick="if(event.target===this)closePaymentModal()">
+  <div class="modal">
+    <h3>Record Payment</h3>
+    <div class="fg"><label>Amount</label><input type="number" id="payAmount" min="0" step="0.01" placeholder="0.00"></div>
+    <div class="g2">
+      <div class="fg"><label>Date</label><input type="date" id="payDate"></div>
+      <div class="fg"><label>Method</label><select id="payMethod"><option>Cash</option><option>Check</option><option>Credit Card</option><option>Zelle</option><option>ACH</option><option>Other</option></select></div>
+    </div>
+    <div class="fg"><label>Note</label><input type="text" id="payNote" placeholder="e.g. Check #1234"></div>
+    <div class="btn-row"><button class="btn btn-success" onclick="recordPayment()">Record Payment</button><button class="btn btn-ghost" onclick="closePaymentModal()">Cancel</button></div>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<div class="mobile-bottom-nav">
+  <button :class="{active:nav.screen==='home'}" @click="goHome()"><span class="nav-icon">&#127968;</span>Home</button>
+  <button :class="{active:nav.screen==='list'}" @click="goFolder('lead',true)"><span class="nav-icon">&#128203;</span>Pipeline</button>
+  <button :class="{active:nav.screen==='calendar'}" @click="goCalendar()"><span class="nav-icon">&#128197;</span>Calendar</button>
+  <button :class="{active:nav.screen==='reporting'}" @click="goReporting()"><span class="nav-icon">&#128200;</span>Reports</button>
+  <button :class="{active:nav.screen==='settings'}" @click="goSettings()"><span class="nav-icon">&#9881;</span>Settings</button>
+</div>

@@ -1,0 +1,30 @@
+<!-- LIST -->
+<div class="screen" v-show="nav.screen==='list'" id="scr-list">
+  <div class="sh" id="listHeader"></div>
+  <div id="invoiceFilterBar" style="display:none;margin-bottom:12px">
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="tab-btn ac" onclick="setInvFilter('all')">All</button>
+      <button class="tab-btn" onclick="setInvFilter('invoiced')">Invoiced</button>
+      <button class="tab-btn" onclick="setInvFilter('need')">Need Invoiced</button>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div class="search-bar" style="flex:1;min-width:220px"><input type="text" id="searchInput" placeholder="Search by name, company, or address..." oninput="filterList()"></div>
+    <select id="tagFilter" onchange="filterList()" style="font-size:12px;padding:8px 10px;border-radius:8px;border:1px solid var(--brd);background:var(--s3);color:var(--t1)"><option value="">All Tags</option></select>
+    <button class="btn btn-ghost" onclick="toggleBatchMode()" id="batchToggleBtn" style="font-size:12px">Select</button>
+    <button class="btn btn-primary" id="newLeadBtn" onclick="newRecord()">+ New Lead</button>
+  </div>
+  <div id="listItems"></div>
+  <div id="batchBar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--s2);border-top:2px solid var(--accent);padding:12px 20px;z-index:100;box-shadow:0 -4px 16px rgba(0,0,0,.12)">
+    <div style="display:flex;align-items:center;justify-content:space-between;max-width:900px;margin:0 auto;flex-wrap:wrap;gap:10px">
+      <span id="batchCount" style="font-size:13px;font-weight:600;color:var(--t1)">0 selected</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <select id="batchStatusTarget" style="font-size:12px;padding:6px 10px;border-radius:8px;border:1px solid var(--brd);background:var(--s3)"><option value="lead">Lead</option><option value="estimate">Estimate</option><option value="project">Project</option><option value="completed">Completed</option></select>
+        <button class="btn btn-primary" onclick="batchMoveStatus()" style="font-size:12px;padding:6px 14px">Move</button>
+        <button class="btn btn-ghost" onclick="batchArchive()" style="font-size:12px;padding:6px 14px">Archive</button>
+        <button class="btn btn-danger" onclick="batchDelete()" style="font-size:12px;padding:6px 14px">Delete</button>
+        <button class="btn btn-ghost" onclick="toggleBatchMode()" style="font-size:12px;padding:6px 14px">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+/* ═══════════════════════════════════════════════════════
+   PRINT
+   ═══════════════════════════════════════════════════════ */
+@media print{
+  .hdr,.breadcrumb,.btn-row,.hdr-right,.tab-bar,.search-bar,#newLeadBtn,#sidebar,.sb-overlay,#batchBar,#batchToggleBtn,.hamburger,.hdr-btn,#followUpCard button,#nextActionBar,.toggle,.active-toggle,#quickContactBtns,.toast-container,.settings-tabs{display:none!important}
+  body{background:#fff!important;color:#000!important}
+  .mc{padding:10px!important;margin-left:0!important}
+  .cd{border-color:#ddd!important;page-break-inside:avoid;box-shadow:none!important;background:#fff!important}
+  .screen{padding:0!important}
+  .list-item{border-color:#ddd!important;background:#fff!important}
+  .li-avatar,.li-badge,.status-pill{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .sys-card{page-break-inside:avoid}
+  .est-total{background:#f5f5f5!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  a{color:#000!important;text-decoration:none!important}
+}

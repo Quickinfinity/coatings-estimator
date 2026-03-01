@@ -1,0 +1,19 @@
+<!-- HEADER -->
+<div class="hdr"><div class="hi">
+  <div class="hdr-left" onclick="goHome()">
+    <button class="hamburger" onclick="event.stopPropagation();toggleMobileSidebar()">&#9776;</button>
+    <div class="hdr-logo">CE</div>
+    <div>
+      <h1>Coatings Estimator</h1>
+      <div class="sub">The Concrete Protector</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div id="offlineDot" style="display:none;align-items:center;gap:4px;padding:4px 10px;background:rgba(248,113,113,.15);border-radius:6px;font-size:11px;color:#f87171;font-weight:600"><span style="width:8px;height:8px;border-radius:50%;background:#f87171"></span>Offline</div>
+    <div id="profileBadge"></div>
+    <button class="hdr-btn" onclick="goReporting()">Reports</button>
+    <button class="hdr-btn primary" onclick="newRecordFromHeader()">+ New Lead</button>
+  </div>
+</div></div>
+
+<div class="breadcrumb" id="breadcrumb"></div>

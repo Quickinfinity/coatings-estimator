@@ -1,0 +1,46 @@
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo">CE</div>
+    <div class="sb-title">
+      <h2>Coatings Estimator</h2>
+      <div class="sub">The Concrete Protector</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-item active" data-screen="home" onclick="goHome()">
+      <span class="sb-icon">&#9776;</span><span class="sb-label">Home</span>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-item" data-screen="lead" onclick="goFolder('lead',true)">
+      <span class="sb-icon">&#9993;</span><span class="sb-label">Leads</span>
+    </div>
+    <div class="sb-item" data-screen="estimate" onclick="goFolder('estimate',true)">
+      <span class="sb-icon">&#9997;</span><span class="sb-label">Estimates</span>
+    </div>
+    <div class="sb-item" data-screen="project" onclick="goFolder('project',true)">
+      <span class="sb-icon">&#9874;</span><span class="sb-label">Projects</span>
+    </div>
+    <div class="sb-item" data-screen="completed" onclick="goFolder('completed',true)">
+      <span class="sb-icon">&#10003;</span><span class="sb-label">Completed</span>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-item" data-screen="invoices-all" onclick="goAllInvoices()">
+      <span class="sb-icon">&#128179;</span><span class="sb-label">Invoices <span id="invBadge"></span></span>
+    </div>
+    <div class="sb-item" data-screen="calendar" onclick="goCalendar()">
+      <span class="sb-icon">&#128197;</span><span class="sb-label">Calendar</span>
+    </div>
+    <div class="sb-item" data-screen="reporting" onclick="goReporting()">
+      <span class="sb-icon">&#128202;</span><span class="sb-label">Reports</span>
+    </div>
+    <div class="sb-item" data-screen="settings" onclick="goSettings()">
+      <span class="sb-icon">&#9881;</span><span class="sb-label">Settings</span>
+    </div>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-item" onclick="goProfileSelect()" style="opacity:.7;font-size:12px"><span class="sb-icon">&#128101;</span><span class="sb-label">Switch Profile</span></div>
+    <button class="sb-toggle" onclick="toggleSidebar()" title="Collapse sidebar">&#9664;</button>
+  </div>
+</nav>
+<div class="sb-overlay" id="sbOverlay" onclick="closeMobileSidebar()"></div>

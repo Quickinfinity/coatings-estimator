@@ -1,0 +1,71 @@
+<!-- CALENDAR / DISPATCH -->
+<div class="screen" v-show="nav.screen==='calendar'" id="scr-calendar">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div><h2>Calendar</h2><p>Project schedule &amp; dispatch</p></div>
+      <div class="btn-row">
+        <button class="btn" :class="calView==='month'?'btn-primary':'btn-ghost'" @click="calView='month';renderCalendar()">Month</button>
+        <button class="btn" :class="calView==='week'?'btn-primary':'btn-ghost'" @click="calView='week';renderWeekView()">Week</button>
+        <button class="btn" :class="calView==='dispatch'?'btn-primary':'btn-ghost'" @click="calView='dispatch';renderDispatch()">Dispatch</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Navigation -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+    <button class="btn btn-ghost" @click="calNav(-1)">&larr; Prev</button>
+    <h3 id="calMonthLabel" style="font-size:16px;font-weight:700"></h3>
+    <button class="btn btn-ghost" @click="calNav(1)">Next &rarr;</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- MONTH VIEW                                             -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div v-show="calView==='month'">
+    <div id="calGrid" class="cal-grid"></div>
+    <div id="calDayDetail" style="margin-top:16px"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- WEEK VIEW                                              -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div v-show="calView==='week'">
+    <div class="cd" style="overflow-x:auto">
+      <div id="weekGrid" class="cal-grid" style="grid-template-columns:repeat(7,minmax(120px,1fr))"></div>
+    </div>
+    <div id="weekDayDetail" style="margin-top:16px"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- DISPATCH BOARD                                         -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div v-show="calView==='dispatch'">
+
+    <!-- Crew legend -->
+    <div id="dispatchCrewLegend" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+      <!-- Rendered by renderDispatch(): color dot + crew name for each crew member -->
+    </div>
+
+    <!-- Dispatch grid: time-slotted 7-day columns -->
+    <div class="cd" style="overflow-x:auto;padding:0">
+      <div id="dispatchGrid" class="dispatch-week"
+           @dragover.prevent>
+        <!-- Rendered by renderDispatch(): time labels in col 1, day slots in cols 2-8 -->
+      </div>
+    </div>
+
+    <!-- Unscheduled projects bucket -->
+    <div class="cd" style="margin-top:16px">
+      <div class="ct"><span class="ic ior">&#128203;</span> Unscheduled Projects</div>
+      <div id="dispatchUnscheduled"
+           @dragover.prevent
+           @drop="dispatchUnschedule($event)"
+           style="min-height:48px;display:flex;flex-wrap:wrap;gap:8px;padding:8px 0">
+        <!-- Rendered by renderDispatch(): draggable project chips with no start date -->
+      </div>
+    </div>
+
+    <!-- Dispatch day detail (shows when a slot is clicked) -->
+    <div id="dispatchDayDetail" style="margin-top:16px"></div>
+  </div>
+</div>

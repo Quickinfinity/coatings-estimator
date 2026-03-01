@@ -1,0 +1,78 @@
+<!-- RECORD -->
+<div class="screen" v-show="nav.screen==='record'" id="scr-record">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div class="sh" style="margin-bottom:0;flex:1" id="recordHeader"></div>
+    <div class="btn-row">
+      <button class="btn btn-success" onclick="saveRecord()">Save</button>
+      <button class="btn btn-danger" onclick="confirmDeleteRecord()">Delete</button>
+    </div>
+  </div>
+  <div id="duplicateWarning"></div>
+  <div class="cd">
+    <div class="ct"><span class="ic io">&#9881;</span> Status</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div class="status-bar" id="statusPills"></div>
+      <div class="active-toggle"><span>Active</span><label class="toggle"><input type="checkbox" id="recActive" onchange="toggleActive()"><span class="slider"></span></label></div>
+    </div>
+    <div id="nextActionBar" style="margin-top:12px"></div>
+  </div>
+  <div class="cd" id="followUpCard">
+    <div class="ct"><span class="ic io">&#128276;</span> Follow-Up Reminder</div>
+    <div class="g2">
+      <div class="fg"><label>Follow-Up Date</label><input type="date" id="recFollowUpDate" onchange="saveFollowUp()"></div>
+      <div class="fg"><label>Note</label><input type="text" id="recFollowUpNote" placeholder="Call about garage quote..." onchange="saveFollowUp()"></div>
+    </div>
+    <div id="followUpStatus" style="margin-top:8px"></div>
+  </div>
+  <div class="cd" id="projectDetailsCard" style="display:none">
+    <div class="ct"><span class="ic ig">&#9874;</span> Project Details</div>
+    <div class="g2">
+      <div class="fg"><label>Start Date</label><input type="date" id="recStartDate" onchange="saveProjectDates()"></div>
+      <div class="fg"><label>End Date</label><input type="date" id="recEndDate" onchange="saveProjectDates()"></div>
+    </div>
+    <div class="g3">
+      <div class="fg"><label>Start Time</label><input type="time" id="recScheduledTime" onchange="saveProjectDates()"></div>
+      <div class="fg"><label>Duration (hrs)</label><input type="number" id="recScheduledDuration" min="0" max="24" step="0.5" placeholder="8" onchange="saveProjectDates()"></div>
+      <div class="fg"><label>Assigned Crew</label><select id="recAssignedCrew" onchange="saveProjectDates()"><option value="">-- None --</option></select></div>
+    </div>
+    <div class="fg"><label>Project Notes</label><textarea id="recProjectNotes" placeholder="Scheduling notes, crew assignments..." onchange="saveProjectDates()"></textarea></div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ib">&#9786;</span> Contact</div>
+    <div class="g2">
+      <div class="fg"><label>First Name</label><input type="text" id="recFirst" placeholder="First name" autocomplete="given-name" oninput="autoSaveRecord()"></div>
+      <div class="fg"><label>Last Name</label><input type="text" id="recLast" placeholder="Last name" autocomplete="family-name" oninput="autoSaveRecord()"></div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label>Company</label><input type="text" id="recCompany" placeholder="Company name" autocomplete="organization" oninput="autoSaveRecord()"></div>
+      <div class="fg"><label>Email</label><input type="email" id="recEmail" placeholder="email@example.com" autocomplete="email" oninput="autoSaveRecord()"></div>
+    </div>
+    <div class="g3">
+      <div class="fg"><label>Phone</label><input type="tel" id="recPhone" placeholder="(555) 123-4567" autocomplete="tel" oninput="autoSaveRecord()"></div>
+      <div class="fg"><label>Type</label><select id="recPhoneType" onchange="autoSaveRecord()"><option value="cell">Cell</option><option value="home">Home</option><option value="office">Office</option></select></div>
+      <div class="fg"><label>Best Time to Call</label><input type="text" id="recBestTime" placeholder="e.g. After 5pm" oninput="autoSaveRecord()"></div>
+    </div>
+    <div id="quickContactBtns" style="display:flex;gap:8px;margin:8px 0 12px"></div>
+    <div class="fg"><label>Address</label><input type="text" id="recAddress" placeholder="Street address" autocomplete="street-address" oninput="autoSaveRecord()"></div>
+    <div class="g3">
+      <div class="fg"><label>City</label><input type="text" id="recCity" placeholder="City" autocomplete="address-level2" oninput="autoSaveRecord()"></div>
+      <div class="fg"><label>State</label><input type="text" id="recState" placeholder="ST" maxlength="2" style="text-transform:uppercase" autocomplete="address-level1" oninput="autoSaveRecord()"></div>
+      <div class="fg"><label>Zip</label><input type="text" id="recZip" placeholder="Zip" inputmode="numeric" autocomplete="postal-code" oninput="autoSaveRecord()"></div>
+    </div>
+    <div class="fg"><label>Notes</label><textarea id="recNotes" placeholder="Additional notes..." oninput="autoSaveRecord()"></textarea></div>
+    <div style="margin-top:8px"><label style="font-size:12px;font-weight:600;color:var(--t3)">Tags</label><div id="tagBar" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;align-items:center"></div></div>
+    <div class="g2" style="margin-top:8px">
+      <div class="fg"><label>Lead Source</label><select id="recLeadSource" onchange="autoSaveRecord()"><option value="">-- Select --</option></select></div>
+      <div class="fg"></div>
+    </div>
+  </div>
+  <div class="cd">
+    <div class="ct" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span class="ic ior">&#9998;</span> Estimates</div><div style="display:flex;gap:8px"><button class="btn btn-ghost" id="compareEstBtn" onclick="showEstimateComparison()" style="display:none;font-size:12px">Compare</button><button class="btn btn-primary" onclick="newEstimate()">+ New Estimate</button></div></div>
+    <div id="estimatesList"></div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic io">&#128340;</span> Activity & Notes</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px"><input type="text" id="activityNoteInput" placeholder="Add a note..." style="flex:1" onkeydown="if(event.key==='Enter')addActivityNote()"><button class="btn btn-primary" onclick="addActivityNote()">Add</button></div>
+    <div id="activityList" style="max-height:400px;overflow-y:auto"></div>
+  </div>
+</div>

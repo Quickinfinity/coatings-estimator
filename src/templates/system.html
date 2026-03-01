@@ -1,0 +1,55 @@
+<!-- SYSTEM EDITOR -->
+<div class="screen" v-show="nav.screen==='system'" id="scr-system">
+  <div style="margin-bottom:8px"><a href="#" onclick="event.preventDefault();saveSystem();goEstimate(nav.estimateId)" style="font-size:12px;color:var(--accent);text-decoration:none">&larr; Back to Estimate</a></div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div class="sh" style="margin-bottom:0;flex:1" id="sysHeader"></div>
+    <div class="btn-row">
+      <button class="btn btn-success" onclick="saveSystem()">Save</button>
+      <button class="btn btn-ghost" onclick="duplicateSystem()">Duplicate</button>
+      <button class="btn btn-danger" onclick="confirmDeleteSystem()">Remove</button>
+    </div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic io">&#9634;</span> Dimensions</div>
+    <div class="g3">
+      <div class="fg"><label>Area Name</label><input type="text" id="sysArea" placeholder="e.g. Driveway, Patio, Garage" oninput="calcSystem()"></div>
+      <div class="fg"><label>Length (ft)</label><input type="number" id="sysLength" value="0" min="0" step="1" oninput="calcSystem()"></div>
+      <div class="fg"><label>Width (ft)</label><input type="number" id="sysWidth" value="0" min="0" step="1" oninput="calcSystem()"></div>
+    </div>
+    <div class="g3">
+      <div class="fg"><label>Square Feet</label><input type="number" id="sysSqft" value="0" min="0" step="1" oninput="calcSystem(true)"></div>
+      <div class="fg"><label>Sell Rate ($/sqft)</label><input type="number" id="sysSellRate" value="0" min="0" step="0.01" oninput="calcSystem()"></div>
+      <div class="fg"><label>System Price</label>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--accent);padding:6px 0;letter-spacing:-1px" id="sysPrice">$0.00</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:4px 0"><input type="checkbox" id="sysTaxable" checked onchange="calcSystem()"><label for="sysTaxable" style="font-size:13px;color:var(--t2);cursor:pointer">Taxable (apply sales tax to this area)</label></div>
+  </div>
+  <div class="sg" id="sysStats"></div>
+  <div class="cd">
+    <div class="ct"><span class="ic ior">&#9733;</span> Product System</div>
+    <div class="series-filter" id="seriesFilter"></div>
+    <div style="max-height:400px;overflow-y:auto;padding-right:4px" id="prodList"></div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ig">&#9708;</span> Top Coat</div>
+    <div id="tcList"></div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ir">&#9881;</span> Repairs</div>
+    <div id="repairList"></div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ib">&#9737;</span> Add-ons</div>
+    <div id="addonList"></div>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ig">&#128203;</span> Custom Line Items</div>
+    <div id="lineItemsList"></div>
+    <button class="btn btn-primary" onclick="addSysLineItem()" style="margin-top:10px;font-size:12px;padding:6px 16px">+ Add Line Item</button>
+  </div>
+  <div class="cd">
+    <div class="ct"><span class="ic ior">&#9998;</span> Notes</div>
+    <div class="fg" style="margin-bottom:0"><textarea id="sysNotes" placeholder="Notes for this area..." oninput="calcSystem()"></textarea></div>
+  </div>
+</div>

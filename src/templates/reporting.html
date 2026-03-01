@@ -1,0 +1,18 @@
+<!-- REPORTING -->
+<div class="screen" v-show="nav.screen==='reporting'" id="scr-reporting">
+  <div class="sh">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div><h2>Reports &amp; Analytics</h2><p>Business performance at a glance.</p></div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="exportReportCSV()">Export CSV</button>
+        <button class="btn btn-ghost" onclick="exportReportPDF()">Export PDF</button>
+      </div>
+    </div>
+  </div>
+  <div class="rpt-grid" id="rptCards"></div>
+  <div class="cd"><div class="ct"><span class="ic io">&#9733;</span> Top Systems</div><div id="rptTopSystems"></div></div>
+  <div class="cd"><div class="ct"><span class="ic ig">&#9650;</span> Pipeline Breakdown</div><div id="rptPipelineBreakdown"></div></div>
+  <div class="cd"><div class="ct"><span class="ic ior">&#128176;</span> Accounts Receivable</div><div class="sg" id="rptAR"></div></div>
+  <div class="cd"><div class="ct"><span class="ic ib">&#128197;</span> Aging Report</div><div id="rptAging" style="overflow-x:auto"></div></div>
+  <div class="cd"><div class="ct"><span class="ic ib">&#9673;</span> Recent Activity</div><div id="rptRecent"></div></div>
+</div>

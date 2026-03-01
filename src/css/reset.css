@@ -1,0 +1,10 @@
+/* ═══════════════════════════════════════════════════════
+   RESET
+   ═══════════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;font-size:16px;background:var(--bg);color:var(--t1);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#c1c5cd;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#9ca3af}
+::selection{background:rgba(37,99,235,.2);color:var(--t1)}

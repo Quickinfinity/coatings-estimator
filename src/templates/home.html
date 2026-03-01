@@ -1,0 +1,29 @@
+<div class="mc">
+
+<!-- HOME -->
+<div class="screen" v-show="nav.screen==='home'" id="scr-home">
+  <div class="home-greeting" id="homeGreeting"></div>
+  <div style="margin-bottom:16px;position:relative"><input type="text" id="globalSearch" placeholder="Search all records..." oninput="globalSearchRender()" style="width:100%;padding-right:32px"><div id="globalSearchResults" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--s2);border:1px solid var(--b2);border-radius:10px;max-height:300px;overflow-y:auto;margin-top:4px;box-shadow:0 8px 24px rgba(0,0,0,.12)"></div></div>
+  <div class="wf-grid" id="workflowCards"></div>
+  <div id="overdueAlert"></div>
+  <div id="followUpSection"></div>
+  <div class="home-bottom">
+    <div class="cd">
+      <div class="ct"><span class="ic ib">&#9673;</span> Recent Activity</div>
+      <div id="recentActivity"></div>
+    </div>
+    <div>
+      <div class="cd">
+        <div class="ct"><span class="ic io">&#128200;</span> Business Performance</div>
+        <div class="perf-grid" id="perfCards"></div>
+      </div>
+      <div id="leadSourceChart" style="margin-bottom:24px"></div>
+      <div style="margin-top:10px;padding-left:2px">
+        <span style="font-size:11px;color:var(--t4);cursor:pointer" onclick="toggleArchived()">&#9660; View archived records</span>
+        <div id="archivedSection" style="display:none;margin-top:10px">
+          <div class="folder-grid" style="grid-template-columns:repeat(4,1fr)" id="inactiveFolders"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

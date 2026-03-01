@@ -1,0 +1,65 @@
+<!-- ESTIMATE -->
+<div class="screen" v-show="nav.screen==='estimate'" id="scr-estimate">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+    <div style="flex:1">
+      <div style="display:flex;align-items:center;gap:10px"><div class="inline-edit"><input type="text" id="estNameInput" placeholder="Estimate name..." oninput="updateEstName()"></div><span id="quoteStatusBadge"></span></div>
+      <p style="font-size:13px;color:var(--t3)" id="estSubline"></p>
+    </div>
+    <div class="btn-row" id="estActionBtns">
+      <button class="btn btn-primary" onclick="generateProposal()">PDF Proposal</button>
+      <button class="btn btn-ghost" onclick="emailProposal()">Email Quote</button>
+      <button class="btn btn-ghost" onclick="textProposal()">Text Quote</button>
+      <button class="btn btn-success" id="estSaveBtn" onclick="saveEstimate()">Save</button>
+      <button class="btn btn-ghost" onclick="duplicateEstimate()">Duplicate</button>
+      <button class="btn btn-ghost" onclick="saveAsTemplate()">Save Template</button>
+      <button class="btn btn-ghost" onclick="generateApprovalPage()">Send for Approval</button>
+      <button class="btn btn-ghost" onclick="generateClientPortal()">Client Portal</button>
+      <button class="btn btn-ghost" onclick="window.print()">Print</button>
+      <button class="btn btn-danger" onclick="confirmDeleteEstimate()">Delete</button>
+    </div>
+  </div>
+  <div class="est-total" id="estTotalBar"></div>
+  <div id="estSavedActions" style="display:none"></div>
+  <div class="tab-bar" id="estTabs">
+    <button class="tab-btn ac" onclick="switchEstTab('areas')">Areas</button>
+    <button class="tab-btn" onclick="switchEstTab('orderlist')">Order List</button>
+    <button class="tab-btn" onclick="switchEstTab('contract')">Contract</button>
+    <button class="tab-btn" onclick="switchEstTab('invoices')">Invoices</button>
+  </div>
+  <div id="estTabAreas">
+    <div class="cd">
+      <div class="ct" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span class="ic ig">&#9874;</span> Areas</div><button class="btn btn-primary" onclick="newSystem()">+ Add Area</button></div>
+      <div id="systemsList"></div>
+    </div>
+  </div>
+  <div id="estTabOrderlist" style="display:none">
+    <div class="cd"><div class="ct"><span class="ic io">&#9776;</span> Materials Order List</div><div id="orderListContent"></div></div>
+  </div>
+  <div id="estTabContract" style="display:none">
+    <div class="cd">
+      <div class="ct"><span class="ic ib">&#9998;</span> Contract</div>
+      <div class="fg"><label>Terms & Conditions</label><textarea id="contractTerms" rows="6" placeholder="Enter contract terms...">This proposal is valid for 30 days from the date shown. A 50% deposit is required to schedule the project. Balance due upon completion. All work carries a manufacturer warranty on materials used. The Concrete Protector guarantees workmanship for a period of one (1) year from date of installation. Customer is responsible for proper maintenance as outlined in care instructions provided at completion.</textarea></div>
+      <div class="g2">
+        <div>
+          <div class="fg"><label>Contractor Signature</label></div>
+          <div class="sig-wrap"><canvas id="sigContractor" width="400" height="150"></canvas><div class="sig-label">Sign above</div></div>
+          <button class="btn btn-ghost" onclick="clearSig('sigContractor')" style="margin-bottom:12px">Clear</button>
+        </div>
+        <div>
+          <div class="fg"><label>Customer Signature</label></div>
+          <div class="sig-wrap"><canvas id="sigCustomer" width="400" height="150"></canvas><div class="sig-label">Sign above</div></div>
+          <button class="btn btn-ghost" onclick="clearSig('sigCustomer')" style="margin-bottom:12px">Clear</button>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary" onclick="generateContract()">Download Contract PDF</button></div>
+    </div>
+  </div>
+  <div id="estTabInvoices" style="display:none">
+    <div class="cd">
+      <div class="ct" style="justify-content:space-between"><div style="display:flex;align-items:center;gap:8px"><span class="ic io">&#128179;</span> Invoices</div>
+        <div class="btn-row"><button class="btn btn-primary" onclick="createInvoice('standard')">Create Invoice</button><button class="btn btn-ghost" onclick="createInvoice('deposit')">Deposit Invoice</button></div>
+      </div>
+      <div id="invoicesList"></div>
+    </div>
+  </div>
+</div>
